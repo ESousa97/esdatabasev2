@@ -15,7 +15,7 @@ function ProcedureDetails({ procedure }) {
   };
 
   const toggleExpand = () => {
-    setIsExpanded(!isExpanded); // Alterna entre expandido e não expandido
+    setIsExpanded(!isExpanded);
   };
 
   useEffect(() => {
@@ -32,38 +32,40 @@ function ProcedureDetails({ procedure }) {
 
   const renderVideo = (videoId) => (
     videoLoaded === videoId ? (
-      <div style={{
-        position: 'relative',
-        height: isExpanded ? '85vh' : '30vh',
-        transition: 'height 0.8s ease', // Suaviza a transição de altura
-        boxShadow: '0 10px 10px rgba(0,0,0,0.1)', // Adiciona sombra para dar profundidade
-        margin: '10px', // Margem para não colar nas bordas da tela
-        borderRadius: '10px', // Borda arredondada para estética moderna
-      }}>
+      <div
+        style={{
+          position: 'relative',
+          height: isExpanded ? '85vh' : '30vh',
+          transition: 'height 0.8s ease',
+          boxShadow: '0 10px 10px rgba(0,0,0,0.1)',
+          margin: '10px',
+          borderRadius: '10px',
+        }}
+      >
         <iframe
           style={{
-            width: "100%",
-            height: "100%",
-            border: "none",
-            borderRadius: '10px', // Borda arredondada no iframe também
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            borderRadius: '10px',
           }}
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&vq=hd1080`}
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           loading="lazy"
-        ></iframe>
+        />
         <Button
           style={{
             position: 'absolute',
             top: '10px',
             right: '10px',
-            background: '#f50057', // Cor vibrante para o botão
-            color: 'white', // Texto branco para contraste
-            padding: '5px 10px', // Ajuste do padding para um toque mais confortável
-            borderRadius: '4px', // Borda arredondada no botão
-            textTransform: 'none', // Remove a transformação de texto em maiúsculas
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)', // Sombra no botão para efeito 3D
+            background: '#f50057',
+            color: 'white',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            textTransform: 'none',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
           }}
           variant="contained"
           onClick={toggleExpand}
@@ -72,17 +74,23 @@ function ProcedureDetails({ procedure }) {
         </Button>
       </div>
     ) : (
-      <div style={{
-        display: 'flex', 
-        justifyContent: 'left', 
-        alignItems: 'left', 
-        height: '4vh' // Ajusta o contêiner para preencher a altura da viewport
-      }}>
-        <Button variant="outlined" onClick={() => handleLoadVideo(videoId)} style={{
-          padding: '5px 10px',
-          fontSize: '16px', // Tamanho de fonte maior para melhor legibilidade
-          boxShadow: '0 2px 5px rgba(0,0,0,0.5)' // Sombra sutil para destaque
-        }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'left',
+          alignItems: 'left',
+          height: '4vh',
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={() => handleLoadVideo(videoId)}
+          style={{
+            padding: '5px 10px',
+            fontSize: '16px',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.5)',
+          }}
+        >
           Carregar Vídeo
         </Button>
       </div>
@@ -93,11 +101,11 @@ function ProcedureDetails({ procedure }) {
     let modifiedHtml = html
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/!!(.*?)!!/g, '<span style="color: red;">$1</span>')
-      .replace(/<table>/g, `<table class="table">`)
-      .replace(/<thead>/g, `<thead class="thead">`)
-      .replace(/<tr>/g, `<tr class="tr">`)
-      .replace(/<th>/g, `<th class="th">`)
-      .replace(/<td>/g, `<td class="td">`);
+      .replace(/<table>/g, '<table class="table">')
+      .replace(/<thead>/g, '<thead class="thead">')
+      .replace(/<tr>/g, '<tr class="tr">')
+      .replace(/<th>/g, '<th class="th">')
+      .replace(/<td>/g, '<td class="td">');
 
     return { __html: DOMPurify.sanitize(modifiedHtml) };
   };
@@ -107,56 +115,85 @@ function ProcedureDetails({ procedure }) {
     return `/Assets/${folder}/${imageFileName}`;
   };
 
-  const processedContent = procedure?.conteudo.split('\n').map((part, index) => {
-    // Handle video URLs
-    const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
-    const videoMatch = part.match(videoRegex);
-    if (videoMatch) {
-      return <ContentContainer key={index}>{renderVideo(videoMatch[1])}</ContentContainer>;
-    }
+  // Aqui convertemos "\n" literais em quebras de linha reais antes do split.
+  const processedContent = procedure?.conteudo
+    .replace(/\\n/g, '\n') // <- Converte "\n" literal para uma quebra de linha real
+    .split('\n')
+    .map((part, index) => {
+      // Handle video URLs
+      const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
+      const videoMatch = part.match(videoRegex);
+      if (videoMatch) {
+        return <ContentContainer key={index}>{renderVideo(videoMatch[1])}</ContentContainer>;
+      }
 
-    // Handle content marked for copy
-    if (part.includes('@@')) {
-      const splitContent = part.split(/@@(.*?)@@/);
-      const processedSplitContent = splitContent.map((content, subIndex) => {
-        if (subIndex % 2 === 0) {
-          return content.trim() === '' ? null : <span key={`text-${index}-${subIndex}`} dangerouslySetInnerHTML={createMarkup(content)} />;
-        } else {
-          return <StyledCopyButton key={`copy-${index}-${subIndex}`} onClick={() => handleCopy(content)}>{content}</StyledCopyButton>;
-        }
-      });
-      return <ContentContainer key={index}>{processedSplitContent}</ContentContainer>;
-    }
+      // Handle content marked for copy
+      if (part.includes('@@')) {
+        const splitContent = part.split(/@@(.*?)@@/);
+        const processedSplitContent = splitContent.map((content, subIndex) => {
+          if (subIndex % 2 === 0) {
+            return content.trim() === '' ? null : (
+              <span
+                key={`text-${index}-${subIndex}`}
+                dangerouslySetInnerHTML={createMarkup(content)}
+              />
+            );
+          } else {
+            return (
+              <StyledCopyButton
+                key={`copy-${index}-${subIndex}`}
+                onClick={() => handleCopy(content)}
+              >
+                {content}
+              </StyledCopyButton>
+            );
+          }
+        });
+        return <ContentContainer key={index}>{processedSplitContent}</ContentContainer>;
+      }
 
-    // Handle images
-const imageMatch = part.match(/(IMC\d+__\d+\.png)/i);
-if (imageMatch) {
-  const imagePath = getImagePath(imageMatch[0]);
-  return (
-    <ImageContainer key={index}>
-      <img src={imagePath} alt={`Imagem ${imageMatch[0]}`} style={{ maxWidth: '100%', height: 'auto', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
-    </ImageContainer>
-  );
-}
+      // Handle images
+      const imageMatch = part.match(/(IMC\d+__\d+\.png)/i);
+      if (imageMatch) {
+        const imagePath = getImagePath(imageMatch[0]);
+        return (
+          <ImageContainer key={index}>
+            <img
+              src={imagePath}
+              alt={`Imagem ${imageMatch[0]}`}
+              style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
+            />
+          </ImageContainer>
+        );
+      }
 
+      // Handle links
+      const linkMatch = part.match(/\[([^\]]+)\]\((http[^)]+)\)/);
+      if (linkMatch) {
+        const [, linkText, linkUrl] = linkMatch;
+        return (
+          <ContentContainer key={index}>
+            <StyledButton href={linkUrl} target="_blank">
+              {linkText}
+            </StyledButton>
+          </ContentContainer>
+        );
+      }
 
-    // Handle links
-    const linkMatch = part.match(/\[([^\]]+)\]\((http[^)]+)\)/);
-    if (linkMatch) {
-      const [, linkText, linkUrl] = linkMatch;
+      // Handle general text content
       return (
-        <ContentContainer key={index}>
-          <StyledButton href={linkUrl} target="_blank">{linkText}</StyledButton>
-        </ContentContainer>
+        <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />
       );
-    }
-
-    // Handle general text content
-    return <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />;
-  });
+    });
 
   if (loading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>;
+    return (
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
