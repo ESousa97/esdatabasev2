@@ -1,11 +1,11 @@
 import React from 'react';
-import ThemeProvider from '../componentes/ThemeProvider/ThemeProvider';
+import { CustomThemeProvider } from '../src/contexts/ThemeProvider';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider>
+    <CustomThemeProvider>
       <Component {...pageProps} />
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
 }
 

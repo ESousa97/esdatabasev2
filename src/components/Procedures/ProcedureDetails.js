@@ -10,19 +10,12 @@ function ProcedureDetails({ procedure }) {
   const [videoLoaded, setVideoLoaded] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleLoadVideo = (videoId) => {
-    setVideoLoaded(videoId);
-  };
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   useEffect(() => {
-    if (procedure) {
-      setLoading(false);
-    }
+    if (procedure) setLoading(false);
   }, [procedure]);
+
+  const handleLoadVideo = (videoId) => setVideoLoaded(videoId);
+  const toggleExpand = () => setIsExpanded((prev) => !prev);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
@@ -32,13 +25,13 @@ function ProcedureDetails({ procedure }) {
 
   const renderVideo = (videoId) => (
     videoLoaded === videoId ? (
-      <div
-        style={{
+      <Box
+        sx={{
           position: 'relative',
           height: isExpanded ? '85vh' : '30vh',
           transition: 'height 0.8s ease',
           boxShadow: '0 10px 10px rgba(0,0,0,0.1)',
-          margin: '10px',
+          m: 1,
           borderRadius: '10px',
         }}
       >
@@ -56,49 +49,43 @@ function ProcedureDetails({ procedure }) {
           loading="lazy"
         />
         <Button
-          style={{
+          variant="contained"
+          onClick={toggleExpand}
+          sx={{
             position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: '#f50057',
+            top: 1,
+            right: 1,
+            backgroundColor: '#f50057',
             color: 'white',
-            padding: '5px 10px',
+            px: 1.5,
             borderRadius: '4px',
             textTransform: 'none',
             boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            '&:hover': { backgroundColor: '#c51162' },
           }}
-          variant="contained"
-          onClick={toggleExpand}
         >
           {isExpanded ? 'Minimizar' : 'Expandir'}
         </Button>
-      </div>
+      </Box>
     ) : (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'left',
-          alignItems: 'left',
-          height: '4vh',
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '4vh' }}>
         <Button
           variant="outlined"
           onClick={() => handleLoadVideo(videoId)}
-          style={{
-            padding: '5px 10px',
+          sx={{
+            px: 1,
             fontSize: '16px',
             boxShadow: '0 2px 5px rgba(0,0,0,0.5)',
           }}
         >
           Carregar Vídeo
         </Button>
-      </div>
+      </Box>
     )
   );
 
   const createMarkup = (html) => {
-    let modifiedHtml = html
+    const modifiedHtml = html
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/!!(.*?)!!/g, '<span style="color: red;">$1</span>')
       .replace(/<table>/g, '<table class="table">')
@@ -106,7 +93,6 @@ function ProcedureDetails({ procedure }) {
       .replace(/<tr>/g, '<tr class="tr">')
       .replace(/<th>/g, '<th class="th">')
       .replace(/<td>/g, '<td class="td">');
-
     return { __html: DOMPurify.sanitize(modifiedHtml) };
   };
 
@@ -115,44 +101,36 @@ function ProcedureDetails({ procedure }) {
     return `/Assets/${folder}/${imageFileName}`;
   };
 
-  // Aqui convertemos "\n" literais em quebras de linha reais antes do split.
   const processedContent = procedure?.conteudo
-    .replace(/\\n/g, '\n') // <- Converte "\n" literal para uma quebra de linha real
+    .replace(/\\n/g, '\n')
     .split('\n')
     .map((part, index) => {
-      // Handle video URLs
+      // Vídeo
       const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
       const videoMatch = part.match(videoRegex);
       if (videoMatch) {
         return <ContentContainer key={index}>{renderVideo(videoMatch[1])}</ContentContainer>;
       }
 
-      // Handle content marked for copy
+      // Conteúdo para copiar
       if (part.includes('@@')) {
         const splitContent = part.split(/@@(.*?)@@/);
-        const processedSplitContent = splitContent.map((content, subIndex) => {
+        const processedSplit = splitContent.map((content, subIndex) => {
           if (subIndex % 2 === 0) {
             return content.trim() === '' ? null : (
-              <span
-                key={`text-${index}-${subIndex}`}
-                dangerouslySetInnerHTML={createMarkup(content)}
-              />
-            );
-          } else {
-            return (
-              <StyledCopyButton
-                key={`copy-${index}-${subIndex}`}
-                onClick={() => handleCopy(content)}
-              >
-                {content}
-              </StyledCopyButton>
+              <span key={`text-${index}-${subIndex}`} dangerouslySetInnerHTML={createMarkup(content)} />
             );
           }
+          return (
+            <StyledCopyButton key={`copy-${index}-${subIndex}`} onClick={() => handleCopy(content)}>
+              {content}
+            </StyledCopyButton>
+          );
         });
-        return <ContentContainer key={index}>{processedSplitContent}</ContentContainer>;
+        return <ContentContainer key={index}>{processedSplit}</ContentContainer>;
       }
 
-      // Handle images
+      // Imagem
       const imageMatch = part.match(/(IMC\d+__\d+\.png)/i);
       if (imageMatch) {
         const imagePath = getImagePath(imageMatch[0]);
@@ -167,7 +145,7 @@ function ProcedureDetails({ procedure }) {
         );
       }
 
-      // Handle links
+      // Link
       const linkMatch = part.match(/\[([^\]]+)\]\((http[^)]+)\)/);
       if (linkMatch) {
         const [, linkText, linkUrl] = linkMatch;
@@ -180,7 +158,7 @@ function ProcedureDetails({ procedure }) {
         );
       }
 
-      // Handle general text content
+      // Texto simples
       return (
         <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />
       );
@@ -188,9 +166,7 @@ function ProcedureDetails({ procedure }) {
 
   if (loading) {
     return (
-      <Box
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
       </Box>
     );

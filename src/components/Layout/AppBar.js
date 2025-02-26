@@ -1,4 +1,4 @@
-// componentes/AppBar/AppBar.js
+// src/components/Layout/AppBar.js
 import React from 'react';
 import { AppBar as MuiAppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,19 +7,19 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useRouter } from 'next/router';
-import SearchBox from '../SearchBox/SearchBox';
-import { useTheme } from '../ThemeProvider/ThemeProvider';
+import SearchBox from '../Common/SearchBox/SearchBox';
+import { useCustomTheme } from '../../contexts/ThemeProvider';
 
 const AppBar = ({ onDrawerToggle, onLogout }) => {
   const router = useRouter();
-  const { darkMode, toggleDarkMode } = useTheme();
+  const { darkMode, toggleDarkMode } = useCustomTheme();
 
-  const handleHomeClick = () => router.push('/components');
+  const handleHomeClick = () => router.push('/');
 
   return (
-    <MuiAppBar position="fixed" style={{ zIndex: 1300 }}>
+    <MuiAppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
-        <IconButton color="inherit" onClick={onDrawerToggle} size="large" style={{ zIndex: 9999 }}>
+        <IconButton color="inherit" onClick={onDrawerToggle} size="large">
           <MenuIcon />
         </IconButton>
         <IconButton color="inherit" onClick={handleHomeClick} size="large">
@@ -29,12 +29,11 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
           {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
         <IconButton color="inherit" onClick={onLogout} size="large">
-          <LogoutIcon style={{ transform: 'rotate(-180deg)' }} />
+          <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
         </IconButton>
-        <Typography variant="h6" noWrap style={{ flexGrow: 1, marginLeft: '12px' }}>
+        <Typography variant="h6" noWrap sx={{ flexGrow: 1, ml: 2 }}>
           Data Base
         </Typography>
-        <div style={{ flexGrow: 1 }} />
         <SearchBox />
       </Toolbar>
     </MuiAppBar>

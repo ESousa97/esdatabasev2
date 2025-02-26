@@ -4,14 +4,6 @@ import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import ListItemText from '@mui/material/ListItemText';
 
-export const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  padding: theme.spacing(1),
-  color: theme.palette.primary.main,
-  '&:hover': {
-    backgroundColor: theme.palette.action.selected, // Melhoria de feedback visual no hover
-  },
-}));
-
 export const SearchBoxWrapper = styled('div')(({ theme, isExpanded }) => ({
   position: 'relative',
   display: 'flex',
@@ -29,7 +21,7 @@ export const SearchBoxWrapper = styled('div')(({ theme, isExpanded }) => ({
   },
   [theme.breakpoints.down('sm')]: {
     width: isExpanded ? '20%' : '40px',
-    maxWidth: '280px', // Tamanho menor em dispositivos móveis
+    maxWidth: '280px',
   },
 }));
 
@@ -42,20 +34,10 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
       width: '35ch',
       '&:focus': {
         width: '35ch',
-        backgroundColor: theme.palette.action.hover, // Melhora a visibilidade do campo focado
+        backgroundColor: theme.palette.action.hover,
       },
     },
   },
-}));
-
-export const StyledListItemText = styled(ListItemText)(({ theme }) => ({
-  primary: {
-    fontWeight: 'bold',
-    color: theme.palette.text.primary,
-  },
-  secondary: {
-    color: theme.palette.text.secondary,
-  }
 }));
 
 export const SearchResults = styled(Paper)(({ theme }) => ({
@@ -67,17 +49,36 @@ export const SearchResults = styled(Paper)(({ theme }) => ({
   maxHeight: '300px',
   overflowY: 'auto',
   backgroundColor: theme.palette.background.paper,
-  boxShadow: '0 4px 6px rgba(0,0,0,0.1)', // Sombra mais suave
+  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
   borderRadius: theme.shape.borderRadius,
   '&:hover': {
-    boxShadow: '0 6px 10px rgba(0,0,0,0.15)', // Sombra mais intensa no hover
+    boxShadow: '0 6px 10px rgba(0,0,0,0.15)',
+  },
+}));
+
+// Componentes adicionais que estavam faltando
+
+export const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  padding: theme.spacing(1),
+  color: theme.palette.primary.main,
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
   },
 }));
 
 export const CenteredItem = styled('div')(({ theme }) => ({
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
   justifyContent: 'center',
-  padding: theme.spacing(0.5),
+  alignItems: 'center',
+  padding: theme.spacing(2),
+}));
+
+export const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  '& .MuiListItemText-primary': {
+    fontWeight: 'bold',
+    color: theme.palette.text.primary,
+  },
+  '& .MuiListItemText-secondary': {
+    color: theme.palette.text.secondary,
+  },
 }));

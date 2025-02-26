@@ -1,22 +1,23 @@
-import React from "react";
-import Head from "next/head";
-import { useTheme } from "../componentes/ThemeProvider/ThemeProvider";
+import React from 'react';
+import Head from 'next/head';
+import { Button, Box } from '@mui/material';
+import { useCustomTheme } from '../src/contexts/ThemeProvider';
 
-const Index = () => {
-  const { darkMode, toggleDarkMode } = useTheme();
+const HomePage = () => {
+  const { darkMode, toggleDarkMode } = useCustomTheme();
 
   return (
     <>
       <Head>
-        <meta name="google-site-verification" content="UvuKX1cPOo1fakawbq5Ry3zxnRuJdHQPdfHTLn4pXGY" />
+        <title>Data Base</title>
       </Head>
-      <div>
-        <button onClick={toggleDarkMode}>
-          {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        </button>
-      </div>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Button variant="contained" onClick={toggleDarkMode}>
+          {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        </Button>
+      </Box>
     </>
   );
 };
 
-export default Index;
+export default HomePage;
