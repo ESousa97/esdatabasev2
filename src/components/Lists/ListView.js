@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CircularProgress, Snackbar, Alert, Typography } from '@mui/material';
+import { Typography, CircularProgress, Snackbar, Grid } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
-import { StyledButtonBase, StyledCard, StyledCardMedia, StyledCardContent } from './ListStyles';
+import {
+  StyledButtonBase,
+  StyledCard,
+  StyledCardMedia,
+  StyledCardContent
+} from './ListStyles';
 
 const sortData = (data, sortCriteria, sortDirection) => {
   return data.sort((a, b) => {
@@ -28,8 +34,8 @@ const sortData = (data, sortCriteria, sortDirection) => {
   });
 };
 
-const ListView = ({ viewMode, sortCriteria, sortDirection }) => {
-  const [data, setData] = useState([]);
+const ListView = ({ sortCriteria, sortDirection }) => {
+  const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -38,57 +44,66 @@ const ListView = ({ viewMode, sortCriteria, sortDirection }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get('https://serverdatabase.vercel.app/api/cardlist');
-        const sorted = sortData(response.data, sortCriteria, sortDirection);
-        setData(sorted);
+        setCards(sortData(response.data, sortCriteria, sortDirection));
       } catch (err) {
-        console.error('Error fetching data', err);
+        console.error('Error fetching card list:', err);
         setError(err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [sortCriteria, sortDirection]);
 
-  const handleClick = (id) => {
+  const handleCardClick = (id) => {
     router.push(`/procedimentos/${id}`);
   };
 
-  if (loading) return <CircularProgress />;
-  if (error) return (
-    <Snackbar open autoHideDuration={6000}>
-      <Alert severity="error">Erro ao carregar dados!</Alert>
-    </Snackbar>
-  );
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Snackbar open autoHideDuration={6000}>
+        <Alert severity="error" variant="filled">
+          Erro ao carregar os projetos!
+        </Alert>
+      </Snackbar>
+    );
+  }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center' }}>
-      {data.map((item) => (
-        <StyledButtonBase key={item.id} onClick={() => handleClick(item.id)} viewMode={viewMode}>
-          <StyledCard viewMode={viewMode}>
-            {item.imageurl && (
-              <StyledCardMedia
-                component="img"
-                image={item.imageurl}
-                alt={item.title}
-                loading="lazy"
-              />
-            )}
-            <StyledCardContent viewMode={viewMode}>
-              <Typography variant={viewMode === 'detailed' ? 'h5' : 'h6'}>
-                {item.title}
-              </Typography>
-              {viewMode === 'detailed' && (
-                <Typography variant="body2" color="textSecondary">
-                  {item.description}
-                </Typography>
+    <Grid container spacing={3} justifyContent="center" style={{ padding: 16 }}>
+      {cards.map((card) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={card.id}>
+          <StyledButtonBase onClick={() => handleCardClick(card.id)}>
+            <StyledCard>
+              {card.imageurl && (
+                <StyledCardMedia
+                  component="img"
+                  image={card.imageurl}
+                  alt={card.title}
+                  loading="lazy"
+                />
               )}
-            </StyledCardContent>
-          </StyledCard>
-        </StyledButtonBase>
+              <StyledCardContent>
+                <Typography variant="h6" component="div">
+                  {card.title}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {card.description}
+                </Typography>
+              </StyledCardContent>
+            </StyledCard>
+          </StyledButtonBase>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 };
 

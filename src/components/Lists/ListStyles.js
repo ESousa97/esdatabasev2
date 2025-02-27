@@ -9,20 +9,20 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-export const StyledButtonBase = styled(ButtonBase)(({ theme, viewMode }) => ({
+export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
   display: 'block',
   textAlign: 'inherit',
   borderRadius: '10px',
   overflow: 'hidden',
   transition: 'transform 0.3s, box-shadow 0.3s',
-  width: viewMode === 'compact' ? '200px' : '300px',
+  width: '100%',
   '&:hover': {
     transform: 'scale(1.03)',
     boxShadow: '0px 10px 20px rgba(0,0,0,0.2)',
   },
 }));
 
-export const StyledCard = styled(Card)(({ theme, viewMode }) => ({
+export const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: '10px',
   boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
   display: 'flex',
@@ -33,16 +33,15 @@ export const StyledCard = styled(Card)(({ theme, viewMode }) => ({
     boxShadow: '0px 12px 24px rgba(0,0,0,0.2)',
     transform: 'translateY(-3px)',
   },
-  padding: viewMode === 'detailed' ? theme.spacing(2) : theme.spacing(1),
 }));
 
-export const StyledCardMedia = styled(CardMedia)(({ theme, viewMode }) => ({
-  height: viewMode === 'compact' ? 100 : 160,
+export const StyledCardMedia = styled(CardMedia)({
+  height: 160,
   width: '100%',
   objectFit: 'cover',
-}));
+});
 
-export const StyledCardContent = styled(CardContent)(({ theme, viewMode }) => ({
+export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: 'left',
   '&:last-child': {
