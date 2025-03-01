@@ -4,6 +4,17 @@ import InputBase from '@mui/material/InputBase';
 import Paper from '@mui/material/Paper';
 import ListItemText from '@mui/material/ListItemText';
 
+/**
+ * SearchBoxWrapper
+ *
+ * Container estilizado que envolve a searchbox.
+ * Apresenta:
+ * - Layout flexível com alinhamento central.
+ * - Transições suaves de largura, sombra e cor de fundo.
+ * - Responsividade para diferentes tamanhos de tela.
+ *
+ * @param {boolean} isExpanded - Define se a searchbox está expandida.
+ */
 export const SearchBoxWrapper = styled('div')(({ theme, isExpanded }) => ({
   position: 'relative',
   display: 'flex',
@@ -25,6 +36,14 @@ export const SearchBoxWrapper = styled('div')(({ theme, isExpanded }) => ({
   },
 }));
 
+/**
+ * StyledInputBase
+ *
+ * Componente de entrada personalizado para a searchbox.
+ * Aplica:
+ * - Cor de texto consistente com o tema.
+ * - Transição suave na largura do input e destaque ao foco.
+ */
 export const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: theme.palette.text.primary,
   '& .MuiInputBase-input': {
@@ -40,6 +59,15 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+/**
+ * SearchResults
+ *
+ * Container para exibição dos resultados da busca.
+ * Características:
+ * - Posição absoluta para sobrepor o layout.
+ * - Máxima altura com scroll vertical, garantindo a visibilidade dos itens.
+ * - Sombreamento e bordas suaves para realce visual.
+ */
 export const SearchResults = styled(Paper)(({ theme }) => ({
   position: 'absolute',
   top: '115%',
@@ -56,8 +84,15 @@ export const SearchResults = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// Componentes adicionais que estavam faltando
-
+/**
+ * StyledIconButton
+ *
+ * Botão de ícone customizado para uso na searchbox.
+ * Destaca-se por:
+ * - Padding consistente com o espaçamento do tema.
+ * - Cores em conformidade com o esquema de cores primário.
+ * - Feedback visual ao passar o mouse.
+ */
 export const StyledIconButton = styled(IconButton)(({ theme }) => ({
   padding: theme.spacing(1),
   color: theme.palette.primary.main,
@@ -66,6 +101,12 @@ export const StyledIconButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
+/**
+ * CenteredItem
+ *
+ * Container que centraliza seu conteúdo tanto horizontal quanto verticalmente,
+ * utilizando o espaçamento definido pelo tema.
+ */
 export const CenteredItem = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
@@ -73,6 +114,14 @@ export const CenteredItem = styled('div')(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
+/**
+ * StyledListItemText
+ *
+ * Estilização customizada para os textos dos itens de lista.
+ * Aplica:
+ * - Peso de fonte em negrito para o texto principal.
+ * - Cores padronizadas para os textos principal e secundário.
+ */
 export const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   '& .MuiListItemText-primary': {
     fontWeight: 'bold',

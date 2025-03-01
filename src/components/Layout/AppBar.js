@@ -14,7 +14,7 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
   const router = useRouter();
   const { darkMode, toggleDarkMode } = useCustomTheme();
 
-  const handleHomeClick = () => router.push('/');
+  const handleHomeClick = () => router.push('/components');
 
   return (
     <MuiAppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>

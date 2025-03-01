@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Typography, CircularProgress, Snackbar, Grid } from '@mui/material';
 import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
-import {
-  StyledButtonBase,
-  StyledCard,
-  StyledCardMedia,
-  StyledCardContent
-} from './ListStyles';
+import MainLayout from '../../Layout/MainLayout';
+import { useTheme } from '@mui/material/styles';
+import { StyledButtonBase, StyledCard, StyledCardMedia, StyledCardContent } from './CardStyles';
 
 const sortData = (data, sortCriteria, sortDirection) => {
   return data.sort((a, b) => {
@@ -34,11 +32,10 @@ const sortData = (data, sortCriteria, sortDirection) => {
   });
 };
 
-const ListView = ({ sortCriteria, sortDirection }) => {
+const useCardList = (sortCriteria, sortDirection) => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +52,14 @@ const ListView = ({ sortCriteria, sortDirection }) => {
     fetchData();
   }, [sortCriteria, sortDirection]);
 
+  return { cards, loading, error };
+};
+
+const CardList = memo(({ sortCriteria, sortDirection }) => {
+  const { cards, loading, error } = useCardList(sortCriteria, sortDirection);
+  const router = useRouter();
+  const theme = useTheme();
+
   const handleCardClick = (id) => {
     router.push(`/procedimentos/${id}`);
   };
@@ -69,7 +74,7 @@ const ListView = ({ sortCriteria, sortDirection }) => {
 
   if (error) {
     return (
-      <Snackbar open autoHideDuration={6000}>
+      <Snackbar open={true} autoHideDuration={6000}>
         <Alert severity="error" variant="filled">
           Erro ao carregar os projetos!
         </Alert>
@@ -78,33 +83,40 @@ const ListView = ({ sortCriteria, sortDirection }) => {
   }
 
   return (
-    <Grid container spacing={3} justifyContent="center" style={{ padding: 16 }}>
-      {cards.map((card) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={card.id}>
-          <StyledButtonBase onClick={() => handleCardClick(card.id)}>
-            <StyledCard>
-              {card.imageurl && (
-                <StyledCardMedia
-                  component="img"
-                  image={card.imageurl}
-                  alt={card.title}
-                  loading="lazy"
-                />
-              )}
-              <StyledCardContent>
-                <Typography variant="h6" component="div">
-                  {card.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {card.description}
-                </Typography>
-              </StyledCardContent>
-            </StyledCard>
-          </StyledButtonBase>
-        </Grid>
-      ))}
-    </Grid>
+    <MainLayout>
+      <Grid container spacing={3} justifyContent="center" style={{ padding: theme.spacing(2) }}>
+        {cards.map((card) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={card.id}>
+            <StyledButtonBase onClick={() => handleCardClick(card.id)}>
+              <StyledCard>
+                {card.imageurl && (
+                  <StyledCardMedia
+                    component="img"
+                    image={card.imageurl}
+                    alt={card.title}
+                    loading="lazy"
+                  />
+                )}
+                <StyledCardContent>
+                  <Typography variant="h6" component="div">
+                    {card.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {card.description}
+                  </Typography>
+                </StyledCardContent>
+              </StyledCard>
+            </StyledButtonBase>
+          </Grid>
+        ))}
+      </Grid>
+    </MainLayout>
   );
+});
+
+CardList.propTypes = {
+  sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
+  sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,
 };
 
-export default ListView;
+export default CardList;

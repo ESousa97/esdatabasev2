@@ -10,7 +10,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Toolbar
+  Toolbar,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
@@ -19,67 +19,83 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AppBar from "../src/components/Layout/AppBar";
-import ListView from "../src/components/Lists/ListView";
+import ListView from "../src/components/Lists/ListView/ListView";
 import { useCustomTheme } from "../src/contexts/ThemeProvider";
 
-const TIMEOUT = 60 * 60 * 4000; // 4 horas em milissegundos
+// Define o tempo limite de inatividade (4 horas em milissegundos)
+const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = () => {
+  // Estado para gerenciar a visualização, ordenação e expiração da sessão
   const [viewMode, setViewMode] = useState("cards");
   const [sessionExpired, setSessionExpired] = useState(false);
   const [sortCriteria, setSortCriteria] = useState("date");
   const [sortDirection, setSortDirection] = useState("asc");
-  const [anchorEl, setAnchorEl] = useState(null);
-  const router = useRouter();
-  const { darkMode, toggleDarkMode } = useCustomTheme();
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  // Timeout para detectar inatividade e encerrar a sessão
+  const router = useRouter();
+  const { toggleDarkMode } = useCustomTheme();
+
+  /**
+   * useEffect para monitorar a atividade do usuário.
+   * Em caso de inatividade por mais de 4 horas, a sessão é encerrada.
+   */
   useEffect(() => {
     let timeoutId;
-    const resetTimeout = () => {
+
+    const resetSessionTimeout = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        console.log("Usuário inativo. Encerrando sessão...");
+        console.info("Usuário inativo. Encerrando sessão...");
         signOut({ redirect: false });
         setSessionExpired(true);
-      }, TIMEOUT);
+      }, SESSION_TIMEOUT);
     };
 
-    window.addEventListener("mousemove", resetTimeout);
-    window.addEventListener("keypress", resetTimeout);
-    window.addEventListener("scroll", resetTimeout);
-    resetTimeout();
+    // Adiciona os ouvintes de eventos para reiniciar o timer de inatividade
+    window.addEventListener("mousemove", resetSessionTimeout);
+    window.addEventListener("keypress", resetSessionTimeout);
+    window.addEventListener("scroll", resetSessionTimeout);
+    resetSessionTimeout();
 
     return () => {
       clearTimeout(timeoutId);
-      window.removeEventListener("mousemove", resetTimeout);
-      window.removeEventListener("keypress", resetTimeout);
-      window.removeEventListener("scroll", resetTimeout);
+      window.removeEventListener("mousemove", resetSessionTimeout);
+      window.removeEventListener("keypress", resetSessionTimeout);
+      window.removeEventListener("scroll", resetSessionTimeout);
     };
   }, [router]);
 
+  /**
+   * Redireciona o usuário para a página de login após a expiração da sessão.
+   */
   const redirectToLogin = () => {
     setSessionExpired(false);
     router.push("/login");
   };
 
-  const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  /**
+   * Manipuladores de eventos do menu de filtros e ordenação.
+   */
+  const handleMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setMenuAnchorEl(null);
+
   const handleSortCriteriaChange = (criteria) => {
     setSortCriteria(criteria);
-    handleClose();
+    handleMenuClose();
   };
+
   const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    handleClose();
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    handleMenuClose();
   };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* AppBar atualizado */}
+      {/* Barra de navegação personalizada com opção de alternar para modo escuro */}
       <AppBar onToggleDarkMode={toggleDarkMode} />
 
-      {/* Toolbar com botões para alternar visualizações e filtros */}
+      {/* Toolbar com botões para alternar a visualização e acessar filtros */}
       <Toolbar sx={{ mt: 8, mb: 2, gap: 1 }}>
         <IconButton onClick={() => setViewMode("cards")} color="inherit">
           <ViewModuleIcon />
@@ -90,14 +106,14 @@ const ComponentsPage = () => {
         <IconButton onClick={() => setViewMode("compact")} color="inherit">
           <ViewCompactIcon />
         </IconButton>
-        <IconButton onClick={handleMenuClick} color="inherit">
+        <IconButton onClick={handleMenuOpen} color="inherit">
           <MoreVertIcon />
         </IconButton>
         <Menu
           id="filter-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
+          onClose={handleMenuClose}
         >
           <MenuItem onClick={() => handleSortCriteriaChange("date")}>
             Data de Criação
@@ -114,14 +130,14 @@ const ComponentsPage = () => {
         </Menu>
       </Toolbar>
 
-      {/* ListView unificado */}
+      {/* Renderiza a lista com os parâmetros de visualização e ordenação definidos */}
       <ListView
         viewMode={viewMode}
         sortCriteria={sortCriteria}
         sortDirection={sortDirection}
       />
 
-      {/* Diálogo de sessão expirada */}
+      {/* Diálogo para informar a expiração da sessão */}
       {sessionExpired && (
         <Dialog open onClose={redirectToLogin}>
           <DialogTitle>Sessão Expirada</DialogTitle>
