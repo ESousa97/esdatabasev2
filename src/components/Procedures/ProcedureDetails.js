@@ -84,16 +84,14 @@ function ProcedureDetails({ procedure }) {
     )
   );
 
+  // ✅ Agora permite todas as tags HTML desejadas para renderização correta
   const createMarkup = (html) => {
-    const modifiedHtml = html
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/!!(.*?)!!/g, '<span style="color: red;">$1</span>')
-      .replace(/<table>/g, '<table class="table">')
-      .replace(/<thead>/g, '<thead class="thead">')
-      .replace(/<tr>/g, '<tr class="tr">')
-      .replace(/<th>/g, '<th class="th">')
-      .replace(/<td>/g, '<td class="td">');
-    return { __html: DOMPurify.sanitize(modifiedHtml) };
+    return {
+      __html: DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'strong', 'span', 'table', 'thead', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'br'],
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style'], // Permite atributos essenciais
+      }),
+    };
   };
 
   const getImagePath = (imageFileName) => {
@@ -105,7 +103,9 @@ function ProcedureDetails({ procedure }) {
     .replace(/\\n/g, '\n')
     .split('\n')
     .map((part, index) => {
-      // Vídeo
+      if (!part.trim()) return null;
+
+      // Vídeo do YouTube
       const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
       const videoMatch = part.match(videoRegex);
       if (videoMatch) {
@@ -158,10 +158,8 @@ function ProcedureDetails({ procedure }) {
         );
       }
 
-      // Texto simples
-      return (
-        <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />
-      );
+      // Renderiza qualquer outro HTML corretamente
+      return <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />;
     });
 
   if (loading) {
