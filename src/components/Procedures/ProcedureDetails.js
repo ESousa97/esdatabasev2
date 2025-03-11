@@ -94,10 +94,7 @@ function ProcedureDetails({ procedure }) {
     };
   };
 
-  const getImagePath = (imageFileName) => {
-    const [folder] = imageFileName.split('__');
-    return `/Assets/${folder}/${imageFileName}`;
-  };
+  const getImagePath = (imageFileName) => `/assets/${imageFileName}`;
 
   const processedContent = procedure?.conteudo
     .replace(/\\n/g, '\n')
@@ -131,7 +128,7 @@ function ProcedureDetails({ procedure }) {
       }
 
       // Imagem
-      const imageMatch = part.match(/(IMC\d+__\d+\.png)/i);
+      const imageMatch = part.match(/(projects\d+\/projects\d+__\d+\.png)/i);
       if (imageMatch) {
         const imagePath = getImagePath(imageMatch[0]);
         return (
