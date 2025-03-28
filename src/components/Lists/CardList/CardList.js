@@ -1,8 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Typography, CircularProgress, Snackbar, Grid } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Typography, CircularProgress, Snackbar, Grid, Alert } from '@mui/material';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
 import { useTheme } from '@mui/material/styles';
@@ -13,12 +12,14 @@ const sortData = (data, sortCriteria, sortDirection) => {
     let itemA, itemB;
     switch (sortCriteria) {
       case 'date':
-        itemA = new Date(a.created_at);
-        itemB = new Date(b.created_at);
+        // Agora usamos data_criacao do BD
+        itemA = new Date(a.data_criacao);
+        itemB = new Date(b.data_criacao);
         break;
       case 'alphabetical':
-        itemA = a.title.toLowerCase();
-        itemB = b.title.toLowerCase();
+        // Agora usamos titulo do BD
+        itemA = a.titulo?.toLowerCase() || '';
+        itemB = b.titulo?.toLowerCase() || '';
         break;
       case 'updateDate':
         itemA = new Date(a.data_modificacao);
@@ -40,7 +41,9 @@ const useCardList = (sortCriteria, sortDirection) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Requisição à rota que retorna os cards
         const response = await axios.get('https://serverdatabase.vercel.app/api/cardlist');
+        // Ajuste da ordenação
         setCards(sortData(response.data, sortCriteria, sortDirection));
       } catch (err) {
         console.error('Error fetching card list:', err);
@@ -89,20 +92,23 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
           <Grid item xs={12} sm={6} md={4} lg={3} key={card.id}>
             <StyledButtonBase onClick={() => handleCardClick(card.id)}>
               <StyledCard>
+                {/* Ajuste: exibe a imagem se imageurl existir */}
                 {card.imageurl && (
                   <StyledCardMedia
                     component="img"
                     image={card.imageurl}
-                    alt={card.title}
+                    alt={card.titulo}
                     loading="lazy"
                   />
                 )}
                 <StyledCardContent>
                   <Typography variant="h6" component="div">
-                    {card.title}
+                    {/* Ajuste: usa 'titulo' do BD */}
+                    {card.titulo}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {card.description}
+                    {/* Ajuste: usa 'descricao' do BD */}
+                    {card.descricao}
                   </Typography>
                 </StyledCardContent>
               </StyledCard>

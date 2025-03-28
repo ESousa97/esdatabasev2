@@ -3,7 +3,7 @@ import axios from 'axios';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import CircularProgress from '@mui/material/CircularProgress'; // Importe o CircularProgress
+import CircularProgress from '@mui/material/CircularProgress';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
@@ -12,24 +12,24 @@ import { StyledListItem, StyledPaper, StyledAvatar, StyledListItemText } from '.
 
 const DetailedList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
-    setLoading(true); // Inicie o carregamento
+    setLoading(true);
     axios.get('https://serverdatabase.vercel.app/api/cardlist')
       .then(response => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;
           switch (sortCriteria) {
             case 'date':
-              itemA = new Date(a.created_at);
-              itemB = new Date(b.created_at);
+              itemA = new Date(a.data_criacao);
+              itemB = new Date(b.data_criacao);
               break;
             case 'alphabetical':
-              itemA = a.title.toLowerCase();
-              itemB = b.title.toLowerCase();
+              itemA = a.titulo?.toLowerCase() || '';
+              itemB = b.titulo?.toLowerCase() || '';
               break;
             case 'updateDate':
               itemA = new Date(a.data_modificacao);
@@ -42,11 +42,11 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
           return sortDirection === 'asc' ? comparison : -comparison;
         });
         setItems(sortedData);
-        setLoading(false); // Finalize o carregamento
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching card list:', error);
-        setLoading(false); // Finalize o carregamento mesmo em caso de erro
+        setLoading(false);
       });
   }, [sortCriteria, sortDirection]);
 
@@ -58,7 +58,7 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
     <MainLayout>
       <div style={{ display: 'flex', justifyContent: 'center', padding: theme.spacing(2) }}>
         {loading ? (
-          <CircularProgress size={50} style={{ marginTop: theme.spacing(4) }} /> // Exibir enquanto carrega
+          <CircularProgress size={50} style={{ marginTop: theme.spacing(4) }} />
         ) : (
           <StyledPaper elevation={0}>
             <List>
@@ -72,19 +72,19 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
                     {item.imageurl ? (
                       <StyledAvatar
                         src={item.imageurl}
-                        alt={item.title}
+                        alt={item.titulo}
                       />
                     ) : (
                       <StyledAvatar />
                     )}
                   </ListItemIcon>
                   <StyledListItemText
-                    primary={item.title}
+                    primary={item.titulo}
                     secondary={
                       <>
-                        {item.description}
+                        {item.descricao}
                         <br />
-                        {'Criado em: ' + format(new Date(item.created_at), 'dd/MM/yyyy HH:mm:ss')}
+                        {'Criado em: ' + format(new Date(item.data_criacao), 'dd/MM/yyyy HH:mm:ss')}
                       </>
                     }
                   />
