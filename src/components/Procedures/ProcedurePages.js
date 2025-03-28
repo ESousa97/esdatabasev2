@@ -13,7 +13,7 @@ function ProcedurePages() {
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`https://serverdatabase.vercel.app/api/procedure?id=${id}`)
+    axios.get(`https://serverdatabase.vercel.app/api/projects?id=${id}`)
       .then(response => {
         setProcedure(response.data);
       })
