@@ -42,7 +42,7 @@ const useCardList = (sortCriteria, sortDirection) => {
     const fetchData = async () => {
       try {
         // Requisição à rota que retorna os cards
-        const response = await axios.get('https://serverdatabase.vercel.app/api/cardlist');
+        const response = await axios.get('http://localhost:8000/api/cards');
         // Ajuste da ordenação
         setCards(sortData(response.data, sortCriteria, sortDirection));
       } catch (err) {

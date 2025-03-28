@@ -28,7 +28,7 @@ const Drawer = ({ open, onClose, marginTop }) => {
   // Carrega as categorias e organiza por nome
   useEffect(() => {
     axios
-      .get('https://serverdatabase.vercel.app/api/categories')
+      .get('http://localhost:8000/api/categories')
       .then((response) => {
         const fetchedCategories = response.data.reduce((acc, item) => {
           if (!acc[item.categoria]) {
