@@ -1,8 +1,9 @@
+// src/components/Procedures/ProcedurePages.js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import MainLayout from '../Layout/MainLayout'; // Atualizado para novo caminho
-import ProcedureDetails from './ProcedureDetails'; // Se o arquivo ProcedureDetails.js estiver na mesma pasta
+import MainLayout from '../Layout/MainLayout';
+import ProcedureDetails from './ProcedureDetails';
 
 function ProcedurePages() {
   const { query } = useRouter();
@@ -13,7 +14,8 @@ function ProcedurePages() {
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`http://localhost:8000/api/projects?id=${id}`)
+    // Alteração: utiliza a rota correta com parâmetro de rota
+    axios.get(`https://serverdatabase.onrender.com/api/projects/${id}`)
       .then(response => {
         setProcedure(response.data);
       })
@@ -22,7 +24,7 @@ function ProcedurePages() {
         setError(error);
       })
       .finally(() => setLoading(false));
-  }, [id]);  
+  }, [id]);
 
   if (loading) return <MainLayout><div>Carregando...</div></MainLayout>;
   if (error) return <MainLayout><div>Erro ao carregar procedimento</div></MainLayout>;

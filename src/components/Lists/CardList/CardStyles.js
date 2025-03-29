@@ -3,12 +3,8 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 
-/**
- * fadeIn
- *
- * Animação para uma transição suave durante a aparição do componente Card.
- */
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -20,13 +16,6 @@ const fadeIn = keyframes`
   }
 `;
 
-/**
- * StyledButtonBase
- *
- * Componente personalizado baseado em ButtonBase que incorpora:
- * - Transições suaves para transformações e sombra.
- * - Utilização do borderRadius definido no tema para manter consistência visual.
- */
 export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
   display: 'block',
   textAlign: 'inherit',
@@ -40,15 +29,8 @@ export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
-/**
- * StyledCard
- *
- * Componente de cartão personalizado que apresenta:
- * - Fundo consistente com sombra sutil.
- * - Animação fadeIn durante a renderização.
- * - Efeito de elevação e sombra acentuada ao passar o mouse.
- */
 export const StyledCard = styled(Card)(({ theme }) => ({
+  maxWidth: 360, // Ajuste para ficar menor
   borderRadius: theme.shape.borderRadius,
   boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
   display: 'flex',
@@ -64,28 +46,14 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-/**
- * StyledCardMedia
- *
- * Componente para exibição de mídia no cartão, que define:
- * - Altura otimizada para maximizar o espaço destinado ao conteúdo.
- * - Integração visual com os cantos superiores arredondados.
- */
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: 180,
+  height: 250,
   width: '100%',
   objectFit: 'cover',
   borderTopLeftRadius: theme.shape.borderRadius,
   borderTopRightRadius: theme.shape.borderRadius,
 }));
 
-/**
- * StyledCardContent
- *
- * Componente que gerencia o conteúdo interno do cartão, aplicando:
- * - Espaçamento adequado e tipografia otimizada.
- * - Estilos consistentes nos elementos filhos para melhor aproveitamento do espaço.
- */
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   padding: theme.spacing(2),
   textAlign: 'left',
@@ -94,8 +62,16 @@ export const StyledCardContent = styled(CardContent)(({ theme }) => ({
   '&:last-child': {
     paddingBottom: theme.spacing(2),
   },
-  '& *': {
-    fontSize: '0.8rem',
-    lineHeight: 1.3,
-  },
+}));
+
+export const CardTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '0.95rem',
+  fontWeight: 'bold',
+  marginBottom: theme.spacing(0.5),
+}));
+
+export const CardDescription = styled(Typography)(({ theme }) => ({
+  fontSize: '0.8rem',
+  color: theme.palette.text.secondary,
+  lineHeight: 1.3,
 }));

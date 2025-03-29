@@ -1,3 +1,4 @@
+// src/components/Procedures/ProcedureDetails.js
 import React, { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
 import { ToastContainer, toast } from 'react-toastify';
@@ -84,19 +85,21 @@ function ProcedureDetails({ procedure }) {
     )
   );
 
-  // ✅ Agora permite todas as tags HTML desejadas para renderização correta
+  // Use um valor padrão vazio caso procedure.conteudo não exista
+  const safeContent = procedure?.conteudo || '';
+
   const createMarkup = (html) => {
     return {
       __html: DOMPurify.sanitize(html, {
         ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'strong', 'span', 'table', 'thead', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'br'],
-        ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style'], // Permite atributos essenciais
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style'],
       }),
     };
   };
 
   const getImagePath = (imageFileName) => `/assets/${imageFileName}`;
 
-  const processedContent = procedure?.conteudo
+  const processedContent = safeContent
     .replace(/\\n/g, '\n')
     .split('\n')
     .map((part, index) => {
@@ -155,7 +158,7 @@ function ProcedureDetails({ procedure }) {
         );
       }
 
-      // Renderiza qualquer outro HTML corretamente
+      // Renderiza qualquer outro HTML
       return <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />;
     });
 

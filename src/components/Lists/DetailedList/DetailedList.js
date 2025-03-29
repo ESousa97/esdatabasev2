@@ -18,7 +18,7 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:8000/api/cards')
+    axios.get('https://serverdatabase.onrender.com/api/cards')
       .then(response => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;
