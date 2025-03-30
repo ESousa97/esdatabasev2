@@ -18,7 +18,7 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('https://serverdatabase.onrender.com/api/cards')
+    axios.get('https://serverdatabase.onrender.com/api/v1/cards')
       .then(response => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;

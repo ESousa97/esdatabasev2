@@ -53,7 +53,7 @@ const useCardList = (sortCriteria, sortDirection) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://serverdatabase.onrender.com/api/cards');
+        const response = await axios.get('https://serverdatabase.onrender.com/api/v1/cards');
         const sorted = sortData(response.data, sortCriteria, sortDirection);
         setCards(sorted);
       } catch (err) {

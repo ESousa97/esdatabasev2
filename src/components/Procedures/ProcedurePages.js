@@ -15,7 +15,7 @@ function ProcedurePages() {
   useEffect(() => {
     if (!id) return;
     // Alteração: utiliza a rota correta com parâmetro de rota
-    axios.get(`https://serverdatabase.onrender.com/api/projects/${id}`)
+    axios.get(`https://serverdatabase.onrender.com/api/v1/projects/${id}`)
       .then(response => {
         setProcedure(response.data);
       })
