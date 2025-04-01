@@ -91,11 +91,16 @@ function ProcedureDetails({ procedure }) {
   const createMarkup = (html) => {
     return {
       __html: DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'p', 'strong', 'span', 'table', 'thead', 'tr', 'th', 'td', 'ul', 'ol', 'li', 'br'],
+        ALLOWED_TAGS: [
+          'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'span', 'em', 'u', 'del',
+          'code', 'pre', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+          'ul', 'ol', 'li', 'br', 'a'
+        ],
         ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style'],
       }),
     };
   };
+
 
   const getImagePath = (imageFileName) => `/assets/${imageFileName}`;
 
