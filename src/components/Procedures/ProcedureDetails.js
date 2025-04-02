@@ -1,18 +1,31 @@
-// src/components/Procedures/ProcedureDetails.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CircularProgress, Box, Button } from '@mui/material';
-import { StyledButton, StyledCopyButton, ImageContainer, ContentContainer } from './ProcedureDetailsStyles';
+import { StyledButton, StyledCopyButton, ImageContainer, ContentContainer, MarkdownStyles, StyledImage } from './ProcedureDetailsStyles';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
 
 function ProcedureDetails({ procedure }) {
   const [loading, setLoading] = useState(true);
   const [videoLoaded, setVideoLoaded] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const contentRef = useRef(null);
+
+  // Define loading como false assim que a procedure estiver disponível
   useEffect(() => {
     if (procedure) setLoading(false);
+  }, [procedure]);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.querySelectorAll('pre code').forEach(block => {
+        hljs.highlightElement(block);
+      });
+    }
   }, [procedure]);
 
   const handleLoadVideo = (videoId) => setVideoLoaded(videoId);
@@ -85,7 +98,6 @@ function ProcedureDetails({ procedure }) {
     )
   );
 
-  // Use um valor padrão vazio caso procedure.conteudo não exista
   const safeContent = procedure?.conteudo || '';
 
   const createMarkup = (html) => {
@@ -94,78 +106,58 @@ function ProcedureDetails({ procedure }) {
         ALLOWED_TAGS: [
           'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'span', 'em', 'u', 'del',
           'code', 'pre', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-          'ul', 'ol', 'li', 'br', 'a'
+          'ul', 'ol', 'li', 'br', 'a', 'img',
         ],
         ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style'],
       }),
     };
   };
 
-
   const getImagePath = (imageFileName) => `/assets/${imageFileName}`;
 
-  const processedContent = safeContent
-    .replace(/\\n/g, '\n')
-    .split('\n')
-    .map((part, index) => {
-      if (!part.trim()) return null;
+  const processedContent = marked.parse(safeContent.replace(/\\n/g, '\n'));
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = processedContent;
 
-      // Vídeo do YouTube
-      const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
-      const videoMatch = part.match(videoRegex);
-      if (videoMatch) {
-        return <ContentContainer key={index}>{renderVideo(videoMatch[1])}</ContentContainer>;
-      }
+  const children = Array.from(tempDiv.childNodes).map((node, index) => {
+    const textContent = node.textContent || '';
 
-      // Conteúdo para copiar
-      if (part.includes('@@')) {
-        const splitContent = part.split(/@@(.*?)@@/);
-        const processedSplit = splitContent.map((content, subIndex) => {
-          if (subIndex % 2 === 0) {
-            return content.trim() === '' ? null : (
-              <span key={`text-${index}-${subIndex}`} dangerouslySetInnerHTML={createMarkup(content)} />
-            );
-          }
-          return (
-            <StyledCopyButton key={`copy-${index}-${subIndex}`} onClick={() => handleCopy(content)}>
-              {content}
-            </StyledCopyButton>
-          );
-        });
-        return <ContentContainer key={index}>{processedSplit}</ContentContainer>;
-      }
+    const videoRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
+    const videoMatch = textContent.match(videoRegex);
+    if (videoMatch) {
+      return <ContentContainer key={`video-${index}`}>{renderVideo(videoMatch[1])}</ContentContainer>;
+    }
 
-      // Imagem
-      const imageMatch = part.match(/(projects\d+\/projects\d+__\d+\.png)/i);
-      if (imageMatch) {
-        const imagePath = getImagePath(imageMatch[0]);
+    if (textContent.includes('@@')) {
+      const split = textContent.split(/@@(.*?)@@/);
+      const processed = split.map((part, i) => {
+        if (i % 2 === 0) {
+          return part.trim() === '' ? null : <span key={`text-${index}-${i}`} dangerouslySetInnerHTML={createMarkup(marked.parse(part))} />;
+        }
         return (
-          <ImageContainer key={index}>
-            <img
-              src={imagePath}
-              alt={`Imagem ${imageMatch[0]}`}
-              style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
-            />
-          </ImageContainer>
+          <StyledCopyButton key={`copy-${index}-${i}`} onClick={() => handleCopy(part)}>
+            {part}
+          </StyledCopyButton>
         );
-      }
+      });
+      return <ContentContainer key={`copy-wrap-${index}`}>{processed}</ContentContainer>;
+    }
 
-      // Link
-      const linkMatch = part.match(/\[([^\]]+)\]\((http[^)]+)\)/);
-      if (linkMatch) {
-        const [, linkText, linkUrl] = linkMatch;
-        return (
-          <ContentContainer key={index}>
-            <StyledButton href={linkUrl} target="_blank">
-              {linkText}
-            </StyledButton>
-          </ContentContainer>
-        );
-      }
+    const imageMatch = textContent.match(/(projects\d+\/projects\d+__\d+\.png)/i);
+    if (imageMatch) {
+      const imagePath = getImagePath(imageMatch[0]);
+      return (
+        <ImageContainer key={`img-${index}`}>
+          <StyledImage
+            src={imagePath}
+            alt={`Imagem ${imageMatch[0]}`}
+          />
+        </ImageContainer>
+      );
+    }
 
-      // Renderiza qualquer outro HTML
-      return <ContentContainer key={index} dangerouslySetInnerHTML={createMarkup(part)} />;
-    });
+    return <ContentContainer key={`html-${index}`} dangerouslySetInnerHTML={createMarkup(node.outerHTML)} />;
+  });
 
   if (loading) {
     return (
@@ -179,7 +171,7 @@ function ProcedureDetails({ procedure }) {
     <div>
       <ToastContainer autoClose={5000} />
       <h1>{procedure.titulo}</h1>
-      {processedContent}
+      <MarkdownStyles ref={contentRef}>{children}</MarkdownStyles>
     </div>
   );
 }

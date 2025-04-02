@@ -112,20 +112,25 @@ const Drawer = ({ open, onClose, marginTop }) => {
           </Typography>
         )}
 
-        {Object.keys(categories).map((category) => (
-          <List component="nav" key={category} sx={{ px: 2 }}>
-            <StyledListItemButton onClick={(event) => handleToggle(category, event)}>
-              <ListItemIcon>
-                <FiberManualRecordIcon sx={{ color: 'primary.main', fontSize: 'small' }} />
-              </ListItemIcon>
-              <ListItemText primary={category} />
-              {openSubmenus[category] ? <ExpandLess /> : <ExpandMore />}
-            </StyledListItemButton>
+        <List component="nav" sx={{ px: 2 }}>
+          {Object.keys(categories).map((category) => (
+            <React.Fragment key={category}>
+              <StyledListItemButton
+                onClick={(event) => handleToggle(category, event)}
+              >
+                <ListItemIcon>
+                  <FiberManualRecordIcon
+                    sx={{ color: 'primary.main', fontSize: 'small' }}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={category} />
+                {openSubmenus[category] ? <ExpandLess /> : <ExpandMore />}
+              </StyledListItemButton>
 
-            <Collapse in={openSubmenus[category]} timeout="auto" unmountOnExit>
-              {categories[category].map((item) => (
-                <List component="div" disablePadding key={item.id}>
+              <Collapse in={openSubmenus[category]} timeout="auto" unmountOnExit>
+                {categories[category].map((item, index) => (
                   <StyledListItemButton
+                    key={`${item.id}-${index}`}
                     sx={{ pl: 4 }}
                     onClick={(event) => handleMenuItemClick(item.id, event)}
                   >
@@ -136,11 +141,11 @@ const Drawer = ({ open, onClose, marginTop }) => {
                     </ListItemIcon>
                     <ListItemText primary={item.titulo} />
                   </StyledListItemButton>
-                </List>
-              ))}
-            </Collapse>
-          </List>
-        ))}
+                ))}
+              </Collapse>
+            </React.Fragment>
+          ))}
+        </List>
       </StyledDrawer>
     </>
   );
