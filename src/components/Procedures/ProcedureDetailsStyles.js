@@ -2,13 +2,13 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 const commonButtonStyles = {
-  borderRadius: '10px',
-  padding: '8px 16px',
+  borderRadius: '8px',
+  padding: '6px 12px',
   margin: '4px',
   transition: 'background-color 0.3s ease, color 0.3s ease',
   textTransform: 'none',
   fontWeight: 500,
-  fontSize: '1rem',
+  fontSize: '0.9rem',
 };
 
 const createButtonStyles = (bg, hoverBg) => ({
@@ -18,6 +18,16 @@ const createButtonStyles = (bg, hoverBg) => ({
     backgroundColor: hoverBg,
   },
 });
+
+// Contêiner principal para centralizar e limitar a largura do conteúdo
+export const MainContent = styled('div')(({ theme }) => ({
+  maxWidth: '90%',
+  margin: '0 auto',
+  padding: theme.spacing(2),
+  [theme.breakpoints.up('md')]: {
+    padding: theme.spacing(3),
+  },
+}));
 
 export const StyledButton = styled(Button)(({ theme }) => ({
   ...commonButtonStyles,
@@ -31,45 +41,39 @@ export const StyledCopyButton = styled(Button)(({ theme }) => ({
 
 export const ImageContainer = styled('div')(({ theme }) => ({
   margin: theme.spacing(2, 0),
-  textAlign: 'center', // centraliza a imagem
+  textAlign: 'center',
 }));
 
-// Adicione a definição de ContentContainer
 export const ContentContainer = styled('div')(({ theme }) => ({
   margin: theme.spacing(1, 0),
-  lineHeight: 1.6,
+  lineHeight: 1.5,
   color: theme.palette.text.secondary,
-}));
-
-export const StyledImage = styled('img')(({ theme }) => ({
-  width: '300px', // ou maxWidth: '300px'
-  height: 'auto',
-  display: 'block',
-  margin: theme.spacing(2, 'auto'),
 }));
 
 export const MarkdownStyles = styled('div')(({ theme }) => ({
   '& h1': {
-    fontSize: '2.5rem',
+    fontSize: '2rem',
     fontWeight: 700,
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1.5),
     color: theme.palette.text.primary,
+    borderBottom: `2px solid ${theme.palette.divider}`,
+    paddingBottom: theme.spacing(0.5),
   },
   '& h2': {
-    fontSize: '2rem',
+    fontSize: '1.75rem',
     fontWeight: 600,
-    marginBottom: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.25),
     color: theme.palette.text.primary,
   },
   '& h3': {
-    fontSize: '1.75rem',
+    fontSize: '1.5rem',
     fontWeight: 600,
-    marginBottom: theme.spacing(1.2),
+    marginBottom: theme.spacing(1),
     color: theme.palette.text.primary,
   },
   '& p': {
     fontSize: '1rem',
-    lineHeight: 1.6,
+    lineHeight: 1.7,
     marginBottom: theme.spacing(1),
     color: theme.palette.text.secondary,
   },
@@ -79,55 +83,122 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
   '& em': {
     fontStyle: 'italic',
   },
-  '& code': {
-    backgroundColor: '#272822',
-    color: '#a6e22e',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-    border: '1px solid #1e1e1e',
-    overflowX: 'auto',
-  },
+
+  // BLOCO DE CÓDIGO - VAMPIRO DARK/LIGHT
   '& pre': {
-    backgroundColor: '#272822',
-    color: '#a6e22e',
-    padding: theme.spacing(1),
-    borderRadius: '4px',
+    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e2e' : '#5b5b5b',
+    color: theme.palette.mode === 'dark' ? '#f8f8f2' : '#ffffff',
+    borderRadius: '12px',
+    padding: theme.spacing(2),
     overflowX: 'auto',
-    border: '1px solid #1e1e1e',
-    marginBottom: theme.spacing(2),
+    margin: theme.spacing(2, 0),
+    fontSize: '0.95rem',
+    fontFamily: 'monospace',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 4px 12px rgba(0,0,0,0.25)'
+      : '0 2px 6px rgba(0,0,0,0.05)',
+    transition: 'box-shadow 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 6px 18px rgba(0,0,0,0.4)'
+        : '0 4px 12px rgba(0,0,0,0.1)',
+    },
+    maxWidth: '90%',
+    height: 'auto',
+    display: 'block',
+    margin: theme.spacing(2, 'auto'),
   },
+  '& pre code': {
+    background: 'none',
+    padding: 0,
+    color: 'inherit',
+    fontFamily: 'inherit',
+    // Highlight.js estilos por tema:
+    '.hljs-keyword': {
+      color: theme.palette.mode === 'dark' ? '#ff79c6' : '#d81b60',
+      fontWeight: 500,
+    },
+    '.hljs-string': {
+      color: theme.palette.mode === 'dark' ? '#f1fa8c' : '#bc5100',
+    },
+    '.hljs-number': {
+      color: theme.palette.mode === 'dark' ? '#bd93f9' : '#5e35b1',
+    },
+    '.hljs-comment': {
+      color: theme.palette.mode === 'dark' ? '#6272a4' : '#757575',
+      fontStyle: 'italic',
+    },
+    '.hljs-built_in': {
+      color: theme.palette.mode === 'dark' ? '#8be9fd' : '#1976d2',
+    },
+    '.hljs-title': {
+      color: theme.palette.mode === 'dark' ? '#50fa7b' : '#388e3c',
+    },
+  },
+
+  // CÓDIGO INLINE - ajustado para ambos modos
+  '& code': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#2d2a45' : '#eee',
+    color: theme.palette.mode === 'dark' ? '#ff79c6' : '#c62828',
+    fontFamily: 'monospace',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    fontSize: '0.85rem',
+    fontWeight: 500,
+    wordBreak: 'break-word',
+  },
+
+  // LISTAS
   '& ul, & ol': {
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(1),
   },
   '& li': {
-    marginBottom: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.75),
+    lineHeight: 1.6,
   },
+
+  // TABELAS
   '& table': {
     width: '100%',
     borderCollapse: 'collapse',
     marginBottom: theme.spacing(2),
+    fontSize: '0.95rem',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
   },
   '& th, & td': {
-    border: '1px solid #ddd',
+    border: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(1),
     textAlign: 'left',
   },
   '& th': {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: theme.palette.mode === 'dark' ? '#3a3a3a' : '#f9f9f9',
+    fontWeight: 600,
   },
+
+  // LINKS
   '& a': {
     color: theme.palette.primary.main,
-    textDecoration: 'none',
+    textDecoration: 'underline',
+    transition: 'color 0.2s ease',
     '&:hover': {
-      textDecoration: 'underline',
+      color: theme.palette.primary.dark,
     },
   },
+
+  // IMAGENS
   '& img': {
-    maxWidth: '100%',
+    maxWidth: '90%',
     height: 'auto',
     display: 'block',
     margin: theme.spacing(2, 'auto'),
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  },
+
+  // SELEÇÃO DE TEXTO
+  '& *::selection': {
+    backgroundColor: theme.palette.primary.light,
+    color: '#fff',
   },
 }));
