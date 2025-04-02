@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import {animatedLink} from '../StyleLink/StyledLink';
 
 const commonButtonStyles = {
   borderRadius: '8px',
@@ -125,7 +126,7 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
       color: theme.palette.mode === 'dark' ? '#bd93f9' : '#5e35b1',
     },
     '.hljs-comment': {
-      color: theme.palette.mode === 'dark' ? '#6272a4' : '#757575',
+      color: theme.palette.mode === 'dark' ? '#6272a4' : '#919191',
       fontStyle: 'italic',
     },
     '.hljs-built_in': {
@@ -138,14 +139,27 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
 
   // CÓDIGO INLINE - ajustado para ambos modos
   '& code': {
-    backgroundColor: theme.palette.mode === 'dark' ? '#2d2a45' : '#eee',
-    color: theme.palette.mode === 'dark' ? '#ff79c6' : '#c62828',
+    backgroundColor: theme.palette.mode === 'dark' ? '#2d2a45' : '#e5e5e5',
+    color: theme.palette.mode === 'dark' ? '#ff79c6' : '#283593',
     fontFamily: 'monospace',
     padding: '2px 6px',
     borderRadius: '4px',
     fontSize: '0.85rem',
     fontWeight: 500,
     wordBreak: 'break-word',
+  },
+
+  '& .highlight-text': {
+  backgroundColor: theme.palette.mode === 'dark' ? '#232323' : '#f1f1f1',
+  color: theme.palette.mode === 'dark' ? '#4dd0e1' : '#c62828',
+  fontFamily: 'inherit',
+  fontStyle: 'italic',
+  fontWeight: 'bold',
+  padding: '2px 6px',
+  borderRadius: '6px',
+  fontSize: '0.9rem',
+  border: `1px dashed ${theme.palette.divider}`,
+  display: 'inline-block',
   },
 
   // LISTAS
@@ -176,16 +190,6 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
     fontWeight: 600,
   },
 
-  // LINKS
-  '& a': {
-    color: theme.palette.primary.main,
-    textDecoration: 'underline',
-    transition: 'color 0.2s ease',
-    '&:hover': {
-      color: theme.palette.primary.dark,
-    },
-  },
-
   // IMAGENS
   '& img': {
     maxWidth: '90%',
@@ -194,6 +198,10 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
     margin: theme.spacing(2, 'auto'),
     borderRadius: '8px',
     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  },
+
+  '& a': {
+  ...animatedLink(theme),
   },
 
   // SELEÇÃO DE TEXTO

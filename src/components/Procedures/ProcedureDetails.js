@@ -26,6 +26,16 @@ function ProcedureDetails({ procedure }) {
     }
   }, [procedure]);
 
+  useEffect(() => {
+    if (contentRef.current) {
+      const links = contentRef.current.querySelectorAll('a');
+      links.forEach((link) => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      });
+    }
+  }, [procedure]);  
+
   const handleLoadVideo = (videoId) => setVideoLoaded(videoId);
   const toggleExpand = () => setIsExpanded((prev) => !prev);
 
@@ -102,9 +112,33 @@ function ProcedureDetails({ procedure }) {
     __html: DOMPurify.sanitize(html),
   });
 
-  const processedContent = marked.parse(safeContent.replace(/\\n/g, '\n'));
+  const highlightedMarkdown = safeContent.replace(
+    /:::(.+?):::/g,
+    (_, content) => `<span class="highlight-text">${content.trim()}</span>`
+  );
+
+  const processedContent = marked.parse(highlightedMarkdown.replace(/\\n/g, '\n'));
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = processedContent;
+
+  tempDiv.querySelectorAll('code').forEach((codeEl) => {
+    const text = codeEl.textContent.trim();
+
+    // Heurística simples: se contém espaços, parênteses, =, etc → é código real
+    const isCode = /[=(){}[\];]/.test(text);
+
+    if (isCode) {
+      codeEl.classList.add('code-real');
+    } else {
+      codeEl.classList.add('code-inline-text');
+    }
+  });
+
+  // Aqui modificamos todos os links automaticamente
+  tempDiv.querySelectorAll('a').forEach((a) => {
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+  });
 
   const children = Array.from(tempDiv.childNodes).map((node, index) => {
     const textContent = node.textContent || '';
