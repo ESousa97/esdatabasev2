@@ -1,9 +1,12 @@
-// StyledLink.js
+// links.js
 import { styled } from '@mui/material/styles';
 
-const StyledLink = styled('a')(({ theme }) => ({
+export const StyledLink = styled('a')(({ theme }) => ({
   position: 'relative',
-  color: theme.palette.primary.main,
+  color:
+    theme.palette.mode === 'light'
+      ? theme.palette.primary.main
+      : theme.palette.primary.light,
   textDecoration: 'none',
   fontWeight: 600,
   transition: 'color 0.3s ease-in-out',
@@ -15,15 +18,24 @@ const StyledLink = styled('a')(({ theme }) => ({
     bottom: -2,
     height: 2,
     width: 0,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor:
+      theme.palette.mode === 'light'
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
     transition: 'width 0.3s ease-in-out',
   },
 
   '&:hover': {
-    color: theme.palette.primary.dark,
+    color:
+      theme.palette.mode === 'light'
+        ? theme.palette.primary.light // Usa uma cor mais clara no hover para o modo light
+        : theme.palette.primary.main,
     '&::after': {
       width: '100%',
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor:
+        theme.palette.mode === 'light'
+          ? theme.palette.primary.light // Altera para uma cor mais clara
+          : theme.palette.primary.main,
     },
   },
 
@@ -34,36 +46,47 @@ const StyledLink = styled('a')(({ theme }) => ({
   },
 }));
 
-export default StyledLink;
-
-// linkStyles.js
 export const animatedLink = (theme) => ({
-    position: 'relative',
-    color: theme.palette.primary.main,
-    textDecoration: 'none',
-    fontWeight: 600,
-    transition: 'color 0.3s ease-in-out',
+  position: 'relative',
+  color:
+    theme.palette.mode === 'light'
+      ? theme.palette.primary.main
+      : theme.palette.primary.light,
+  textDecoration: 'none',
+  fontWeight: 600,
+  transition: 'color 0.3s ease-in-out',
+
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    left: 0,
+    bottom: -2,
+    height: 2,
+    width: 0,
+    backgroundColor:
+      theme.palette.mode === 'light'
+        ? theme.palette.primary.main
+        : theme.palette.primary.light,
+    transition: 'width 0.3s ease-in-out',
+  },
+
+  '&:hover': {
+    color:
+      theme.palette.mode === 'light'
+        ? theme.palette.primary.light
+        : theme.palette.primary.main,
     '&::after': {
-      content: '""',
-      position: 'absolute',
-      left: 0,
-      bottom: -2,
-      height: 2,
-      width: 0,
-      backgroundColor: theme.palette.primary.main,
-      transition: 'width 0.3s ease-in-out',
+      width: '100%',
+      backgroundColor:
+        theme.palette.mode === 'light'
+          ? theme.palette.primary.light
+          : theme.palette.primary.main,
     },
-    '&:hover': {
-      color: theme.palette.primary.dark,
-      '&::after': {
-        width: '100%',
-        backgroundColor: theme.palette.primary.dark,
-      },
-    },
-    '&:focus': {
-      outline: '2px dashed',
-      outlineColor: theme.palette.primary.main,
-      outlineOffset: '4px',
-    },
-  });
-  
+  },
+
+  '&:focus': {
+    outline: '2px dashed',
+    outlineColor: theme.palette.primary.main,
+    outlineOffset: '4px',
+  },
+});

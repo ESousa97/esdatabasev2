@@ -139,8 +139,8 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
 
   // CÓDIGO INLINE - ajustado para ambos modos
   '& code': {
-    backgroundColor: theme.palette.mode === 'dark' ? '#2d2a45' : '#e5e5e5',
-    color: theme.palette.mode === 'dark' ? '#ff79c6' : '#283593',
+    backgroundColor: theme.palette.mode === 'dark' ? '#2d2a45' : '#8a91c1',
+    color: theme.palette.mode === 'dark' ? '#ff79c6' : '#2f3eac',
     fontFamily: 'monospace',
     padding: '2px 6px',
     borderRadius: '4px',
