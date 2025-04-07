@@ -72,7 +72,6 @@ const useCardList = (sortCriteria, sortDirection) => {
 const CardList = memo(({ sortCriteria, sortDirection }) => {
   const { cards, loading, error } = useCardList(sortCriteria, sortDirection);
   const router = useRouter();
-  const theme = useTheme();
 
   const handleCardClick = (id) => {
     router.push(`/procedimentos/${id}`);
@@ -98,11 +97,13 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
 
   return (
     <MainLayout>
-      <Grid container spacing={3} justifyContent="center" sx={{ p: 2 }}>
+      <Grid
+          container
+          spacing={4}
+          justifyContent="center"
+          sx={{ p: 3, backgroundColor: 'var(--color-bg-muted)' }} // <- isso!
+        >
         {cards.map((card) => {
-          // Exemplo: Se o banco não armazena caminho completo, mas apenas 'projects0001__1.png',
-          // podemos montar o caminho final:
-          // Se já estiver completo (http://..., ou /assets/...), comente esse if.
           let finalImageUrl = card.imageurl || '';
           if (
             finalImageUrl &&
@@ -112,23 +113,17 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
             finalImageUrl = `/assets/${finalImageUrl}`;
           }
 
-          // Sanitiza HTML da descrição
+          // Sanitiza o HTML da descrição
           let safeDescription = DOMPurify.sanitize(card.descricao || '', {
             ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'span', 'a', 'ul', 'li', 'img'],
             ALLOWED_ATTR: ['src', 'href', 'alt', 'style', 'target'],
           });
 
-          // Remove headings (h1..h6) e mantém texto interno
-          safeDescription = safeDescription.replace(
-            /<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi,
-            '$1'
-          );
+          // Remove headings (h1..h6) e mantém somente o texto
+          safeDescription = safeDescription.replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '$1');
 
-          // Ajusta imagens embutidas, caso existam
-          safeDescription = safeDescription.replace(
-            /<img /g,
-            '<img style="max-width:100%; height:auto; object-fit:cover;" '
-          );
+          // Ajusta imagens embutidas para responsividade
+          safeDescription = safeDescription.replace(/<img /g, '<img style="max-width:100%; height:auto; object-fit:cover;" ');
 
           return (
             <Grid item key={card.id}>

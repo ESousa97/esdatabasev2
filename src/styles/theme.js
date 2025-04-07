@@ -6,24 +6,24 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.primary,      // Por exemplo, "#283593"
-      dark: '#1A237E',
-      light: '#5C6BC0',
-      contrastText: '#ffffff',
+      main: colors.primary,           // Cor principal (botões, links, destaques)
+      dark: '#4338ca',                // Tom mais escuro para estados ativos
+      light: '#818cf8',               // Tom claro para hover ou bordas
+      contrastText: '#ffffff',        // Cor do texto sobre o botão primário
     },
     secondary: {
-      main: colors.secondary,
-      dark: '#D32F2F',
-      light: '#FFCDD2',
+      main: colors.secondary,         // Cor secundária complementar
+      dark: '#059669',
+      light: '#6ee7b7',
       contrastText: '#ffffff',
     },
     background: {
-      default: colors.backgroundDefault,
-      paper: colors.backgroundPaper,
+      default: colors.backgroundDefault, // Fundo principal da aplicação
+      paper: colors.backgroundPaper,     // Fundo de superfícies como cards/modais
     },
     text: {
-      primary: colors.textPrimary,
-      secondary: colors.textSecondary,
+      primary: colors.textPrimary,    // Cor principal de texto
+      secondary: colors.textSecondary,// Cor de descrições e textos menores
     },
   },
   typography: {
@@ -36,24 +36,24 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#456681',
-      dark: '#42a5f5',
-      light: '#e3f2fd',
-      contrastText: '#000000',
+      main: '#6366f1',                // Índigo suavizado para destaque em dark
+      dark: '#4f46e5',                // Versão escura do primário
+      light: '#a5b4fc',               // Hover ou leve destaque
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: colors.secondary,
-      dark: '#d32f2f',
-      light: '#ef9a9a',
-      contrastText: '#000000',
+      main: '#007a52',                // Teal escuro para ações secundárias
+      dark: '#065f46',
+      light: '#34d399',
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#121212',
-      paper: '#1d1d1d',
+      default: '#1f2937',             // Fundo geral escuro
+      paper: '#27303f',               // Superfícies como cards/modais escuros
     },
     text: {
-      primary: '#ffffff',
-      secondary: '#cccccc',
+      primary: '#f9fafb',             // Texto principal claro
+      secondary: '#9ca3af',           // Texto secundário desabilitado
     },
   },
   typography: {
@@ -61,11 +61,10 @@ export const darkTheme = createTheme({
   },
   shape: { borderRadius: 8 },
   components: {
-    // Sobrescreve o estilo do AppBar apenas no modo escuro
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#0d0d0d', // Cor personalizada para o AppBar no modo escuro
+          backgroundColor: '#0d0d0d', // AppBar customizado para dark mode
         },
       },
     },
