@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-import errorAnimation500 from '../src/animations/erro-500.json';
+import errorAnimation from '../src/animations/erro-400.json';
 
-export default function Custom500() {
+export default function Custom400() {
   const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
@@ -16,10 +16,12 @@ export default function Custom500() {
 
   return (
     <div style={styles.wrapper}>
+      {/* Fundo animado */}
       <div style={styles.animation}>
-        <Lottie animationData={errorAnimation500} loop autoplay />
+        <Lottie animationData={errorAnimation} loop autoplay />
       </div>
 
+      {/* Card com blur e texto */}
       {showCard && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -32,10 +34,10 @@ export default function Custom500() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
+            <h1 style={styles.title}>Erro 400 - Requisição inválida</h1>
             <p style={styles.description}>
-              Ocorreu uma falha inesperada no servidor. Isso pode ser causado por instabilidades
-              temporárias, falhas na API ou problemas internos no sistema.
+              A solicitação não pôde ser entendida pelo servidor devido a uma sintaxe malformada,
+              parâmetros inválidos ou dados incorretos.
             </p>
 
             <Link href="/components" legacyBehavior>

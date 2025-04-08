@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-import errorAnimation500 from '../src/animations/erro-500.json';
+// Substitua este caminho se for usar uma animação .json diferente para 403
+import errorAnimation from '../src/animations/erro-403.json';
 
-export default function Custom500() {
+export default function Custom403() {
   const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function Custom500() {
   return (
     <div style={styles.wrapper}>
       <div style={styles.animation}>
-        <Lottie animationData={errorAnimation500} loop autoplay />
+        <Lottie animationData={errorAnimation} loop autoplay />
       </div>
 
       {showCard && (
@@ -32,13 +33,13 @@ export default function Custom500() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
+            <h1 style={styles.title}>Erro 403 - Acesso negado</h1>
             <p style={styles.description}>
-              Ocorreu uma falha inesperada no servidor. Isso pode ser causado por instabilidades
-              temporárias, falhas na API ou problemas internos no sistema.
+              Você está autenticado, mas não possui permissão para acessar este recurso.
+              Fale com o administrador do sistema para solicitar acesso.
             </p>
 
-            <Link href="/components" legacyBehavior>
+            <Link href="/" legacyBehavior>
               <a style={styles.link}>← Voltar ao início</a>
             </Link>
           </motion.div>

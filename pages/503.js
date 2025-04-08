@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-import errorAnimation500 from '../src/animations/erro-500.json';
+// Substitua por um erro-503.json se tiver
+import errorAnimation from '../src/animations/erro-404.json';
 
-export default function Custom500() {
+export default function Custom503() {
   const [showCard, setShowCard] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function Custom500() {
   return (
     <div style={styles.wrapper}>
       <div style={styles.animation}>
-        <Lottie animationData={errorAnimation500} loop autoplay />
+        <Lottie animationData={errorAnimation} loop autoplay />
       </div>
 
       {showCard && (
@@ -32,13 +33,13 @@ export default function Custom500() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
+            <h1 style={styles.title}>Erro 503 - Serviço indisponível</h1>
             <p style={styles.description}>
-              Ocorreu uma falha inesperada no servidor. Isso pode ser causado por instabilidades
-              temporárias, falhas na API ou problemas internos no sistema.
+              O sistema está temporariamente indisponível. Pode estar em manutenção ou sobrecarregado.
+              Por favor, tente novamente mais tarde.
             </p>
 
-            <Link href="/components" legacyBehavior>
+            <Link href="/" legacyBehavior>
               <a style={styles.link}>← Voltar ao início</a>
             </Link>
           </motion.div>
