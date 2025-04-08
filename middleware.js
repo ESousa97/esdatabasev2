@@ -14,22 +14,9 @@ export function middleware(request) {
     return NextResponse.next();
   }
 
-  // Aqui não tem '/', note que deixamos /login, /components, /procedimentos, /api:
-  const allowedPaths = ['/login', '/components', '/procedimentos', '/api'];
+  // Se precisar de lógica futura para autenticação ou permissões, adicione aqui
 
-  // Verifica se o pathname é igual ou começa com as rotas liberadas
-  const isAllowed = allowedPaths.some((path) =>
-    pathname === path || pathname.startsWith(`${path}/`)
-  );
-
-  // Se não estiver nas liberadas, redireciona para /components
-  if (!isAllowed) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/components';
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
+  return NextResponse.next(); // Deixa o Next.js seguir e tratar 404 normalmente
 }
 
 // Aplica a todas as rotas
