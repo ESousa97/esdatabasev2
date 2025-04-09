@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import MainLayout from '../Layout/MainLayout';
 import ProcedureDetails from './ProcedureDetails';
+import ErrorGateway from '../Common/ErrorGateway';
+import { CircularProgress } from '@mui/material';
 
 function ProcedurePages() {
   const { query } = useRouter();
@@ -11,23 +13,45 @@ function ProcedurePages() {
   const [procedure, setProcedure] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
 
   useEffect(() => {
     if (!id) return;
-    // Alteração: utiliza a rota correta com parâmetro de rota
-    axios.get(`https://serverdatabase.onrender.com/api/v1/projects/${id}`)
-      .then(response => {
+
+    const fetchProcedure = async () => {
+      try {
+        const response = await axios.get(`https://serverdatabase.onrender.com/api/v1/projects/${id}`);
         setProcedure(response.data);
-      })
-      .catch(error => {
-        console.error('Erro ao buscar procedimento:', error);
-        setError(error);
-      })
-      .finally(() => setLoading(false));
+      } catch (err) {
+        console.error('Erro ao buscar procedimento:', err);
+        setError(err);
+        setStatusCode(err.response?.status || 500);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProcedure();
   }, [id]);
 
-  if (loading) return <MainLayout><div>Carregando...</div></MainLayout>;
-  if (error) return <MainLayout><div>Erro ao carregar procedimento</div></MainLayout>;
+  if (loading) {
+    return (
+      <MainLayout>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+          <CircularProgress />
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (error && statusCode) {
+    return (
+      <MainLayout>
+        <ErrorGateway statusCode={statusCode} error={error} />
+      </MainLayout>
+    );
+  }
+
   if (!procedure) return null;
 
   return (

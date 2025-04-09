@@ -1,4 +1,3 @@
-// src/components/Common/SideMenuStyles.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styled, keyframes } from '@mui/material/styles';
@@ -8,6 +7,7 @@ import Typography from '@mui/material/Typography';
 
 // Constantes para padronização
 const DRAWER_WIDTH = '350px';
+const DRAWER_WIDTH_MOBILE = '100vw';
 const SCROLLBAR_WIDTH = '6px';
 const DEFAULT_MARGIN_TOP = '65px';
 
@@ -27,8 +27,8 @@ const fadeIn = keyframes`
 
 /**
  * StyledDrawer:
- * - Drawer com largura fixa e altura dinâmica (baseada em marginTop).
- * - Aplica animação de fade-in e personaliza o scrollbar.
+ * - Responsivo para ocupar 100% da largura em mobile.
+ * - Scrollbar customizado e animação.
  */
 export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...props} />)(
   ({ theme, marginTop }) => ({
@@ -43,7 +43,7 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
       overflowY: 'auto',
       animation: `${fadeIn} 0.3s ease-out`,
       borderRight: `1px solid ${theme.palette.divider}`,
-      // Estilização personalizada para o scrollbar
+
       '&::-webkit-scrollbar': {
         width: SCROLLBAR_WIDTH,
         borderRadius: SCROLLBAR_WIDTH,
@@ -55,6 +55,13 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
       '&::-webkit-scrollbar-thumb': {
         backgroundColor: theme.palette.grey[500],
         borderRadius: SCROLLBAR_WIDTH,
+      },
+
+      [theme.breakpoints.down('sm')]: {
+        width: DRAWER_WIDTH_MOBILE,
+        marginTop: '56px',
+        height: `calc(100% - 56px)`,
+        fontSize: '0.75rem',
       },
     },
   })
@@ -70,8 +77,7 @@ StyledDrawer.defaultProps = {
 
 /**
  * StyledListItemButton:
- * - Botão para itens de lista com transição suave no hover.
- * - Define espaçamentos e destaca o texto em foco.
+ * - Padding e fonte ajustáveis para mobile.
  */
 export const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   transition: 'background-color 0.2s ease',
@@ -81,9 +87,16 @@ export const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   },
   '& .MuiListItemIcon-root': {
     minWidth: '40px',
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '32px',
+    },
   },
   '& .MuiListItemText-primary': {
     fontWeight: 600,
+    fontSize: '0.95rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.75rem',
+    },
   },
   '&:focus-visible': {
     outline: `2px solid ${theme.palette.primary.main}`,
@@ -93,10 +106,14 @@ export const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 
 /**
  * CustomListItemIcon:
- * - Ícone ou texto complementar com cor e espaçamento consistentes.
+ * - Ícone/indicador responsivo para mobile.
  */
 export const CustomListItemIcon = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
-  fontSize: 'small',
+  fontSize: '0.85rem',
   marginLeft: theme.spacing(1.5),
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.7rem',
+    marginLeft: theme.spacing(1),
+  },
 }));

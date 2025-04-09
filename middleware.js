@@ -2,21 +2,34 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const { pathname } = request.nextUrl;
+  const { pathname, origin } = request.nextUrl;
 
-  // Ignora rotas internas do Next/arquivos estáticos etc.
+  // Permitir acesso às rotas internas e estáticas
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon.ico') ||
     pathname.startsWith('/assets') ||
+    pathname.startsWith('/api') ||
     pathname.match(/\.(png|jpg|jpeg|gif|svg|ico|css|js|txt|map)$/)
   ) {
     return NextResponse.next();
   }
 
-  // Se precisar de lógica futura para autenticação ou permissões, adicione aqui
+  // Permitir acesso à rota de login e fake-login
+  if (
+    pathname === '/login' ||
+    pathname.startsWith('/fake-login')
+  ) {
+    return NextResponse.next();
+  }
 
-  return NextResponse.next(); // Deixa o Next.js seguir e tratar 404 normalmente
+  // Permitir /components e páginas que foram clicadas dentro dele
+  if (pathname === '/components' || pathname.startsWith('/procedimentos/')) {
+    return NextResponse.next();
+  }
+
+  // Redireciona para /components se tentarem acessar qualquer outra rota
+  return NextResponse.redirect(`${origin}/components`);
 }
 
 // Aplica a todas as rotas

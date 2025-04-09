@@ -54,10 +54,11 @@ export const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: 180,
+  width: '100%',
+  aspectRatio: '16 / 9',
   objectFit: 'cover',
-  borderTopLeftRadius: theme.spacing(2),
-  borderTopRightRadius: theme.spacing(2),
+  borderTopLeftRadius: theme.shape.borderRadius,
+  borderTopRightRadius: theme.shape.borderRadius,
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({

@@ -1,6 +1,5 @@
-// src/components/Layout/AppBar.js
 import React from 'react';
-import { Toolbar, IconButton, Typography } from '@mui/material';
+import { Toolbar, IconButton, Typography, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -19,23 +18,31 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
 
   return (
     <HeaderContainer position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar>
-        <IconButton color="inherit" onClick={onDrawerToggle} size="large">
-          <MenuIcon />
-        </IconButton>
-        <IconButton color="inherit" onClick={handleHomeClick} size="large">
-          <HomeIcon />
-        </IconButton>
-        <IconButton color="inherit" onClick={toggleDarkMode} size="large">
-          {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-        </IconButton>
-        <IconButton color="inherit" onClick={onLogout} size="large">
-          <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
-        </IconButton>
-        <Typography variant="h6" noWrap sx={{ flexGrow: 1, ml: 2 }}>
-          Data Base
-        </Typography>
-        <SearchBox />
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+        
+        {/* Esquerda: ícones + título */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.2 } }}>
+          <IconButton color="inherit" onClick={onDrawerToggle} size="small">
+            <MenuIcon />
+          </IconButton>
+          <IconButton color="inherit" onClick={handleHomeClick} size="small">
+            <HomeIcon />
+          </IconButton>
+          <IconButton color="inherit" onClick={toggleDarkMode} size="small">
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+          <IconButton color="inherit" onClick={onLogout} size="small">
+            <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
+          </IconButton>
+          <Typography variant="h6" noWrap sx={{ ml: 1, fontSize: { xs: '0.9rem', sm: '1.1rem' } }}>
+            Data Base
+          </Typography>
+        </Box>
+
+        {/* Direita: caixa de busca */}
+        <Box sx={{ flexShrink: 0 }}>
+          <SearchBox />
+        </Box>
       </Toolbar>
     </HeaderContainer>
   );

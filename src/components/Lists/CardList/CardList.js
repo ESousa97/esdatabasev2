@@ -2,10 +2,10 @@ import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
-import { Typography, CircularProgress, Snackbar, Grid, Alert } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import { useRouter } from 'next/router';
+import ErrorGateway from '../../Common/ErrorGateway'; // ✅ import corrigido
 import MainLayout from '../../Layout/MainLayout';
-import { useTheme } from '@mui/material/styles';
 import {
   StyledButtonBase,
   StyledCard,
@@ -15,9 +15,6 @@ import {
   CardDescription,
 } from './CardStyles';
 
-/**
- * Função para ordenar os dados conforme critério (sortCriteria) e direção (sortDirection).
- */
 const sortData = (data, sortCriteria, sortDirection) => {
   return data.sort((a, b) => {
     let itemA, itemB;
@@ -42,13 +39,11 @@ const sortData = (data, sortCriteria, sortDirection) => {
   });
 };
 
-/**
- * Hook para buscar os cards e manter estado de carregamento/erro.
- */
 const useCardList = (sortCriteria, sortDirection) => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusCode, setStatusCode] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,8 +52,9 @@ const useCardList = (sortCriteria, sortDirection) => {
         const sorted = sortData(response.data, sortCriteria, sortDirection);
         setCards(sorted);
       } catch (err) {
-        console.error('Error fetching card list:', err);
+        console.error('Erro ao buscar os cards:', err);
         setError(err);
+        setStatusCode(err.response?.status || 500);
       } finally {
         setLoading(false);
       }
@@ -66,17 +62,18 @@ const useCardList = (sortCriteria, sortDirection) => {
     fetchData();
   }, [sortCriteria, sortDirection]);
 
-  return { cards, loading, error };
+  return { cards, loading, error, statusCode };
 };
 
 const CardList = memo(({ sortCriteria, sortDirection }) => {
-  const { cards, loading, error } = useCardList(sortCriteria, sortDirection);
+  const { cards, loading, error, statusCode } = useCardList(sortCriteria, sortDirection);
   const router = useRouter();
 
   const handleCardClick = (id) => {
     router.push(`/procedimentos/${id}`);
   };
 
+  // ⏳ Carregamento
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
@@ -85,24 +82,24 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
     );
   }
 
-  if (error) {
+  // ❌ Erro
+  if (error && statusCode) {
     return (
-      <Snackbar open={true} autoHideDuration={6000}>
-        <Alert severity="error" variant="filled">
-          Erro ao carregar os cards!
-        </Alert>
-      </Snackbar>
+      <MainLayout>
+        <ErrorGateway statusCode={statusCode} error={error} />
+      </MainLayout>
     );
   }
 
+  // ✅ Conteúdo
   return (
     <MainLayout>
       <Grid
-          container
-          spacing={4}
-          justifyContent="center"
-          sx={{ p: 3, backgroundColor: 'var(--color-bg-muted)' }} // <- isso!
-        >
+        container
+        spacing={4}
+        justifyContent="center"
+        sx={{ p: 3, backgroundColor: 'var(--color-bg-muted)' }}
+      >
         {cards.map((card) => {
           let finalImageUrl = card.imageurl || '';
           if (
@@ -113,17 +110,16 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
             finalImageUrl = `/assets/${finalImageUrl}`;
           }
 
-          // Sanitiza o HTML da descrição
           let safeDescription = DOMPurify.sanitize(card.descricao || '', {
             ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'span', 'a', 'ul', 'li', 'img'],
             ALLOWED_ATTR: ['src', 'href', 'alt', 'style', 'target'],
           });
 
-          // Remove headings (h1..h6) e mantém somente o texto
           safeDescription = safeDescription.replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '$1');
-
-          // Ajusta imagens embutidas para responsividade
-          safeDescription = safeDescription.replace(/<img /g, '<img style="max-width:100%; height:auto; object-fit:cover;" ');
+          safeDescription = safeDescription.replace(
+            /<img /g,
+            '<img style="max-width:100%; height:auto; object-fit:cover;" '
+          );
 
           return (
             <Grid item key={card.id}>
@@ -137,7 +133,6 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
                       loading="lazy"
                     />
                   )}
-
                   <StyledCardContent>
                     <CardTitle>{card.titulo}</CardTitle>
                     <CardDescription dangerouslySetInnerHTML={{ __html: safeDescription }} />

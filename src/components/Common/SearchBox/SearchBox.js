@@ -1,121 +1,154 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import SearchIcon from '@mui/icons-material/Search';
-import List from '@mui/material/List'; // Importe List
-import ListItem from '@mui/material/ListItem'; // Importe ListItem
-import ListItemText from '@mui/material/ListItemText'; // Importe ListItemText
-import Typography from '@mui/material/Typography';
+import React, { useState, useEffect } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
-import 'react-toastify/dist/ReactToastify.css';
-import {
-  StyledIconButton,
-  SearchBoxWrapper,
-  StyledInputBase,
-  SearchResults,
-  CenteredItem,
-  StyledListItemText  // Importe o StyledListItemText
-} from './SearchBoxStyles';
+import Typography from '@mui/material/Typography';
+import { styled, useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router';
 
+const StyledOption = styled('li')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  padding: theme.spacing(1),
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
 
 const SearchBox = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const searchBoxRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const loading = open && options.length === 0;
   const router = useRouter();
+  const theme = useTheme();
 
   useEffect(() => {
-    const fetchResults = async () => {
-      setIsLoading(true);
+    let active = true;
+    if (inputValue === '') {
+      setOptions([]);
+      return undefined;
+    }
+
+    (async () => {
       try {
-        const response = await fetch(`https://serverdatabase.onrender.com/api/v1/search?query=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(
+          `https://serverdatabase.onrender.com/api/v1/search?query=${encodeURIComponent(inputValue)}`
+        );
         const data = await response.json();
-        setResults(data);
+        if (active) {
+          setOptions(data);
+        }
       } catch (error) {
         console.error('Erro na busca:', error);
-        setResults([]);
-      } finally {
-        setIsLoading(false);
+        setOptions([]);
       }
-    };
+    })();
 
-    if (searchTerm) {
-      fetchResults();
-    } else {
-      setResults([]);
-    }
-  }, [searchTerm]);
+    return () => {
+      active = false;
+    };
+  }, [inputValue]);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') setIsExpanded(false);
-    };
-    const handleClickOutside = (event) => {
-      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
-        setIsExpanded(false);
-        setSearchTerm(""); // Limpa o termo de pesquisa ao clicar fora
-      }
-    };
+    if (!open) {
+      setOptions([]);
+    }
+  }, [open]);
 
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleExpandToggle = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const handleCardClick = (id) => {
-    router.push(`/procedimentos/${id}`);
+  const handleSelect = (event, value) => {
+    if (value && value.id) {
+      router.push(`/procedimentos/${value.id}`);
+    }
   };
 
   return (
-    <SearchBoxWrapper ref={searchBoxRef} isExpanded={isExpanded}>
-        <StyledIconButton aria-label="search" onClick={() => setIsExpanded(!isExpanded)}>
-            <SearchIcon />
-        </StyledIconButton>
-        <StyledInputBase
-          placeholder={isExpanded ? "Search…" : ""}
-          inputProps={{ 'aria-label': 'search' }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          autoFocus={isExpanded}
-        />
-
-      {isExpanded && (
-        <SearchResults>
-          {isLoading ? (
-            <CenteredItem>
-              <CircularProgress />
-            </CenteredItem>
-          ) : (
-            results.length > 0 ? (
-              <List>
-                {results.map((result) => (
-                  <ListItem button key={result.id} onClick={() => handleCardClick(result.id)}>
-                  <StyledListItemText
-                    primary={result.titulo}
-                    secondary={result.descricao}
-                  />
-                </ListItem>
-                ))}
-              </List>
-            ) : (
-              <CenteredItem>
-                <Typography variant="body2" align="center" fontWeight="bold">
-                  Humm, não encontrei nada relacionado nos processos
-                </Typography>
-              </CenteredItem>
-            )
-          )}
-        </SearchResults>
+    <Autocomplete
+      id="search-box"
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      onChange={handleSelect}
+      getOptionLabel={(option) => option.titulo || ''}
+      options={options}
+      loading={loading}
+      inputValue={inputValue}
+      onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+      sx={{
+        width: { xs: '220px', sm: '260px' },
+        '& .MuiAutocomplete-listbox': {
+          padding: 0,
+          boxShadow: theme.shadows[4],
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: theme.shape.borderRadius,
+        },
+        '& .MuiAutocomplete-option': {
+          padding: theme.spacing(1),
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+          },
+        },
+      }}
+      renderOption={(props, option) => (
+        <StyledOption {...props}>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb' }}
+          >
+            {option.titulo}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb' }}
+          >
+            {option.descricao}
+          </Typography>
+        </StyledOption>
       )}
-    </SearchBoxWrapper>
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Pesquisar..."
+          variant="outlined"
+          size="small"
+          sx={{
+            // Estiliza o label para cores contrastantes
+            '& .MuiInputLabel-root': {
+              color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
+            },
+            // Estiliza o input: texto e borda
+            '& .MuiOutlinedInput-root': {
+              color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
+              '& fieldset': {
+                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
+              },
+              '&:hover fieldset': {
+                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
+              },
+            },
+          }}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
+      )}
+    />
   );
 };
 

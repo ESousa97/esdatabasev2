@@ -1,67 +1,106 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
+import { ThemeProvider } from '@mui/material/styles';
+import { lightTheme, darkTheme } from '../src/styles/theme';
 import { motion } from 'framer-motion';
+import { Button } from '@mui/material';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import errorAnimation500 from '../src/animations/erro-500.json';
 
 export default function Custom500() {
   const [showCard, setShowCard] = useState(false);
+  const [prefersDark, setPrefersDark] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowCard(true), 4000);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setPrefersDark(mediaQuery.matches);
+
     return () => clearTimeout(timer);
   }, []);
 
+  const theme = prefersDark ? darkTheme : lightTheme;
+
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.animation}>
-        <Lottie animationData={errorAnimation500} loop autoplay />
-      </div>
+    <ThemeProvider theme={theme}>
+      <div style={styles.wrapper}>
+        <div style={styles.animation}>
+          <Lottie
+            animationData={errorAnimation500}
+            loop
+            autoplay
+            style={styles.lottie}
+          />
+        </div>
 
-      {showCard && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          style={styles.fullscreenCard}
-        >
+        {showCard && (
           <motion.div
-            initial={{ scale: 0.5, opacity: 0, y: -20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            style={styles.fullscreenCard}
           >
-            <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
-            <p style={styles.description}>
-              Ocorreu uma falha inesperada no servidor. Isso pode ser causado por instabilidades
-              temporárias, falhas na API ou problemas internos no sistema.
-            </p>
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0, y: -20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
+              <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
+              <p style={styles.description}>
+                Um dos nossos servidores tropeçou... ou talvez um gato tenha pisado no teclado 🐱⌨️<br />
+                Estamos investigando com carinho e logo tudo voltará ao normal.<br />
+                Obrigado por sua paciência!
+              </p>
 
-            <Link href="/components" legacyBehavior>
-              <a style={styles.link}>← Voltar ao início</a>
-            </Link>
+              <div style={styles.buttons}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={() => window.location.reload()}
+                  startIcon={<RestartAltIcon />}
+                >
+                  Tentar novamente
+                </Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </div>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 
+Custom500.getLayout = (page) => page;
+
 const styles = {
   wrapper: {
-    position: 'relative',
+    position: 'fixed',
+    top: 0,
+    left: 0,
     width: '100vw',
     height: '100vh',
     overflow: 'hidden',
     fontFamily: 'Segoe UI, Roboto, sans-serif',
+    zIndex: 9999,
   },
   animation: {
     position: 'absolute',
     inset: 0,
+    zIndex: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  lottie: {
     width: '100%',
     height: '100%',
-    zIndex: 0,
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    objectFit: 'cover',
   },
   fullscreenCard: {
     position: 'absolute',
@@ -81,24 +120,18 @@ const styles = {
     fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
     fontWeight: 700,
     marginBottom: '1rem',
-    color: 'var(--color-text, #fff)',
+    color: 'var(--color-text)',
   },
   description: {
     fontSize: 'clamp(1rem, 2vw, 1.3rem)',
     maxWidth: '600px',
     marginBottom: '2rem',
-    color: 'var(--color-text, #ddd)',
+    color: 'var(--color-text)',
   },
-  link: {
-    display: 'inline-block',
-    padding: '1rem 2.2rem',
-    backgroundColor: 'var(--color-primary, #0070f3)',
-    color: 'var(--color-on-primary, #fff)',
-    textDecoration: 'none',
-    fontWeight: 600,
-    fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
-    borderRadius: '0.8rem',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 14px rgba(0, 112, 243, 0.25)',
+  buttons: {
+    display: 'flex',
+    gap: '1rem',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
 };

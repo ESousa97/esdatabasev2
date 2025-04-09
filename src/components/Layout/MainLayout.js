@@ -27,14 +27,17 @@ const MainLayout = ({ children }) => {
       <AppBar onDrawerToggle={handleDrawerToggle} onLogout={handleLogout} />
       <Drawer open={drawerOpen} onClose={handleDrawerToggle} />
       <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          ml: { md: drawerOpen ? `${drawerWidth}px` : 0 },
-          mt: 8,
-        }}
-      >
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            ml: { md: drawerOpen ? `${drawerWidth}px` : 0 },
+            mt: 8,
+            width: '100%',
+            maxWidth: '100vw',
+            overflowX: 'hidden',
+          }}
+        >
         {children}
       </Box>
       <Modal

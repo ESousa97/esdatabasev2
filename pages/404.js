@@ -1,64 +1,99 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
+import { ThemeProvider } from '@mui/material/styles';
+import { lightTheme, darkTheme } from '../src/styles/theme';
+import { Button } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import errorAnimation from '../src/animations/erro-404.json';
 
 export default function Custom404() {
   const [showCard, setShowCard] = useState(false);
+  const [prefersDark, setPrefersDark] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowCard(true), 4000); // Delay após animação
+    const timer = setTimeout(() => setShowCard(true), 4000);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setPrefersDark(mediaQuery.matches);
+
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div style={styles.wrapper}>
-      {/* Fundo animado */}
-      <div style={styles.animation}>
-        <Lottie animationData={errorAnimation} loop autoplay />
-      </div>
+  const theme = prefersDark ? darkTheme : lightTheme;
 
-      {/* Card cobrindo tudo, com blur */}
-      {showCard && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          style={styles.fullscreenCard}
-        >
-          {/* Botão animado surgindo do centro */}
+  return (
+    <ThemeProvider theme={theme}>
+      <div style={styles.wrapper}>
+        <div style={styles.animation}>
+          <Lottie animationData={errorAnimation} loop autoplay style={styles.lottie} />
+        </div>
+
+        {showCard && (
           <motion.div
-            initial={{ scale: 0.5, opacity: 0, y: -20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            style={styles.fullscreenCard}
           >
-            <Link href="/components" legacyBehavior>
-              <a style={styles.link}>← Voltar ao início</a>
-            </Link>
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0, y: -20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
+              <h1 style={styles.title}>Erro 404 - Página não encontrada</h1>
+              <p style={styles.description}>
+                Você parece ter descoberto um universo alternativo 👽<br />
+                Mas não se preocupe, te levamos de volta rapidinho!
+              </p>
+
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<HomeIcon />}
+                onClick={() => router.push('/components')}
+              >
+                Voltar ao início
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </div>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 
+Custom404.getLayout = (page) => page;
+
 const styles = {
   wrapper: {
-    position: 'relative',
+    position: 'fixed',
+    top: 0,
+    left: 0,
     width: '100vw',
     height: '100vh',
     overflow: 'hidden',
     fontFamily: 'Segoe UI, Roboto, sans-serif',
+    zIndex: 9999,
   },
   animation: {
     position: 'absolute',
     inset: 0,
+    zIndex: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  lottie: {
     width: '100%',
     height: '100%',
-    zIndex: 0,
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    objectFit: 'cover',
   },
   fullscreenCard: {
     position: 'absolute',
@@ -71,17 +106,19 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
+    flexDirection: 'column',
+    padding: '2rem',
   },
-  link: {
-    display: 'inline-block',
-    padding: '1rem 2.2rem',
-    backgroundColor: 'var(--color-primary, #0070f3)',
-    color: 'var(--color-on-primary, #fff)',
-    textDecoration: 'none',
-    fontWeight: 600,
-    fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
-    borderRadius: '0.8rem',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 14px rgba(0, 112, 243, 0.25)',
+  title: {
+    fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
+    fontWeight: 700,
+    marginBottom: '1rem',
+    color: 'var(--color-text, #fff)',
+  },
+  description: {
+    fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+    maxWidth: '600px',
+    marginBottom: '2rem',
+    color: 'var(--color-text, #000)',
   },
 };
