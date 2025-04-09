@@ -31,49 +31,40 @@ const fadeIn = keyframes`
  * - Scrollbar customizado e animação.
  */
 export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...props} />)(
-  ({ theme, marginTop }) => ({
-    '& .MuiDrawer-paper': {
+  ({ theme, marginTop }) => {
+    const topValue = marginTop || DEFAULT_MARGIN_TOP;
+    return {
+      top: topValue,
+      height: `calc(100% - ${topValue})`,
       position: 'fixed',
-      width: DRAWER_WIDTH,
-      marginTop: marginTop || DEFAULT_MARGIN_TOP,
-      height: `calc(100% - ${marginTop || DEFAULT_MARGIN_TOP})`,
-      backgroundColor: theme.palette.background.default,
-      boxShadow: theme.shadows[4],
-      zIndex: theme.zIndex.drawer + 2,
-      overflowY: 'auto',
-      animation: `${fadeIn} 0.3s ease-out`,
-      borderRight: `1px solid ${theme.palette.divider}`,
+      zIndex: theme.zIndex.drawer, // <- aqui está certo!
+      '& .MuiDrawer-paper': {
+        top: 0,
+        height: '100%',
+        width: DRAWER_WIDTH,
+        backgroundColor: theme.palette.background.default,
+        boxShadow: theme.shadows[4],
+        overflowY: 'auto',
+        animation: `${fadeIn} 0.3s ease-out`,
+        borderRight: `1px solid ${theme.palette.divider}`,
 
-      '&::-webkit-scrollbar': {
-        width: SCROLLBAR_WIDTH,
-        borderRadius: SCROLLBAR_WIDTH,
-      },
-      '&::-webkit-scrollbar-track': {
-        backgroundColor: theme.palette.grey[300],
-        borderRadius: SCROLLBAR_WIDTH,
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: theme.palette.grey[500],
-        borderRadius: SCROLLBAR_WIDTH,
-      },
+        '&::-webkit-scrollbar': {
+          width: SCROLLBAR_WIDTH,
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: theme.palette.grey[300],
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.palette.grey[500],
+        },
 
-      [theme.breakpoints.down('sm')]: {
-        width: DRAWER_WIDTH_MOBILE,
-        marginTop: '56px',
-        height: `calc(100% - 56px)`,
-        fontSize: '0.75rem',
+        [theme.breakpoints.down('sm')]: {
+          width: DRAWER_WIDTH_MOBILE,
+        },
       },
-    },
-  })
+    };
+  }
 );
-
-StyledDrawer.propTypes = {
-  marginTop: PropTypes.string,
-};
-
-StyledDrawer.defaultProps = {
-  marginTop: DEFAULT_MARGIN_TOP,
-};
 
 /**
  * StyledListItemButton:
