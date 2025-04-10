@@ -16,7 +16,7 @@ const MainLayout = ({ children }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const router = useRouter();
 
-  const appBarHeight = isMobile ? 56 : 64;
+  const appBarHeight = isMobile ? 56 : 64; // Altura real do AppBar
 
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
   const handleLogout = () => setLogoutModalOpen(true);
@@ -27,17 +27,20 @@ const MainLayout = ({ children }) => {
   const handleCloseLogoutModal = () => setLogoutModalOpen(false);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* AppBar fixo */}
       <AppBar onDrawerToggle={handleDrawerToggle} onLogout={handleLogout} />
 
-      <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden', pt: `${appBarHeight}px` }}>
+      {/* Container do conteúdo abaixo do AppBar */}
+      <Box sx={{ display: 'flex', flex: 1, mt: `${appBarHeight}px`, overflow: 'hidden' }}>
+        {/* Drawer lateral */}
         <Drawer open={drawerOpen} onClose={handleDrawerToggle} marginTop={`${appBarHeight}px`} />
+
+        {/* Conteúdo principal */}
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            width: '100%',
-            maxWidth: '100vw',
             overflowY: 'auto',
             px: 3,
             pt: 3,
@@ -51,6 +54,7 @@ const MainLayout = ({ children }) => {
         </Box>
       </Box>
 
+      {/* Modal de logout */}
       <Modal
         open={logoutModalOpen}
         onClose={handleCloseLogoutModal}

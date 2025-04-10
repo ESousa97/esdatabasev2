@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  IconButton,
   Menu,
   MenuItem,
   Dialog,
@@ -10,24 +8,33 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Toolbar,
+  Typography,
+  Box,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+
+// Ícones
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+// Componentes customizados
 import AppBar from "../src/components/Layout/AppBar";
 import ListView from "../src/components/Lists/ListView/ListView";
 import { useCustomTheme } from "../src/contexts/ThemeProvider";
+import {
+  PageWrapper,
+  StyledToolbar,
+  StyledIconButton,
+} from "../src/components/Pages/ComponentsPageStyled";
 
-// Define o tempo limite de inatividade (4 horas em milissegundos)
+// Tempo de sessão antes de expirar (4h)
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = () => {
-  // Estado para gerenciar a visualização, ordenação e expiração da sessão
-  const [viewMode, setViewMode] = useState("cards");
+  const [viewMode, setViewMode] = useState("cards"); // Valor padrão seguro para SSR
   const [sessionExpired, setSessionExpired] = useState(false);
   const [sortCriteria, setSortCriteria] = useState("date");
   const [sortDirection, setSortDirection] = useState("asc");
@@ -36,10 +43,27 @@ const ComponentsPage = () => {
   const router = useRouter();
   const { toggleDarkMode } = useCustomTheme();
 
-  /**
-   * useEffect para monitorar a atividade do usuário.
-   * Em caso de inatividade por mais de 4 horas, a sessão é encerrada.
-   */
+  // Define automaticamente "detailed" para telas pequenas no client-side
+  useEffect(() => {
+    const updateViewMode = () => {
+      const width = window.innerWidth;
+  
+      if (width <= 400) {
+        setViewMode("compact");
+      } else if (width <= 600) {
+        setViewMode("detailed");
+      } else {
+        setViewMode("cards");
+      }
+    };
+  
+    updateViewMode(); // inicial
+    window.addEventListener("resize", updateViewMode);
+  
+    return () => window.removeEventListener("resize", updateViewMode);
+  }, []);
+
+  // Define o temporizador de inatividade da sessão (4 horas)
   useEffect(() => {
     let timeoutId;
 
@@ -52,7 +76,6 @@ const ComponentsPage = () => {
       }, SESSION_TIMEOUT);
     };
 
-    // Adiciona os ouvintes de eventos para reiniciar o timer de inatividade
     window.addEventListener("mousemove", resetSessionTimeout);
     window.addEventListener("keypress", resetSessionTimeout);
     window.addEventListener("scroll", resetSessionTimeout);
@@ -66,17 +89,11 @@ const ComponentsPage = () => {
     };
   }, [router]);
 
-  /**
-   * Redireciona o usuário para a página de login após a expiração da sessão.
-   */
   const redirectToLogin = () => {
     setSessionExpired(false);
     router.push("/login");
   };
 
-  /**
-   * Manipuladores de eventos do menu de filtros e ordenação.
-   */
   const handleMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
   const handleMenuClose = () => setMenuAnchorEl(null);
 
@@ -91,24 +108,27 @@ const ComponentsPage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* Barra de navegação personalizada com opção de alternar para modo escuro */}
+    <PageWrapper>
+      {/* Barra superior personalizada */}
       <AppBar onToggleDarkMode={toggleDarkMode} />
+      <Box sx={{ mt: 1.5 }}> {/* ao invés de paddingTop global */}
 
-      {/* Toolbar com botões para alternar a visualização e acessar filtros */}
-      <Toolbar sx={{ mt: 8, mb: 2, gap: 1 }}>
-        <IconButton onClick={() => setViewMode("cards")} color="inherit">
+      {/* Barra de filtros e visualizações */}
+      <StyledToolbar>
+        <StyledIconButton onClick={() => setViewMode("cards")}>
           <ViewModuleIcon />
-        </IconButton>
-        <IconButton onClick={() => setViewMode("detailed")} color="inherit">
+        </StyledIconButton>
+        <StyledIconButton onClick={() => setViewMode("detailed")}>
           <ViewListIcon />
-        </IconButton>
-        <IconButton onClick={() => setViewMode("compact")} color="inherit">
+        </StyledIconButton>
+        <StyledIconButton onClick={() => setViewMode("compact")}>
           <ViewCompactIcon />
-        </IconButton>
-        <IconButton onClick={handleMenuOpen} color="inherit">
+        </StyledIconButton>
+        <StyledIconButton onClick={handleMenuOpen}>
           <MoreVertIcon />
-        </IconButton>
+        </StyledIconButton>
+
+        {/* Menu de ordenação */}
         <Menu
           id="filter-menu"
           anchorEl={menuAnchorEl}
@@ -128,22 +148,43 @@ const ComponentsPage = () => {
             Direção: {sortDirection === "asc" ? "Ascendente" : "Descendente"}
           </MenuItem>
         </Menu>
-      </Toolbar>
+      </StyledToolbar>
+      </Box>
 
-      {/* Renderiza a lista com os parâmetros de visualização e ordenação definidos */}
+      {/* Lista renderizada dinamicamente */}
       <ListView
         viewMode={viewMode}
         sortCriteria={sortCriteria}
         sortDirection={sortDirection}
       />
 
-      {/* Diálogo para informar a expiração da sessão */}
+      {/* Rodapé fixo como assinatura */}
+      <Box
+        component="footer"
+        sx={{
+          mt: 'auto',
+          py: 2,
+          textAlign: 'center',
+          position: 'fixed',
+          bottom: 0,
+          width: '100%',
+          fontSize: '0.75rem',
+          color: 'text.secondary',
+          background: 'transparent',
+          zIndex: 999,
+        }}
+      >
+        Desenvolvido por José Enoque ✦ Powered by React & Next.js
+      </Box>
+
+      {/* Modal para sessão expirada */}
       {sessionExpired && (
         <Dialog open onClose={redirectToLogin}>
           <DialogTitle>Sessão Expirada</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Sua sessão expirou devido à inatividade (mais de 4 horas). Por favor, faça login novamente.
+              Sua sessão expirou devido à inatividade (mais de 4 horas).
+              Por favor, faça login novamente.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -153,7 +194,7 @@ const ComponentsPage = () => {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </PageWrapper>
   );
 };
 

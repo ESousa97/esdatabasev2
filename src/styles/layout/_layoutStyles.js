@@ -3,17 +3,23 @@ import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 
 export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.primary.main : undefined,
-  boxShadow: theme.shadows[4],
-  transition: 'all 0.3s ease-in-out',
-  overflow: 'visible', // Permite que elementos absolutamente posicionados escapem
+    zIndex: theme.zIndex.drawer + 2, // 🔥 Aqui é a mágica
+    position: 'fixed',
+    backgroundColor: theme.palette.mode === 'light'
+      ? theme.palette.primary.main
+      : theme.palette.background.paper + 'CC',
+    boxShadow: theme.shadows[4],
+    backdropFilter: 'blur(6px)', // Permite que elementos absolutamente posicionados escapem
   
-  '& .MuiToolbar-root': {
-    overflow: 'visible',   // Garante que o conteúdo possa sair do Toolbar
+    '& .MuiToolbar-root': {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: theme.spacing(1),
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    gap: theme.spacing(1),
-    minHeight: 56,
+    minHeight: 61.5,
     display: 'flex',
     alignItems: 'center',
   
@@ -21,6 +27,7 @@ export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
       gap: theme.spacing(0.5),
       paddingLeft: theme.spacing(0.5),
       paddingRight: theme.spacing(0.5),
+      minHeight: 52.5,
     },
   
     // Alteramos para impactar somente o título do header

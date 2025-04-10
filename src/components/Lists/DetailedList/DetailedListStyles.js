@@ -4,33 +4,52 @@ import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import ListItemText from '@mui/material/ListItemText';
 
+// Linha da lista com sombra e efeito flutuante
 export const StyledListItem = styled(ListItem)(({ theme }) => ({
-  transition: 'background-color 0.4s, transform 0.4s',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  borderRadius: theme.shape.borderRadius * 1.5,
+  padding: theme.spacing(1.5),
+  marginBottom: theme.spacing(2),
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[2], // Sombra leve padrão
+
   '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-    transform: 'scale(1.03)',
+    transform: 'translateY(-4px) scale(1.015)', // 🔥 flutua para cima
+    boxShadow: theme.shadows[6],                // sombra mais intensa
+    backgroundColor: theme.palette.background.paper,
   },
-  bgcolor: theme.palette.background.default,
 }));
 
+// Estilo do texto (título + descrição)
 export const StyledListItemText = styled(ListItemText)(({ theme }) => ({
-  primary: {
-    color: theme.palette.text.primary
+  '& .MuiListItemText-primary': {
+    fontWeight: 600,
+    fontSize: '1rem',
+    color: theme.palette.text.primary,
   },
-  secondary: {
-    color: theme.palette.text.secondary
-  }
+  '& .MuiListItemText-secondary': {
+    fontSize: '0.85rem',
+    color: theme.palette.text.secondary,
+    lineHeight: 1.5,
+    marginTop: theme.spacing(0.5),
+  },
 }));
 
+// Container da lista com largura responsiva e leve arredondamento
 export const StyledPaper = styled(Paper)(({ theme }) => ({
-  width: '100%',
-  maxWidth: '100%',
-  margin: `${theme.spacing(1)} auto`,
-  overflow: 'hidden',
-  bgcolor: theme.palette.background.paper,
+  width: '100vw',
+  maxWidth: 800,
+  padding: theme.spacing(2),
+  margin: `${theme.spacing(2)} auto`,
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  borderRadius: theme.shape.borderRadius * 1,
 }));
 
-export const StyledAvatar = styled(Avatar)({
+// Avatar com leve sombra
+export const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 56,
   height: 56,
-});
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
+}));

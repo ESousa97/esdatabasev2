@@ -8,8 +8,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 export const StyledLoader = styled(CircularProgress)(({ theme }) => ({
   marginLeft: theme.spacing(1),
   fontSize: '1rem', // backup para browsers que usam fontSize ao invés de size
-  width: 20,
-  height: 20,
+  width: 19,
+  height: 19,
 
   [theme.breakpoints.down('sm')]: {
     width: 16,
@@ -78,17 +78,29 @@ export const LoadingMessage = styled('span')(({ theme }) => ({
 
 // AUTOCOMPLETE RESPONSIVO
 export const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
-  width: '90%',
-  maxWidth: '240px',
-  minWidth: '140px',
+  width: 'clamp(140px, 30vw, 260px)', // 👈 se adapta à tela
+  flexShrink: 0,
 
-  [theme.breakpoints.down('sm')]: {
-    maxWidth: '200px',
-    minWidth: '120px',
-  },
-  '@media (max-width: 400px)': {
-    maxWidth: '150px',
-    minWidth: '100px',
+  '& .MuiInputBase-root': {
+    height: 38,
+    [theme.breakpoints.down('sm')]: {
+      height: 34,
+    },
+    '@media (max-width: 400px)': {
+      height: 30,
+    },
+    '& input': {
+      padding: '8px 12px',
+      fontSize: '0.9rem',
+      [theme.breakpoints.down('sm')]: {
+        padding: '6px 10px',
+        fontSize: '0.75rem',
+      },
+      '@media (max-width: 400px)': {
+        padding: '4px 8px',
+        fontSize: '0.65rem',
+      },
+    },
   },
 
   '& .MuiAutocomplete-listbox': {
@@ -98,6 +110,7 @@ export const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
   },
+
   '& .MuiAutocomplete-option': {
     padding: theme.spacing(1),
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -114,38 +127,62 @@ export const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
 }));
 
 // TEXTFIELD (INPUT DE BUSCA)
-export const StyledTextField = styled(TextField)(({ theme }) => ({
-  width: '100%',
-  '& .MuiInputLabel-root': {
-    color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-    fontSize: '0.9rem',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+export const StyledTextField = styled(TextField)(({ theme }) => {
+  const isLight = theme.palette.mode === 'light';
+
+  return {
+    width: '100%',
+
+    '& .MuiInputLabel-root': {
+      color: isLight ? '#111827' : '#f9fafb',
+      '&.Mui-focused': {
+        color: isLight ? '#111827' : '#f9fafb',
+      },
+      fontSize: '0.9rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.75rem',
+      },
+      '@media (max-width: 400px)': {
+        fontSize: '0.6rem',
+      },
     },
-    '@media (max-width: 400px)': {
-      fontSize: '0.55rem',
+
+    '& .MuiOutlinedInput-root': {
+      color: isLight ? '#111827' : '#f9fafb',
+      height: 38, // altura padrão (desktop)
+
+      '& input': {
+        padding: '8px 12px',
+        fontSize: '0.9rem',
+        [theme.breakpoints.down('sm')]: {
+          padding: '6px 10px',
+          fontSize: '0.75rem',
+        },
+        '@media (max-width: 400px)': {
+          padding: '4px 8px',
+          fontSize: '0.65rem',
+        },
+      },
+
+      [theme.breakpoints.down('sm')]: {
+        height: 34, // altura menor em telas pequenas
+      },
+      '@media (max-width: 400px)': {
+        height: 30, // ainda mais fina
+      },
+
+      '& fieldset': {
+        borderColor: isLight ? '#111827' : '#f9fafb',
+      },
+      '&:hover fieldset': {
+        borderColor: isLight ? '#111827' : '#f9fafb',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: isLight ? '#111827' : '#f9fafb',
+      },
     },
-  },
-  '& .MuiOutlinedInput-root': {
-    color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-    fontSize: '0.9rem',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
-    },
-    '@media (max-width: 400px)': {
-      fontSize: '0.55rem',
-    },
-    '& fieldset': {
-      borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-    },
-    '&:hover fieldset': {
-      borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-    },
-  },
-}));
+  };
+});
 
 // TÍTULO DA OPÇÃO
 export const OptionTitle = styled(Typography)(({ theme }) => ({

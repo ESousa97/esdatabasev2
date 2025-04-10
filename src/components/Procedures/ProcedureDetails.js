@@ -4,7 +4,7 @@ import { marked } from 'marked';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CircularProgress, Box, Button } from '@mui/material';
-import { StyledCopyButton, ContentContainer, MarkdownStyles, MainContent } from './ProcedureDetailsStyles';
+import { StyledCopyButton, ContentContainer, MarkdownStyles, MainContent, FixedFooter } from './ProcedureDetailsStyles';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
 
@@ -203,6 +203,9 @@ function ProcedureDetails({ procedure }) {
         <h1>{procedure.titulo}</h1>
         <MarkdownStyles ref={contentRef}>{children}</MarkdownStyles>
       </MainContent>
+      <FixedFooter>
+        Desenvolvido por <strong style={{ marginLeft: 4 }}> José Enoque </strong> ✦ Powered by React & Next.js
+      </FixedFooter>
     </>
   );
 }

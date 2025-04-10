@@ -243,3 +243,13 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
     },
   },  
 }));
+
+export const FixedFooter = styled('footer')(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  paddingBottom: theme.spacing(2),
+  textAlign: 'center',
+  fontSize: '0.8rem',
+  color: theme.palette.text.secondary,
+  opacity: 0.6,
+  userSelect: 'none',
+}));

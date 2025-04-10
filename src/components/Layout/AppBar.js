@@ -18,34 +18,77 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
   const handleHomeClick = () => router.push('/components');
 
   return (
-    <HeaderContainer position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-        
-        {/* Esquerda: ícones + título */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.2 } }}>
-          <IconButton color="inherit" onClick={onDrawerToggle} size="small">
-            <MenuIcon />
-          </IconButton>
-          <IconButton color="inherit" onClick={handleHomeClick} size="small">
-            <HomeIcon />
-          </IconButton>
-          <IconButton color="inherit" onClick={toggleDarkMode} size="small">
-            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-          </IconButton>
-          <IconButton color="inherit" onClick={onLogout} size="small">
-            <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
-          </IconButton>
-          {/* Aqui o título recebe a classe header-title */}
-          <Typography variant="h6" noWrap className="header-title" sx={{ ml: 1 }}>
-            Data Base
-          </Typography>
-        </Box>
+        <HeaderContainer
+          position="fixed"
+          elevation={0}
+          sx={{
+            backdropFilter: 'blur(6px)',
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+          }}
+        >
+        <Toolbar
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: { xs: 1, sm: 2 },
+            minHeight: { xs: 48, sm: 61.5 },
+          }}
+        >
+          {/* Esquerda: ícones + título */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { xs: 0.5, sm: 1.2 },
+              overflow: 'hidden',
+              flexShrink: 1,
+              minWidth: 0, // permite overflow controlado
+            }}
+          >
+            <IconButton color="inherit" onClick={onDrawerToggle} size="small">
+              <MenuIcon />
+            </IconButton>
+            <IconButton color="inherit" onClick={handleHomeClick} size="small">
+              <HomeIcon />
+            </IconButton>
+            <IconButton color="inherit" onClick={toggleDarkMode} size="small">
+              {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+            <IconButton color="inherit" onClick={onLogout} size="small">
+              <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
+            </IconButton>
 
-        {/* Direita: caixa de busca */}
-        <Box sx={{ flexGrow: 1, mx: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Typography
+              variant="h6"
+              noWrap
+              className="header-title"
+              sx={{
+                ml: 1,
+                fontWeight: 600,
+                letterSpacing: '0.5px',
+                display: { xs: 'none', sm: 'block' },
+              }}
+            >
+              Proj Portfólio
+            </Typography>
+          </Box>
+
+          {/* Direita: caixa de busca fixa */}
+          <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            minWidth: 150,
+            maxWidth: 240,
+            flexShrink: 0,
+            mr: { xs: 0.5, sm: 1 }, // 👈 afasta da lateral direita
+          }}
+        >
           <SearchBox />
         </Box>
-      </Toolbar>
+        </Toolbar>
     </HeaderContainer>
   );
 };

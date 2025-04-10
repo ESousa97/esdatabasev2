@@ -4,17 +4,22 @@ import PropTypes from "prop-types";
 import CardList from "../CardList/CardList";
 import CompactList from "../CompactList/CompactList";
 import DetailedList from "../DetailedList/DetailedList";
+import { Box } from '@mui/material';
 
 const ListView = ({ viewMode, sortCriteria, sortDirection }) => {
-  if (viewMode === "cards") {
-    return <CardList sortCriteria={sortCriteria} sortDirection={sortDirection} />;
-  } else if (viewMode === "compact") {
-    return <CompactList sortCriteria={sortCriteria} sortDirection={sortDirection} />;
-  } else if (viewMode === "detailed") {
-    return <DetailedList sortCriteria={sortCriteria} sortDirection={sortDirection} />;
-  } else {
-    return null;
-  }
+  return (
+    <Box sx={{ mt: { xs: 0, sm: 0.5 }, width: '100%' }}>
+      {viewMode === "cards" && (
+        <CardList sortCriteria={sortCriteria} sortDirection={sortDirection} />
+      )}
+      {viewMode === "compact" && (
+        <CompactList sortCriteria={sortCriteria} sortDirection={sortDirection} />
+      )}
+      {viewMode === "detailed" && (
+        <DetailedList sortCriteria={sortCriteria} sortDirection={sortDirection} />
+      )}
+    </Box>
+  );
 };
 
 ListView.propTypes = {

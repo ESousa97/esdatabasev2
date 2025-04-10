@@ -3,12 +3,15 @@ import axios from 'axios';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ListItemText from '@mui/material/ListItemText';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
 import { useTheme } from '@mui/material/styles';
-import { StyledListItem, StyledPaper } from './CompactListStyles';
+import {
+  StyledListItem,
+  StyledPaper,
+  StyledListItemText // ← substituto responsivo para o título
+} from './CompactListStyles';
 
 const CompactList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
@@ -24,12 +27,10 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
           let itemA, itemB;
           switch (sortCriteria) {
             case 'date':
-              // Usa data_criacao
               itemA = new Date(a.data_criacao);
               itemB = new Date(b.data_criacao);
               break;
             case 'alphabetical':
-              // Usa titulo
               itemA = a.titulo?.toLowerCase() || '';
               itemB = b.titulo?.toLowerCase() || '';
               break;
@@ -75,7 +76,7 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
                       {item.titulo ? item.titulo[0] : '?'}
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText
+                  <StyledListItemText
                     primary={item.titulo}
                     secondary={
                       item.descricao?.length > 200

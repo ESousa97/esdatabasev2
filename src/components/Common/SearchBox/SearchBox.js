@@ -9,7 +9,6 @@ import {
   StyledTextField,
   OptionTitle,
   OptionDescription,
-  LoadingMessage,
 } from './SearchBoxStyles';
 
 const SearchBox = () => {
