@@ -1,3 +1,4 @@
+// AppBar.js
 import React from 'react';
 import { Toolbar, IconButton, Typography, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -34,13 +35,14 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
           <IconButton color="inherit" onClick={onLogout} size="small">
             <LogoutIcon sx={{ transform: 'rotate(-180deg)' }} />
           </IconButton>
-          <Typography variant="h6" noWrap sx={{ ml: 1, fontSize: { xs: '0.9rem', sm: '1.1rem' } }}>
+          {/* Aqui o título recebe a classe header-title */}
+          <Typography variant="h6" noWrap className="header-title" sx={{ ml: 1 }}>
             Data Base
           </Typography>
         </Box>
 
         {/* Direita: caixa de busca */}
-        <Box sx={{ flexShrink: 0 }}>
+        <Box sx={{ flexGrow: 1, mx: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <SearchBox />
         </Box>
       </Toolbar>

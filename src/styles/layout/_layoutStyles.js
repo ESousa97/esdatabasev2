@@ -10,29 +10,30 @@ export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
   
   '& .MuiToolbar-root': {
     overflow: 'visible',   // Garante que o conteúdo possa sair do Toolbar
-   paddingLeft: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     gap: theme.spacing(1),
     minHeight: 56,
     display: 'flex',
     alignItems: 'center',
-
+  
     [theme.breakpoints.down('sm')]: {
       gap: theme.spacing(0.5),
       paddingLeft: theme.spacing(0.5),
       paddingRight: theme.spacing(0.5),
     },
-
-    '& .MuiTypography-root': {
+  
+    // Alteramos para impactar somente o título do header
+    '& .header-title': {
       fontSize: '1rem',
       flexShrink: 0,
       whiteSpace: 'nowrap',
       [theme.breakpoints.down('sm')]: {
         fontSize: '0.7rem',
-        display: 'none',
+        // Se preferir ocultar o título em telas menores, inclua: display: 'none',
       },
     },
-
+  
     '& .MuiIconButton-root': {
       padding: 6,
       marginRight: 4,

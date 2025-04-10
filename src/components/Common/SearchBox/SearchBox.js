@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
-import { styled, useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-
-const StyledOption = styled('li')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: theme.spacing(1),
-  backgroundColor: theme.palette.background.paper,
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  cursor: 'pointer',
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-}));
+import { useTheme, useMediaQuery } from '@mui/material';
+import Popper from '@mui/material/Popper';
+import {
+  StyledOption,
+  StyledAutocomplete,
+  StyledTextField,
+  OptionTitle,
+  OptionDescription,
+  LoadingMessage,
+} from './SearchBoxStyles';
 
 const SearchBox = () => {
   const [open, setOpen] = useState(false);
@@ -24,15 +18,19 @@ const SearchBox = () => {
   const [inputValue, setInputValue] = useState('');
   const loading = open && options.length === 0;
   const router = useRouter();
+
   const theme = useTheme();
+  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
+  const isXsDown = useMediaQuery('(max-width:400px)');
+
+  const loaderSize = isXsDown ? 12 : isSmDown ? 16 : 20;
 
   useEffect(() => {
     let active = true;
     if (inputValue === '') {
       setOptions([]);
-      return undefined;
+      return;
     }
-
     (async () => {
       try {
         const response = await fetch(
@@ -65,9 +63,27 @@ const SearchBox = () => {
     }
   };
 
+  const CustomPopper = (props) => (
+    <Popper
+      {...props}
+      modifiers={[
+        {
+          name: 'widthMatch',
+          enabled: true,
+          phase: 'beforeWrite',
+          requires: ['computeStyles'],
+          fn: ({ state }) => {
+            state.styles.popper.width = `${state.rects.reference.width}px`;
+          },
+        },
+      ]}
+    />
+  );
+
   return (
-    <Autocomplete
+    <StyledAutocomplete
       id="search-box"
+      PopperComponent={CustomPopper}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
@@ -75,74 +91,34 @@ const SearchBox = () => {
       getOptionLabel={(option) => option.titulo || ''}
       options={options}
       loading={loading}
+      loadingText={
+        <span style={{
+          fontSize: isXsDown ? '0.6rem' : isSmDown ? '0.7rem' : '0.75rem',
+          padding: '4px 8px',
+          color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb'
+        }}>
+          Carregando...
+        </span>
+      }
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-      sx={{
-        width: { xs: '220px', sm: '260px' },
-        '& .MuiAutocomplete-listbox': {
-          padding: 0,
-          boxShadow: theme.shadows[4],
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: theme.shape.borderRadius,
-        },
-        '& .MuiAutocomplete-option': {
-          padding: theme.spacing(1),
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          '&:hover': {
-            backgroundColor: theme.palette.action.hover,
-          },
-        },
-      }}
       renderOption={(props, option) => (
         <StyledOption {...props}>
-          <Typography
-            variant="subtitle2"
-            sx={{ color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb' }}
-          >
-            {option.titulo}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb' }}
-          >
-            {option.descricao}
-          </Typography>
+          <OptionTitle variant="subtitle2">{option.titulo}</OptionTitle>
+          <OptionDescription variant="body2">{option.descricao}</OptionDescription>
         </StyledOption>
       )}
       renderInput={(params) => (
-        <TextField
+        <StyledTextField
           {...params}
           label="Pesquisar..."
           variant="outlined"
           size="small"
-          sx={{
-            // Estiliza o label para cores contrastantes
-            '& .MuiInputLabel-root': {
-              color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-            },
-            // Estiliza o input: texto e borda
-            '& .MuiOutlinedInput-root': {
-              color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-              '& fieldset': {
-                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-              },
-              '&:hover fieldset': {
-                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
-              },
-            },
-          }}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
+                {loading && <CircularProgress color="inherit" size={loaderSize} />}
               </>
             ),
           }}

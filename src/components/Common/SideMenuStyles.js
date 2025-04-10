@@ -1,5 +1,5 @@
+// SideMenuStyles.js
 import React from 'react';
-import PropTypes from 'prop-types';
 import { styled, keyframes } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -37,7 +37,7 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
       top: topValue,
       height: `calc(100% - ${topValue})`,
       position: 'fixed',
-      zIndex: theme.zIndex.drawer, // <- aqui está certo!
+      zIndex: theme.zIndex.drawer,
       '& .MuiDrawer-paper': {
         top: 0,
         height: '100%',
