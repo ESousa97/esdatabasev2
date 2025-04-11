@@ -1,10 +1,8 @@
+// components/ComponentsPage.jsx
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import nookies from "nookies";
-import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import {
-  Box,
   Menu,
   MenuItem,
   Dialog,
@@ -13,7 +11,10 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Box,
 } from "@mui/material";
+import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 
 // Ícones
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
@@ -35,28 +36,27 @@ import {
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = ({
-  initialViewMode,
-  initialSortCriteria,
-  initialSortDirection,
+  initialViewMode = "cards",
+  initialSortCriteria = "date",
+  initialSortDirection = "asc",
 }) => {
-  const router = useRouter();
-  const { pathname } = router;
-  // Cria uma chave de cookie específica para a rota atual
-  const cookieKey = `viewMode_${pathname}`;
-  // Se não houver viewMode salvo para esta tela, deixa a string vazia para que a lógica automática seja acionada
-  const [viewMode, setViewMode] = useState(initialViewMode || "");
-  const [sortCriteria, setSortCriteria] = useState(initialSortCriteria || "date");
-  const [sortDirection, setSortDirection] = useState(initialSortDirection || "asc");
+  // Inicializa os estados com os valores provenientes do SSR (cookies)
+  const [viewMode, setViewMode] = useState(initialViewMode);
+  const [sortCriteria, setSortCriteria] = useState(initialSortCriteria);
+  const [sortDirection, setSortDirection] = useState(initialSortDirection);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  // Se não houver preferência inicial, consideramos o modo automático
-  const [isAuto, setIsAuto] = useState(initialViewMode ? false : true);
+
+  // Se já existe um cookie de viewMode, consideramos que o usuário já escolheu manualmente
+  const [isAuto, setIsAuto] = useState(!initialViewMode);
+
+  const router = useRouter();
   const { toggleDarkMode } = useCustomTheme();
 
-  // Ajuste automático do viewMode se o usuário ainda não tiver escolhido manualmente
+  // Ajuste automático do viewMode se ainda estiver em modo automático
   useEffect(() => {
     const updateViewMode = () => {
-      if (!isAuto) return; // Não altera se o usuário já selecionou manualmente
+      if (!isAuto) return; // não altera se o usuário já escolheu manualmente
       const width = window.innerWidth;
       let newMode = "cards";
       if (width <= 400) {
@@ -65,15 +65,15 @@ const ComponentsPage = ({
         newMode = "detailed";
       }
       setViewMode(newMode);
-      Cookies.set(cookieKey, newMode, { expires: 30 });
+      Cookies.set("viewMode", newMode, { expires: 30 });
     };
 
-    updateViewMode(); // Chamada inicial
+    updateViewMode(); // chamada inicial
     window.addEventListener("resize", updateViewMode);
     return () => window.removeEventListener("resize", updateViewMode);
-  }, [isAuto, cookieKey]);
+  }, [isAuto]);
 
-  // Configura o temporizador de inatividade da sessão
+  // Temporizador de inatividade da sessão
   useEffect(() => {
     let timeoutId;
 
@@ -122,11 +122,11 @@ const ComponentsPage = ({
     handleMenuClose();
   };
 
-  // Quando o usuário escolhe manualmente um viewMode, desabilita o ajuste automático
+  // Altera o viewMode manualmente, desabilitando o ajuste automático
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setIsAuto(false);
-    Cookies.set(cookieKey, mode, { expires: 30 });
+    Cookies.set("viewMode", mode, { expires: 30 });
   };
 
   return (
@@ -221,17 +221,12 @@ const ComponentsPage = ({
 
 export default ComponentsPage;
 
-// No SSR, lemos os cookies e extraímos o viewMode específico para a rota atual
 export async function getServerSideProps(context) {
+  // Usando nookies para ler os cookies na requisição do servidor
   const cookies = nookies.get(context);
-  // Utiliza o pathname da requisição para definir a chave do cookie (ignora a query string, se houver)
-  const fullUrl = context.req.url || "";
-  const pathname = fullUrl.split("?")[0];
-  const cookieKey = `viewMode_${pathname}`;
-
   return {
     props: {
-      initialViewMode: cookies[cookieKey] || "",
+      initialViewMode: cookies.viewMode || "cards",
       initialSortCriteria: cookies.sortCriteria || "date",
       initialSortDirection: cookies.sortDirection || "asc",
     },
