@@ -14,11 +14,13 @@ import {
   Tooltip,
   Snackbar,
   Alert,
+  Typography,
+  useTheme,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 
-// Ícones
+// Ícones do Material-UI
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
@@ -34,7 +36,12 @@ import {
   StyledToolbar,
   StyledIconButton,
 } from "../src/components/pages/ComponentsPageStyled";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
+// Ícones do pacote lucide-react
+import { CalendarPlus, Clock, ArrowUpAZ, ArrowDownAZ } from "lucide-react";
+
+// Timeout de sessão em 4 horas
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = ({
@@ -42,7 +49,8 @@ const ComponentsPage = ({
   initialSortCriteria = "date",
   initialSortDirection = "asc",
 }) => {
-  const [viewMode, setViewMode] = useState("cards"); // será sobrescrito abaixo
+  // Estados
+  const [viewMode, setViewMode] = useState("cards"); // Modo de visualização: cards, detailed ou compact
   const [sortCriteria, setSortCriteria] = useState(initialSortCriteria);
   const [sortDirection, setSortDirection] = useState(initialSortDirection);
   const [sessionExpired, setSessionExpired] = useState(false);
@@ -50,10 +58,13 @@ const ComponentsPage = ({
   const [isAuto, setIsAuto] = useState(initialViewMode === null);
   const [showResetMessage, setShowResetMessage] = useState(false);
 
+  // Hooks e utilitários
   const router = useRouter();
   const { toggleDarkMode } = useCustomTheme();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Define modo inicial baseado na tela apenas se for automático
+  // Define o modo de visualização inicial com base na largura da tela ou cookie
   useEffect(() => {
     const width = window.innerWidth;
     let newMode = "cards";
@@ -65,20 +76,21 @@ const ComponentsPage = ({
     }
 
     if (initialViewMode) {
-      setViewMode(initialViewMode); // cookie do usuário → manual
+      setViewMode(initialViewMode); // Utiliza o cookie salvo
     } else {
-      setViewMode(newMode); // sem cookie → automático
+      setViewMode(newMode); // Define automaticamente com base na tela
       Cookies.set("viewMode", newMode, { expires: 30 });
     }
   }, []);
 
-  // Atualiza dinamicamente se estiver em modo automático
+  // Atualiza o modo de visualização dinamicamente se estiver no modo automático
   useEffect(() => {
     const updateViewMode = () => {
       if (!isAuto) return;
 
       const width = window.innerWidth;
       let newMode = "cards";
+
       if (width <= 400) newMode = "compact";
       else if (width <= 600) newMode = "detailed";
 
@@ -90,7 +102,7 @@ const ComponentsPage = ({
     return () => window.removeEventListener("resize", updateViewMode);
   }, [isAuto]);
 
-  // Sessão
+  // Controla o timeout de sessão e logout automático após inatividade
   useEffect(() => {
     let timeoutId;
     const resetSessionTimeout = () => {
@@ -115,20 +127,24 @@ const ComponentsPage = ({
     };
   }, [router]);
 
+  // Redireciona para a página de login após expiração da sessão
   const redirectToLogin = () => {
     setSessionExpired(false);
     router.push("/login");
   };
 
+  // Abre e fecha o menu
   const handleMenuOpen = (event) => setMenuAnchorEl(event.currentTarget);
   const handleMenuClose = () => setMenuAnchorEl(null);
 
+  // Altera o critério de ordenação e salva nos cookies
   const handleSortCriteriaChange = (criteria) => {
     setSortCriteria(criteria);
     Cookies.set("sortCriteria", criteria, { expires: 30 });
     handleMenuClose();
   };
 
+  // Alterna a direção de ordenação (asc/desc)
   const toggleSortDirection = () => {
     setSortDirection((prev) => {
       const newDir = prev === "asc" ? "desc" : "asc";
@@ -138,88 +154,163 @@ const ComponentsPage = ({
     handleMenuClose();
   };
 
+  // Altera o modo de visualização e salva nos cookies
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setIsAuto(false);
     Cookies.set("viewMode", mode, { expires: 30 });
   };
 
+  // Restaura o modo de visualização automático com base na largura da tela
   const handleResetAutoView = () => {
     Cookies.remove("viewMode");
-  
     const width = window.innerWidth;
     let newMode = "cards";
-  
+
     if (width <= 400) {
       newMode = "compact";
     } else if (width <= 600) {
       newMode = "detailed";
     }
-  
+
     setIsAuto(true);
     setViewMode(newMode);
-    Cookies.set("viewMode", newMode, { expires: 30 }); // opcional: salvar imediatamente
+    Cookies.set("viewMode", newMode, { expires: 30 });
     setShowResetMessage(true);
   };
 
   return (
     <PageWrapper>
+      {/* Barra de navegação */}
       <AppBar onToggleDarkMode={toggleDarkMode} />
+
       <Box sx={{ mt: 1.5 }}>
         <StyledToolbar>
+          {/* Botões de mudança de visualização */}
+          <Tooltip title="Cards">
           <StyledIconButton onClick={() => handleViewModeChange("cards")}>
             <ViewModuleIcon />
           </StyledIconButton>
+          </Tooltip>
+          <Tooltip title="Lista detalhada">
           <StyledIconButton onClick={() => handleViewModeChange("detailed")}>
             <ViewListIcon />
           </StyledIconButton>
+          </Tooltip>
+          <Tooltip title="Lista compacta">
           <StyledIconButton onClick={() => handleViewModeChange("compact")}>
             <ViewCompactIcon />
           </StyledIconButton>
+          </Tooltip>
           <Tooltip title="Redefinir para automático">
             <StyledIconButton onClick={handleResetAutoView}>
               <RestartAltIcon />
             </StyledIconButton>
           </Tooltip>
+          {/* Botão de abrir menu */}
           <StyledIconButton onClick={handleMenuOpen}>
             <MoreVertIcon />
           </StyledIconButton>
 
+          {/* Menu para definição dos critérios e direção de ordenação */}
           <Menu
             id="filter-menu"
+            Tooltip="Filtros de pesquisa"
             anchorEl={menuAnchorEl}
             open={Boolean(menuAnchorEl)}
             onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                px: 1,
+                py: 0.5,
+                width: 170,
+                borderRadius: 2,
+                boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                transform: "scale(0.98)",
+                animation: "fadeIn 0.15s ease-in-out",
+                "@keyframes fadeIn": {
+                  from: { opacity: 0, transform: "scale(0.95)" },
+                  to: { opacity: 1, transform: "scale(1)" },
+                },
+              },
+            }}
+            MenuListProps={{
+              dense: true,
+              sx: {
+                "& .MuiMenuItem-root": {
+                  fontSize: "0.85rem",
+                  paddingY: 0.7,
+                  borderRadius: 1,
+                  gap: 1,
+                  display: "flex",
+                  alignItems: "center",
+                },
+              },
+            }}
           >
+            {/* Critério: Data de Criação */}
             <MenuItem onClick={() => handleSortCriteriaChange("date")}>
-              Data de Criação
+              <CalendarPlus size={16} />
+              <Typography variant="body2">Data de Criação</Typography>
             </MenuItem>
+
+            {/* Critério: Ordem Alfabética */}
             <MenuItem onClick={() => handleSortCriteriaChange("alphabetical")}>
-              Ordem Alfabética
+              <ArrowUpAZ size={18} />
+              <Typography variant="body2">Ordem Alfabética</Typography>
             </MenuItem>
+
+            {/* Critério: Data de Atualização */}
             <MenuItem onClick={() => handleSortCriteriaChange("updateDate")}>
-              Data de Atualização
+              <Clock size={18} />
+              <Typography variant="body2">Último Update</Typography>
             </MenuItem>
+
+            {/* Toggle: Direção de Ordenação */}
             <MenuItem onClick={toggleSortDirection}>
-              Direção: {sortDirection === "asc" ? "Ascendente" : "Descendente"}
+              {sortDirection === "asc" ? (
+                <>
+                  <ArrowUpAZ size={16} />
+                  <Typography variant="body2">
+                    {sortCriteria === "alphabetical" ? "A → Z" : "Mais recente"}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <ArrowDownAZ size={16} />
+                  <Typography variant="body2">
+                    {sortCriteria === "alphabetical" ? "Z → A" : "Mais antigo"}
+                  </Typography>
+                </>
+              )}
             </MenuItem>
           </Menu>
         </StyledToolbar>
       </Box>
 
+      {/* Lista principal */}
       <ListView
         viewMode={viewMode}
         sortCriteria={sortCriteria}
         sortDirection={sortDirection}
       />
 
+      {/* Rodapé */}
       <Box
         component="footer"
         sx={{
           mt: "auto",
           py: 2,
           textAlign: "center",
-          position: "fixed",
           bottom: 0,
           width: "100%",
           fontSize: "0.75rem",
@@ -231,7 +322,7 @@ const ComponentsPage = ({
         Desenvolvido por José Enoque ✦ Powered by React & Next.js
       </Box>
 
-      {/* Feedback visual do reset */}
+      {/* Feedback visual para restauração do modo automático */}
       <Snackbar
         open={showResetMessage}
         autoHideDuration={3000}
@@ -243,6 +334,7 @@ const ComponentsPage = ({
         </Alert>
       </Snackbar>
 
+      {/* Diálogo exibido quando a sessão expira */}
       {sessionExpired && (
         <Dialog open onClose={redirectToLogin}>
           <DialogTitle>Sessão Expirada</DialogTitle>
@@ -265,6 +357,7 @@ const ComponentsPage = ({
 
 export default ComponentsPage;
 
+// Busca as props iniciais a partir dos cookies
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context);
   const initialViewMode = cookies.viewMode || null;
