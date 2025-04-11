@@ -13,6 +13,8 @@ const iconMap = {
   'html/css': SiHtml5, SiCss3,
   'javascript': SiJavascript,
   'python': SiPython,
+  'typescript': SiJavascript,
+  'java': SiJavascript,
 };
 
 // Função para retornar o ícone da categoria, colorido com o tema primário
