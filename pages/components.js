@@ -260,18 +260,18 @@ const ComponentsPage = ({
             {/* Critério: Data de Criação */}
             <MenuItem onClick={() => handleSortCriteriaChange("date")}>
               <CalendarPlus size={16} />
-              <Typography variant="body2">Data de Criação</Typography>
+              <Typography variant="body2">Data Criação</Typography>
             </MenuItem>
 
             {/* Critério: Ordem Alfabética */}
             <MenuItem onClick={() => handleSortCriteriaChange("alphabetical")}>
-              <ArrowUpAZ size={18} />
-              <Typography variant="body2">Ordem Alfabética</Typography>
+              <ArrowUpAZ size={16} />
+              <Typography variant="body2">Ordem de A - Z</Typography>
             </MenuItem>
 
             {/* Critério: Data de Atualização */}
             <MenuItem onClick={() => handleSortCriteriaChange("updateDate")}>
-              <Clock size={18} />
+              <Clock size={16} />
               <Typography variant="body2">Último Update</Typography>
             </MenuItem>
 
@@ -281,14 +281,14 @@ const ComponentsPage = ({
                 <>
                   <ArrowUpAZ size={16} />
                   <Typography variant="body2">
-                    {sortCriteria === "alphabetical" ? "A → Z" : "Mais recente"}
+                    {sortCriteria === "alphabetical" ? "Mais Recente" : "Mais recente"}
                   </Typography>
                 </>
               ) : (
                 <>
                   <ArrowDownAZ size={16} />
                   <Typography variant="body2">
-                    {sortCriteria === "alphabetical" ? "Z → A" : "Mais antigo"}
+                    {sortCriteria === "alphabetical" ? "Mais Antigo" : "Mais antigo"}
                   </Typography>
                 </>
               )}
