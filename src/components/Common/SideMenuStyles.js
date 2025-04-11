@@ -9,14 +9,14 @@ const DRAWER_WIDTH_MOBILE = '100vw';
 const SCROLLBAR_WIDTH = '6px';
 const DEFAULT_MARGIN_TOP = '64px';
 
-const fadeIn = keyframes`
+const slideIn = keyframes`
   from {
+    transform: translateX(-100%);
     opacity: 0;
-    transform: translateX(-10px);
   }
   to {
-    opacity: 1;
     transform: translateX(0);
+    opacity: 1;
   }
 `;
 
@@ -24,6 +24,7 @@ const fadeIn = keyframes`
 export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...props} />)(
   ({ theme, marginTop }) => {
     const topValue = marginTop || DEFAULT_MARGIN_TOP;
+
     return {
       '& .MuiDrawer-paper': {
         position: 'fixed',
@@ -33,9 +34,11 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
         backgroundColor: theme.palette.background.default,
         boxShadow: theme.shadows[4],
         overflowY: 'auto',
-        animation: `${fadeIn} 0.3s ease-out`,
         borderRight: `1px solid ${theme.palette.divider}`,
-
+        transition: 'transform 0.3s ease-out, opacity 0.3s ease-out',
+        animation: `${slideIn} 0.3s ease-out`,
+        
+        // Scrollbar
         '&::-webkit-scrollbar': {
           width: SCROLLBAR_WIDTH,
         },
@@ -46,6 +49,7 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
           backgroundColor: theme.palette.grey[500],
         },
 
+        // Responsivo para mobile
         [theme.breakpoints.down('sm')]: {
           width: DRAWER_WIDTH_MOBILE,
         },

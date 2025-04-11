@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import nookies from "nookies";
+import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import {
+  Box,
   Menu,
   MenuItem,
   Dialog,
@@ -8,11 +13,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Typography,
-  Box,
 } from "@mui/material";
-import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 
 // Ícones
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
@@ -30,40 +31,49 @@ import {
   StyledIconButton,
 } from "../src/components/pages/ComponentsPageStyled";
 
-// Tempo de sessão antes de expirar (4h)
+// Tempo de sessão antes de expirar (4 horas)
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
-const ComponentsPage = () => {
-  const [viewMode, setViewMode] = useState("cards"); // Valor padrão seguro para SSR
-  const [sessionExpired, setSessionExpired] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState("date");
-  const [sortDirection, setSortDirection] = useState("asc");
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-
+const ComponentsPage = ({
+  initialViewMode,
+  initialSortCriteria,
+  initialSortDirection,
+}) => {
   const router = useRouter();
+  const { pathname } = router;
+  // Cria uma chave de cookie específica para a rota atual
+  const cookieKey = `viewMode_${pathname}`;
+  // Se não houver viewMode salvo para esta tela, deixa a string vazia para que a lógica automática seja acionada
+  const [viewMode, setViewMode] = useState(initialViewMode || "");
+  const [sortCriteria, setSortCriteria] = useState(initialSortCriteria || "date");
+  const [sortDirection, setSortDirection] = useState(initialSortDirection || "asc");
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  // Se não houver preferência inicial, consideramos o modo automático
+  const [isAuto, setIsAuto] = useState(initialViewMode ? false : true);
   const { toggleDarkMode } = useCustomTheme();
 
-  // Define automaticamente "detailed" para telas pequenas no client-side
+  // Ajuste automático do viewMode se o usuário ainda não tiver escolhido manualmente
   useEffect(() => {
     const updateViewMode = () => {
+      if (!isAuto) return; // Não altera se o usuário já selecionou manualmente
       const width = window.innerWidth;
-  
+      let newMode = "cards";
       if (width <= 400) {
-        setViewMode("compact");
+        newMode = "compact";
       } else if (width <= 600) {
-        setViewMode("detailed");
-      } else {
-        setViewMode("cards");
+        newMode = "detailed";
       }
+      setViewMode(newMode);
+      Cookies.set(cookieKey, newMode, { expires: 30 });
     };
-  
-    updateViewMode(); // inicial
-    window.addEventListener("resize", updateViewMode);
-  
-    return () => window.removeEventListener("resize", updateViewMode);
-  }, []);
 
-  // Define o temporizador de inatividade da sessão (4 horas)
+    updateViewMode(); // Chamada inicial
+    window.addEventListener("resize", updateViewMode);
+    return () => window.removeEventListener("resize", updateViewMode);
+  }, [isAuto, cookieKey]);
+
+  // Configura o temporizador de inatividade da sessão
   useEffect(() => {
     let timeoutId;
 
@@ -99,56 +109,67 @@ const ComponentsPage = () => {
 
   const handleSortCriteriaChange = (criteria) => {
     setSortCriteria(criteria);
+    Cookies.set("sortCriteria", criteria, { expires: 30 });
     handleMenuClose();
   };
 
   const toggleSortDirection = () => {
-    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setSortDirection((prev) => {
+      const newDir = prev === "asc" ? "desc" : "asc";
+      Cookies.set("sortDirection", newDir, { expires: 30 });
+      return newDir;
+    });
     handleMenuClose();
+  };
+
+  // Quando o usuário escolhe manualmente um viewMode, desabilita o ajuste automático
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    setIsAuto(false);
+    Cookies.set(cookieKey, mode, { expires: 30 });
   };
 
   return (
     <PageWrapper>
       {/* Barra superior personalizada */}
       <AppBar onToggleDarkMode={toggleDarkMode} />
-      <Box sx={{ mt: 1.5 }}> {/* ao invés de paddingTop global */}
+      <Box sx={{ mt: 1.5 }}>
+        {/* Barra de filtros e visualizações */}
+        <StyledToolbar>
+          <StyledIconButton onClick={() => handleViewModeChange("cards")}>
+            <ViewModuleIcon />
+          </StyledIconButton>
+          <StyledIconButton onClick={() => handleViewModeChange("detailed")}>
+            <ViewListIcon />
+          </StyledIconButton>
+          <StyledIconButton onClick={() => handleViewModeChange("compact")}>
+            <ViewCompactIcon />
+          </StyledIconButton>
+          <StyledIconButton onClick={handleMenuOpen}>
+            <MoreVertIcon />
+          </StyledIconButton>
 
-      {/* Barra de filtros e visualizações */}
-      <StyledToolbar>
-        <StyledIconButton onClick={() => setViewMode("cards")}>
-          <ViewModuleIcon />
-        </StyledIconButton>
-        <StyledIconButton onClick={() => setViewMode("detailed")}>
-          <ViewListIcon />
-        </StyledIconButton>
-        <StyledIconButton onClick={() => setViewMode("compact")}>
-          <ViewCompactIcon />
-        </StyledIconButton>
-        <StyledIconButton onClick={handleMenuOpen}>
-          <MoreVertIcon />
-        </StyledIconButton>
-
-        {/* Menu de ordenação */}
-        <Menu
-          id="filter-menu"
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={() => handleSortCriteriaChange("date")}>
-            Data de Criação
-          </MenuItem>
-          <MenuItem onClick={() => handleSortCriteriaChange("alphabetical")}>
-            Ordem Alfabética
-          </MenuItem>
-          <MenuItem onClick={() => handleSortCriteriaChange("updateDate")}>
-            Data de Atualização
-          </MenuItem>
-          <MenuItem onClick={toggleSortDirection}>
-            Direção: {sortDirection === "asc" ? "Ascendente" : "Descendente"}
-          </MenuItem>
-        </Menu>
-      </StyledToolbar>
+          {/* Menu de ordenação */}
+          <Menu
+            id="filter-menu"
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={() => handleSortCriteriaChange("date")}>
+              Data de Criação
+            </MenuItem>
+            <MenuItem onClick={() => handleSortCriteriaChange("alphabetical")}>
+              Ordem Alfabética
+            </MenuItem>
+            <MenuItem onClick={() => handleSortCriteriaChange("updateDate")}>
+              Data de Atualização
+            </MenuItem>
+            <MenuItem onClick={toggleSortDirection}>
+              Direção: {sortDirection === "asc" ? "Ascendente" : "Descendente"}
+            </MenuItem>
+          </Menu>
+        </StyledToolbar>
       </Box>
 
       {/* Lista renderizada dinamicamente */}
@@ -158,19 +179,19 @@ const ComponentsPage = () => {
         sortDirection={sortDirection}
       />
 
-      {/* Rodapé fixo como assinatura */}
+      {/* Rodapé fixo */}
       <Box
         component="footer"
         sx={{
-          mt: 'auto',
+          mt: "auto",
           py: 2,
-          textAlign: 'center',
-          position: 'fixed',
+          textAlign: "center",
+          position: "fixed",
           bottom: 0,
-          width: '100%',
-          fontSize: '0.75rem',
-          color: 'text.secondary',
-          background: 'transparent',
+          width: "100%",
+          fontSize: "0.75rem",
+          color: "text.secondary",
+          background: "transparent",
           zIndex: 999,
         }}
       >
@@ -200,8 +221,19 @@ const ComponentsPage = () => {
 
 export default ComponentsPage;
 
+// No SSR, lemos os cookies e extraímos o viewMode específico para a rota atual
 export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  // Utiliza o pathname da requisição para definir a chave do cookie (ignora a query string, se houver)
+  const fullUrl = context.req.url || "";
+  const pathname = fullUrl.split("?")[0];
+  const cookieKey = `viewMode_${pathname}`;
+
   return {
-    props: {},
+    props: {
+      initialViewMode: cookies[cookieKey] || "",
+      initialSortCriteria: cookies.sortCriteria || "date",
+      initialSortDirection: cookies.sortDirection || "asc",
+    },
   };
 }
