@@ -1,4 +1,3 @@
-// components/ComponentsPage.jsx
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import nookies from "nookies";
@@ -12,6 +11,9 @@ import {
   DialogActions,
   Button,
   Box,
+  Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
@@ -21,6 +23,7 @@ import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 // Componentes customizados
 import AppBar from "../src/components/Layout/AppBar";
@@ -32,51 +35,64 @@ import {
   StyledIconButton,
 } from "../src/components/pages/ComponentsPageStyled";
 
-// Tempo de sessão antes de expirar (4 horas)
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = ({
-  initialViewMode = "cards",
+  initialViewMode,
   initialSortCriteria = "date",
   initialSortDirection = "asc",
 }) => {
-  // Inicializa os estados com os valores provenientes do SSR (cookies)
-  const [viewMode, setViewMode] = useState(initialViewMode);
+  const [viewMode, setViewMode] = useState("cards"); // será sobrescrito abaixo
   const [sortCriteria, setSortCriteria] = useState(initialSortCriteria);
   const [sortDirection, setSortDirection] = useState(initialSortDirection);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-
-  // Se já existe um cookie de viewMode, consideramos que o usuário já escolheu manualmente
-  const [isAuto, setIsAuto] = useState(!initialViewMode);
+  const [isAuto, setIsAuto] = useState(initialViewMode === null);
+  const [showResetMessage, setShowResetMessage] = useState(false);
 
   const router = useRouter();
   const { toggleDarkMode } = useCustomTheme();
 
-  // Ajuste automático do viewMode se ainda estiver em modo automático
+  // Define modo inicial baseado na tela apenas se for automático
+  useEffect(() => {
+    const width = window.innerWidth;
+    let newMode = "cards";
+
+    if (width <= 400) {
+      newMode = "compact";
+    } else if (width <= 600) {
+      newMode = "detailed";
+    }
+
+    if (initialViewMode) {
+      setViewMode(initialViewMode); // cookie do usuário → manual
+    } else {
+      setViewMode(newMode); // sem cookie → automático
+      Cookies.set("viewMode", newMode, { expires: 30 });
+    }
+  }, []);
+
+  // Atualiza dinamicamente se estiver em modo automático
   useEffect(() => {
     const updateViewMode = () => {
-      if (!isAuto) return; // não altera se o usuário já escolheu manualmente
+      if (!isAuto) return;
+
       const width = window.innerWidth;
       let newMode = "cards";
-      if (width <= 400) {
-        newMode = "compact";
-      } else if (width <= 600) {
-        newMode = "detailed";
-      }
+      if (width <= 400) newMode = "compact";
+      else if (width <= 600) newMode = "detailed";
+
       setViewMode(newMode);
       Cookies.set("viewMode", newMode, { expires: 30 });
     };
 
-    updateViewMode(); // chamada inicial
     window.addEventListener("resize", updateViewMode);
     return () => window.removeEventListener("resize", updateViewMode);
   }, [isAuto]);
 
-  // Temporizador de inatividade da sessão
+  // Sessão
   useEffect(() => {
     let timeoutId;
-
     const resetSessionTimeout = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -122,19 +138,34 @@ const ComponentsPage = ({
     handleMenuClose();
   };
 
-  // Altera o viewMode manualmente, desabilitando o ajuste automático
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     setIsAuto(false);
     Cookies.set("viewMode", mode, { expires: 30 });
   };
 
+  const handleResetAutoView = () => {
+    Cookies.remove("viewMode");
+  
+    const width = window.innerWidth;
+    let newMode = "cards";
+  
+    if (width <= 400) {
+      newMode = "compact";
+    } else if (width <= 600) {
+      newMode = "detailed";
+    }
+  
+    setIsAuto(true);
+    setViewMode(newMode);
+    Cookies.set("viewMode", newMode, { expires: 30 }); // opcional: salvar imediatamente
+    setShowResetMessage(true);
+  };
+
   return (
     <PageWrapper>
-      {/* Barra superior personalizada */}
       <AppBar onToggleDarkMode={toggleDarkMode} />
       <Box sx={{ mt: 1.5 }}>
-        {/* Barra de filtros e visualizações */}
         <StyledToolbar>
           <StyledIconButton onClick={() => handleViewModeChange("cards")}>
             <ViewModuleIcon />
@@ -145,11 +176,15 @@ const ComponentsPage = ({
           <StyledIconButton onClick={() => handleViewModeChange("compact")}>
             <ViewCompactIcon />
           </StyledIconButton>
+          <Tooltip title="Redefinir para automático">
+            <StyledIconButton onClick={handleResetAutoView}>
+              <RestartAltIcon />
+            </StyledIconButton>
+          </Tooltip>
           <StyledIconButton onClick={handleMenuOpen}>
             <MoreVertIcon />
           </StyledIconButton>
 
-          {/* Menu de ordenação */}
           <Menu
             id="filter-menu"
             anchorEl={menuAnchorEl}
@@ -172,14 +207,12 @@ const ComponentsPage = ({
         </StyledToolbar>
       </Box>
 
-      {/* Lista renderizada dinamicamente */}
       <ListView
         viewMode={viewMode}
         sortCriteria={sortCriteria}
         sortDirection={sortDirection}
       />
 
-      {/* Rodapé fixo */}
       <Box
         component="footer"
         sx={{
@@ -198,7 +231,18 @@ const ComponentsPage = ({
         Desenvolvido por José Enoque ✦ Powered by React & Next.js
       </Box>
 
-      {/* Modal para sessão expirada */}
+      {/* Feedback visual do reset */}
+      <Snackbar
+        open={showResetMessage}
+        autoHideDuration={3000}
+        onClose={() => setShowResetMessage(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="info" variant="filled" sx={{ width: "100%" }}>
+          Modo automático restaurado com sucesso.
+        </Alert>
+      </Snackbar>
+
       {sessionExpired && (
         <Dialog open onClose={redirectToLogin}>
           <DialogTitle>Sessão Expirada</DialogTitle>
@@ -222,11 +266,12 @@ const ComponentsPage = ({
 export default ComponentsPage;
 
 export async function getServerSideProps(context) {
-  // Usando nookies para ler os cookies na requisição do servidor
   const cookies = nookies.get(context);
+  const initialViewMode = cookies.viewMode || null;
+
   return {
     props: {
-      initialViewMode: cookies.viewMode || "cards",
+      initialViewMode,
       initialSortCriteria: cookies.sortCriteria || "date",
       initialSortDirection: cookies.sortDirection || "asc",
     },
