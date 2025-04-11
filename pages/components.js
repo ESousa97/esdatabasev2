@@ -28,7 +28,7 @@ import {
   PageWrapper,
   StyledToolbar,
   StyledIconButton,
-} from "../src/components/Pages/ComponentsPageStyled";
+} from "../src/components/pages/ComponentsPageStyled";
 
 // Tempo de sessão antes de expirar (4h)
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
