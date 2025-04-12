@@ -11,6 +11,7 @@ const iconMap = {
   'html': SiHtml5,
   'css': SiCss3,
   'html + css': SiHtml5, SiCss3,
+  'html + typescript': SiHtml5, SiJavascript,
   'javascript': SiJavascript,
   'python': SiPython,
   'typescript': SiJavascript,
