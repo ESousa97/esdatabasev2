@@ -400,4 +400,3 @@ R: Sim, é totalmente responsivo com Material-UI e breakpoints configurados.
 
 
 > ✨ **Criado em:** 24 de fev. de 2025 às 20:52
-> 
