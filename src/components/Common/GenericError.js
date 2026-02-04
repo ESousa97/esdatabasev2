@@ -1,6 +1,6 @@
 // src/components/Common/GenericError.js
 import { useEffect, useState } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, styled } from '@mui/material/styles';
 import { lightTheme, darkTheme } from '../../styles/theme';
 import { motion } from 'framer-motion';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -8,6 +8,107 @@ import dynamic from 'next/dynamic';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import errorAnimation from '../../animations/generic-erro.json';
+
+const Wrapper = styled('div')(() => ({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100vw',
+  height: '100vh',
+  overflow: 'hidden',
+  fontFamily: 'Segoe UI, Roboto, sans-serif',
+  zIndex: 9999,
+}));
+
+const AnimationLayer = styled('div')(() => ({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  overflow: 'hidden',
+}));
+
+const StyledLottie = styled(Lottie)(() => ({
+  width: '100%',
+  height: '100%',
+  maxWidth: '100vw',
+  maxHeight: '100vh',
+  objectFit: 'cover',
+}));
+
+const FullscreenCard = styled(motion.div)(() => ({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 2,
+  backdropFilter: 'blur(16px)',
+  WebkitBackdropFilter: 'blur(16px)',
+  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  flexDirection: 'column',
+  padding: '2rem',
+}));
+
+const Title = styled('h1')(() => ({
+  fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
+  fontWeight: 700,
+  marginBottom: '1rem',
+  color: 'var(--color-text, #fff)',
+}));
+
+const Description = styled('p')(() => ({
+  fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+  color: 'var(--color-text, #ddd)',
+  maxWidth: '600px',
+  marginBottom: '1.5rem',
+}));
+
+const CodeInfo = styled('p')(() => ({
+  fontSize: '1rem',
+  color: 'var(--color-text, #bbb)',
+  marginBottom: '1rem',
+}));
+
+const ErrorMessage = styled('pre')(() => ({
+  fontSize: '0.85rem',
+  color: '#f87171',
+  backgroundColor: 'rgba(0,0,0,0.25)',
+  padding: '1rem',
+  borderRadius: '8px',
+  maxWidth: '600px',
+  overflowX: 'auto',
+  marginBottom: '1.5rem',
+}));
+
+const ButtonRow = styled('div')(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  gap: '1rem',
+}));
+
+const RetryButton = styled('button')(() => ({
+  border: 'none',
+  background: '#4f46e5',
+  color: '#fff',
+  fontSize: '1rem',
+  padding: '0.8rem 1.4rem',
+  borderRadius: '8px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  transition: 'background 0.2s ease',
+  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+  '&:hover': { background: '#4338ca' },
+}));
+
+const ReplayIconStyled = styled(ReplayIcon)(() => ({
+  marginRight: 8,
+}));
 
 export default function GenericError({ statusCode, error }) {
   const [showCard, setShowCard] = useState(false);
@@ -24,135 +125,36 @@ export default function GenericError({ statusCode, error }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <div style={styles.wrapper}>
-        {/* Animação Lottie como background */}
-        <div style={styles.animation}>
-          <Lottie animationData={errorAnimation} loop autoplay style={styles.lottie} />
-        </div>
+      <Wrapper>
+        <AnimationLayer>
+          <StyledLottie animationData={errorAnimation} loop autoplay />
+        </AnimationLayer>
 
         {showCard && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            style={styles.fullscreenCard}
-          >
+          <FullscreenCard initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
             <motion.div
               initial={{ scale: 0.5, opacity: 0, y: -20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <h1 style={styles.title}>Erro inesperado</h1>
-              <p style={styles.description}>
+              <Title>Erro inesperado</Title>
+              <Description>
                 Algo fora do esperado aconteceu. Estamos cientes e já estamos investigando para resolver o mais rápido possível!
-              </p>
-              <p style={styles.codeInfo}>Status: {statusCode || 'desconhecido'}</p>
+              </Description>
+              <CodeInfo>Status: {statusCode || 'desconhecido'}</CodeInfo>
 
-              {error?.message && (
-                <pre style={styles.errorMessage}>{error.message}</pre>
-              )}
+              {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
 
-              <div style={styles.buttons}>
-                <button style={styles.button} onClick={() => window.location.reload()}>
-                  <ReplayIcon style={{ marginRight: 8 }} />
+              <ButtonRow>
+                <RetryButton onClick={() => window.location.reload()}>
+                  <ReplayIconStyled />
                   Tentar novamente
-                </button>
-              </div>
+                </RetryButton>
+              </ButtonRow>
             </motion.div>
-          </motion.div>
+          </FullscreenCard>
         )}
-      </div>
+      </Wrapper>
     </ThemeProvider>
   );
 }
-
-const styles = {
-  wrapper: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    overflow: 'hidden',
-    fontFamily: 'Segoe UI, Roboto, sans-serif',
-    zIndex: 9999,
-  },
-  animation: {
-    position: 'absolute',
-    inset: 0,
-    zIndex: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  lottie: {
-    width: '100%',
-    height: '100%',
-    maxWidth: '100vw',
-    maxHeight: '100vh',
-    objectFit: 'cover',
-  },
-  fullscreenCard: {
-    position: 'absolute',
-    inset: 0,
-    zIndex: 2,
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    flexDirection: 'column',
-    padding: '2rem',
-  },
-  title: {
-    fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
-    fontWeight: 700,
-    marginBottom: '1rem',
-    color: 'var(--color-text, #fff)',
-  },
-  description: {
-    fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-    color: 'var(--color-text, #ddd)',
-    maxWidth: '600px',
-    marginBottom: '1.5rem',
-  },
-  codeInfo: {
-    fontSize: '1rem',
-    color: '#ccc',
-    marginBottom: '1rem',
-  },
-  errorMessage: {
-    maxWidth: '90%',
-    color: '#ffb3b3',
-    background: 'rgba(0, 0, 0, 0.4)',
-    padding: '1rem',
-    borderRadius: '0.5rem',
-    fontSize: '0.85rem',
-    margin: '0 auto 1.5rem',
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-word',
-  },
-  buttons: {
-    display: 'flex',
-    gap: '1rem',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  button: {
-    padding: '1rem 2rem',
-    fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
-    fontWeight: 600,
-    border: 'none',
-    borderRadius: '0.8rem',
-    cursor: 'pointer',
-    backgroundColor: 'var(--color-primary, #0070f3)',
-    color: 'var(--color-on-primary, #fff)',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 14px rgba(0, 112, 243, 0.25)',
-    display: 'flex',
-    alignItems: 'center',
-  },
-};

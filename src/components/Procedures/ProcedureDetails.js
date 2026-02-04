@@ -3,8 +3,21 @@ import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CircularProgress, Box, Button } from '@mui/material';
-import { StyledCopyButton, ContentContainer, MarkdownStyles, MainContent, FixedFooter } from './ProcedureDetailsStyles';
+import { CircularProgress } from '@mui/material';
+import {
+  StyledCopyButton,
+  ContentContainer,
+  MarkdownStyles,
+  MainContent,
+  FixedFooter,
+  FooterAuthor,
+  VideoContainer,
+  VideoFrame,
+  VideoActionButton,
+  VideoLoadContainer,
+  VideoLoadButton,
+} from './ProcedureDetailsStyles';
+import { FullPageLoadingContainer } from '../Common/LoadingState';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
 
@@ -45,66 +58,27 @@ function ProcedureDetails({ procedure }) {
       .catch((error) => console.error('Erro ao copiar conteúdo:', error));
   };
 
-  const renderVideo = (videoId) => (
+  const renderVideo = (videoId) =>
     videoLoaded === videoId ? (
-      <Box
-        sx={{
-          position: 'relative',
-          height: isExpanded ? '85vh' : '30vh',
-          transition: 'height 0.8s ease',
-          boxShadow: '0 8px 8px rgba(0,0,0,0.1)',
-          m: 1,
-          borderRadius: '8px',
-        }}
-      >
-        <iframe
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            borderRadius: '8px',
-          }}
+      <VideoContainer isExpanded={isExpanded}>
+        <VideoFrame
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&vq=hd1080`}
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           loading="lazy"
         />
-        <Button
-          variant="contained"
-          onClick={toggleExpand}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: '#f50057',
-            color: '#fff',
-            px: 1.5,
-            borderRadius: '4px',
-            textTransform: 'none',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-            '&:hover': { backgroundColor: '#c51162' },
-          }}
-        >
+        <VideoActionButton variant="contained" onClick={toggleExpand}>
           {isExpanded ? 'Minimizar' : 'Expandir'}
-        </Button>
-      </Box>
+        </VideoActionButton>
+      </VideoContainer>
     ) : (
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', height: '4vh' }}>
-        <Button
-          variant="outlined"
-          onClick={() => handleLoadVideo(videoId)}
-          sx={{
-            px: 1,
-            fontSize: '0.9rem',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-          }}
-        >
+      <VideoLoadContainer>
+        <VideoLoadButton variant="outlined" onClick={() => handleLoadVideo(videoId)}>
           Carregar Vídeo
-        </Button>
-      </Box>
-    )
-  );
+        </VideoLoadButton>
+      </VideoLoadContainer>
+    );
 
   // Processa e sanitiza o conteúdo markdown
   const safeContent = procedure?.conteudo || '';
@@ -189,9 +163,9 @@ function ProcedureDetails({ procedure }) {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <FullPageLoadingContainer>
         <CircularProgress />
-      </Box>
+      </FullPageLoadingContainer>
     );
   }
 
@@ -204,7 +178,7 @@ function ProcedureDetails({ procedure }) {
         <MarkdownStyles ref={contentRef}>{children}</MarkdownStyles>
       </MainContent>
       <FixedFooter>
-        Desenvolvido por <strong style={{ marginLeft: 4 }}> José Enoque </strong> ✦ Powered by React & Next.js
+        Desenvolvido por <FooterAuthor>José Enoque</FooterAuthor> ✦ Powered by React & Next.js
       </FixedFooter>
     </>
   );

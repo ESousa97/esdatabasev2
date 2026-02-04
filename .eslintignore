@@ -1,0 +1,9 @@
+# ESLint ignore
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+public/
+src/animations/

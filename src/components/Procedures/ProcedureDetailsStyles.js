@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {animatedLink} from '../StyleLink/StyledLink';
 
-const commonButtonStyles = {
+const commonButtonStyles = { 
   borderRadius: '8px',
   padding: '6px 12px',
   margin: '4px',
@@ -252,4 +252,53 @@ export const FixedFooter = styled('footer')(({ theme }) => ({
   color: theme.palette.text.secondary,
   opacity: 0.6,
   userSelect: 'none',
+}));
+export const FooterAuthor = styled('strong')(() => ({
+  marginLeft: 4,
+}));
+
+export const VideoContainer = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'isExpanded',
+})(({ isExpanded }) => ({
+  position: 'relative',
+  height: isExpanded ? '85vh' : '30vh',
+  transition: 'height 0.8s ease',
+  boxShadow: '0 8px 8px rgba(0,0,0,0.1)',
+  margin: '8px',
+  borderRadius: '8px',
+}));
+
+export const VideoFrame = styled('iframe')(() => ({
+  width: '100%',
+  height: '100%',
+  border: 'none',
+  borderRadius: '8px',
+}));
+
+export const VideoActionButton = styled(Button)(() => ({
+  position: 'absolute',
+  top: 8,
+  right: 8,
+  backgroundColor: '#f50057',
+  color: '#fff',
+  paddingLeft: '12px',
+  paddingRight: '12px',
+  borderRadius: '4px',
+  textTransform: 'none',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+  '&:hover': { backgroundColor: '#c51162' },
+}));
+
+export const VideoLoadContainer = styled('div')(() => ({
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  height: '4vh',
+}));
+
+export const VideoLoadButton = styled(Button)(() => ({
+  paddingLeft: '8px',
+  paddingRight: '8px',
+  fontSize: '0.9rem',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
 }));

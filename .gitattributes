@@ -1,0 +1,67 @@
+# Git attributes for consistent line endings and diff behavior
+# https://git-scm.com/docs/gitattributes
+
+# Auto detect text files and normalize line endings
+* text=auto eol=lf
+
+# JavaScript and TypeScript
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+
+# Web files
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Config files
+*.config.js text eol=lf
+*.config.ts text eol=lf
+.editorconfig text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.prettierrc text eol=lf
+.eslintrc text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Windows specific
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files (don't normalize)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.svg text eol=lf
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+
+# Lock files - keep exact format
+package-lock.json text eol=lf -diff
+yarn.lock text eol=lf -diff
+pnpm-lock.yaml text eol=lf -diff
+
+# Export-ignore for distribution
+.github/ export-ignore
+.editorconfig export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+BASELINE.md export-ignore
+FINAL.md export-ignore

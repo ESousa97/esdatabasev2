@@ -1,38 +1,90 @@
 import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google'; // Importar o provedor do Google
+import GoogleProvider from 'next-auth/providers/google';
 import AzureADProvider from 'next-auth/providers/azure-ad';
 
+/**
+ * NextAuth Configuration
+ *
+ * Supports Google and Azure AD authentication providers.
+ * Allowed emails are configured via environment variable.
+ */
 export default NextAuth({
   providers: [
     AzureADProvider({
       clientId: process.env.AZURE_AD_CLIENT_ID,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
       tenantId: process.env.AZURE_AD_TENANT_ID,
-      authorization: { params: { scope: 'openid email profile User.Read offline_access' } },
+      authorization: {
+        params: {
+          scope: 'openid email profile User.Read offline_access',
+        },
+      },
     }),
-    // Adicionando o Google como um provedor de autenticação
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
-    // Adicione outros provedores conforme necessário
   ],
 
+  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      const allowedEmails = ['sousa3086@outlook.com'];
-  
-      // Verifica se algum dos e-mails do usuário está na lista de permitidos
-      const userEmails = [user.email, account.email, profile.email, email?.email, credentials?.email];
-      const isAllowedEmail = userEmails.some(email => allowedEmails.includes(email));
-  
-      if (isAllowedEmail) {
-        return true; // O login será bem-sucedido se o e-mail estiver na lista de permitidos
-      } else {
-        return false; // O login será bloqueado se o e-mail não estiver na lista de permitidos
+    async signIn({ user, account, profile }) {
+      // Get allowed emails from environment variable (comma-separated)
+      const allowedEmailsEnv = process.env.ALLOWED_EMAILS || '';
+      const allowedEmails = allowedEmailsEnv
+        .split(',')
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean);
+
+      // If no allowed emails configured, allow all (for development)
+      if (allowedEmails.length === 0) {
+        console.warn('Warning: No ALLOWED_EMAILS configured. Allowing all users.');
+        return true;
       }
+
+      // Collect all possible email addresses from the sign-in
+      const userEmails = [user?.email, account?.email, profile?.email]
+        .filter(Boolean)
+        .map((email) => email.toLowerCase());
+
+      // Check if any user email is in the allowed list
+      const isAllowed = userEmails.some((email) => allowedEmails.includes(email));
+
+      if (!isAllowed) {
+        console.info(`Access denied for email(s): ${userEmails.join(', ')}`);
+        return false;
+      }
+
+      return true;
+    },
+
+    async session({ session, token }) {
+      // Add user id to session
+      if (token?.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+
+    async jwt({ token, user }) {
+      // Persist user id to token
+      if (user?.id) {
+        token.sub = user.id;
+      }
+      return token;
     },
   },
-    
-  });
+
+  pages: {
+    signIn: '/login',
+    error: '/erro',
+  },
+});

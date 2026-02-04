@@ -1,11 +1,12 @@
 // src/components/Procedures/ProcedurePages.js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { apiClient } from '../../utils/apiClient';
 import MainLayout from '../Layout/MainLayout';
 import ProcedureDetails from './ProcedureDetails';
 import ErrorGateway from '../Common/ErrorGateway';
 import { CircularProgress } from '@mui/material';
+import { LoadingContainer } from '../Common/LoadingState';
 
 function ProcedurePages() {
   const { query } = useRouter();
@@ -20,7 +21,7 @@ function ProcedurePages() {
 
     const fetchProcedure = async () => {
       try {
-        const response = await axios.get(`https://serverdatabase.onrender.com/api/v1/projects/${id}`);
+        const response = await apiClient.get(`/projects/${id}`);
         setProcedure(response.data);
       } catch (err) {
         console.error('Erro ao buscar procedimento:', err);
@@ -37,9 +38,9 @@ function ProcedurePages() {
   if (loading) {
     return (
       <MainLayout>
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+        <LoadingContainer>
           <CircularProgress />
-        </div>
+        </LoadingContainer>
       </MainLayout>
     );
   }

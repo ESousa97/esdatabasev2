@@ -1,4 +1,14 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
+
+const ErrorFallbackContainer = styled('div')(({ theme }) => ({
+  textAlign: 'center',
+  padding: theme.spacing(4),
+}));
+
+const ErrorFallbackImage = styled('img')(() => ({
+  maxWidth: 300,
+}));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -17,15 +27,11 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <img
-            src="/images/background.gif"
-            alt="Erro"
-            style={{ maxWidth: 300 }}
-          />
+        <ErrorFallbackContainer>
+          <ErrorFallbackImage src="/images/background.gif" alt="Erro" />
           <h2>Algo deu errado 😓</h2>
           <p>Por favor, tente recarregar a página.</p>
-        </div>
+        </ErrorFallbackContainer>
       );
     }
 

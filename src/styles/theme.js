@@ -1,72 +1,115 @@
 // src/styles/theme.js
 import { createTheme } from '@mui/material/styles';
-import { colors } from './variables';
+import {
+  lightColors,
+  darkColors,
+  typography,
+  borderRadius,
+  layout,
+} from './tokens';
 
+/**
+ * Light Theme Configuration
+ */
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.primary,           // Cor principal (botões, links, destaques)
-      dark: '#4338ca',                // Tom mais escuro para estados ativos
-      light: '#818cf8',               // Tom claro para hover ou bordas
-      contrastText: '#ffffff',        // Cor do texto sobre o botão primário
+      main: lightColors.primary,
+      dark: lightColors.primaryDark,
+      light: lightColors.primaryLight,
+      contrastText: lightColors.primaryContrast,
     },
     secondary: {
-      main: colors.secondary,         // Cor secundária complementar
-      dark: '#059669',
-      light: '#6ee7b7',
-      contrastText: '#ffffff',
+      main: lightColors.secondary,
+      dark: lightColors.secondaryDark,
+      light: lightColors.secondaryLight,
+      contrastText: lightColors.secondaryContrast,
     },
     background: {
-      default: colors.backgroundDefault, // Fundo principal da aplicação
-      paper: colors.backgroundPaper,     // Fundo de superfícies como cards/modais
+      default: lightColors.background.default,
+      paper: lightColors.background.paper,
     },
     text: {
-      primary: colors.textPrimary,    // Cor principal de texto
-      secondary: colors.textSecondary,// Cor de descrições e textos menores
+      primary: lightColors.text.primary,
+      secondary: lightColors.text.secondary,
+    },
+    error: {
+      main: lightColors.error,
+    },
+    warning: {
+      main: lightColors.warning,
+    },
+    info: {
+      main: lightColors.info,
+    },
+    success: {
+      main: lightColors.success,
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: typography.fontFamily.primary,
   },
-  shape: { borderRadius: 8 },
+  shape: {
+    borderRadius: parseInt(borderRadius.lg) * 16 || 8,
+  },
 });
 
+/**
+ * Dark Theme Configuration
+ */
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#6366f1',                // Índigo suavizado para destaque em dark
-      dark: '#4f46e5',                // Versão escura do primário
-      light: '#a5b4fc',               // Hover ou leve destaque
-      contrastText: '#ffffff',
+      main: darkColors.primary,
+      dark: darkColors.primaryDark,
+      light: darkColors.primaryLight,
+      contrastText: darkColors.primaryContrast,
     },
     secondary: {
-      main: '#007a52',                // Teal escuro para ações secundárias
-      dark: '#065f46',
-      light: '#34d399',
-      contrastText: '#ffffff',
+      main: darkColors.secondary,
+      dark: darkColors.secondaryDark,
+      light: darkColors.secondaryLight,
+      contrastText: darkColors.secondaryContrast,
     },
     background: {
-      default: '#1f2937',             // Fundo geral escuro
-      paper: '#27303f',               // Superfícies como cards/modais escuros
+      default: darkColors.background.default,
+      paper: darkColors.background.paper,
     },
     text: {
-      primary: '#f9fafb',             // Texto principal claro
-      secondary: '#9ca3af',           // Texto secundário desabilitado
+      primary: darkColors.text.primary,
+      secondary: darkColors.text.secondary,
+    },
+    error: {
+      main: darkColors.error,
+    },
+    warning: {
+      main: darkColors.warning,
+    },
+    info: {
+      main: darkColors.info,
+    },
+    success: {
+      main: darkColors.success,
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: typography.fontFamily.primary,
   },
-  shape: { borderRadius: 8 },
+  shape: {
+    borderRadius: parseInt(borderRadius.lg) * 16 || 8,
+  },
   components: {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#0d0d0d', // AppBar customizado para dark mode
+          backgroundColor: '#0d0d0d',
         },
       },
     },
   },
 });
+
+// Export layout constants for components
+export const LAYOUT = layout;

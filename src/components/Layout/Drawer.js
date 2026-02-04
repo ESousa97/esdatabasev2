@@ -1,6 +1,6 @@
 // Drawer.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '../../utils/apiClient';
 import { useRouter } from 'next/router';
 import {
   List,
@@ -22,7 +22,7 @@ import {
   StyledListItemButton,
   CustomListItemIcon,
 } from '../Common/SideMenuStyles';
-import { getCategoryIcon } from '../Common/CategoryIconMapper';
+import { CategoryIcon } from '../Common/CategoryIconMapper';
 import { Layers } from 'lucide-react';
 
 const Drawer = ({ open, onClose, marginTop }) => {
@@ -34,8 +34,8 @@ const Drawer = ({ open, onClose, marginTop }) => {
   const router = useRouter();
 
   useEffect(() => {
-    axios
-      .get('https://serverdatabase.onrender.com/api/v1/categories')
+    apiClient
+      .get('/categories')
       .then((response) => {
         const grouped = response.data.reduce((acc, item) => {
           if (!acc[item.categoria]) acc[item.categoria] = [];
@@ -135,7 +135,7 @@ const Drawer = ({ open, onClose, marginTop }) => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 32 }}>
-                    {getCategoryIcon(category)}
+                    <CategoryIcon category={category} />
                   </ListItemIcon>
 
                   <ListItemText

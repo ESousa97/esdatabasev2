@@ -1,11 +1,12 @@
 import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { apiClient } from '../../../utils/apiClient';
 import DOMPurify from 'dompurify';
-import { CircularProgress, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useRouter } from 'next/router';
 import ErrorGateway from '../../Common/ErrorGateway'; // ✅ import corrigido
 import MainLayout from '../../Layout/MainLayout';
+import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 import {
   StyledButtonBase,
   StyledCard,
@@ -48,7 +49,7 @@ const useCardList = (sortCriteria, sortDirection) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://serverdatabase.onrender.com/api/v1/cards');
+        const response = await apiClient.get('/cards');
         const sorted = sortData(response.data, sortCriteria, sortDirection);
         setCards(sorted);
       } catch (err) {
@@ -76,9 +77,9 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
   // ⏳ Carregamento
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-        <CircularProgress />
-      </div>
+      <LoadingContainer>
+        <LoadingSpinner />
+      </LoadingContainer>
     );
   }
 

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
 import { useTheme } from '@mui/material/styles';
+import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 import {
   StyledListItem,
   StyledPaper,
@@ -21,7 +21,7 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('https://serverdatabase.onrender.com/api/v1/cards')
+    apiClient.get('/cards')
       .then(response => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;
@@ -59,18 +59,14 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
 
   return (
     <MainLayout>
-      <div style={{ display: 'flex', justifyContent: 'center', padding: theme.spacing(2) }}>
+      <LoadingContainer>
         {loading ? (
-          <CircularProgress size={50} />
+          <LoadingSpinner size={50} />
         ) : (
           <StyledPaper elevation={0}>
             <List>
               {items.map((item) => (
-                <StyledListItem
-                  button
-                  key={item.id}
-                  onClick={() => handleListItemClick(item.id)}
-                >
+                <StyledListItem button key={item.id} onClick={() => handleListItemClick(item.id)}>
                   <ListItemAvatar>
                     <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
                       {item.titulo ? item.titulo[0] : '?'}
@@ -89,7 +85,7 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
             </List>
           </StyledPaper>
         )}
-      </div>
+      </LoadingContainer>
     </MainLayout>
   );
 };

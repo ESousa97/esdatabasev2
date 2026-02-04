@@ -9,7 +9,9 @@ import {
   StyledTextField,
   OptionTitle,
   OptionDescription,
+  LoadingMessage,
 } from './SearchBoxStyles';
+import { apiClient } from '../../../utils/apiClient';
 
 const SearchBox = () => {
   const [open, setOpen] = useState(false);
@@ -32,10 +34,10 @@ const SearchBox = () => {
     }
     (async () => {
       try {
-        const response = await fetch(
-          `https://serverdatabase.onrender.com/api/v1/search?query=${encodeURIComponent(inputValue)}`
-        );
-        const data = await response.json();
+        const response = await apiClient.get('/search', {
+          params: { query: inputValue },
+        });
+        const data = response.data;
         if (active) {
           setOptions(data);
         }
@@ -90,15 +92,7 @@ const SearchBox = () => {
       getOptionLabel={(option) => option.titulo || ''}
       options={options}
       loading={loading}
-      loadingText={
-        <span style={{
-          fontSize: isXsDown ? '0.6rem' : isSmDown ? '0.7rem' : '0.75rem',
-          padding: '4px 8px',
-          color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb'
-        }}>
-          Carregando...
-        </span>
-      }
+      loadingText={<LoadingMessage>Carregando...</LoadingMessage>}
       inputValue={inputValue}
       onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
       renderOption={(props, option) => (

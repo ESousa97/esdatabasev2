@@ -1,4 +1,5 @@
 import React from 'react';
+import '../src/styles/global.scss';
 import { CustomThemeProvider } from '../src/contexts/ThemeProvider';
 import useKeepAlive from '../src/hooks/useKeepAlive';
 import ErrorBoundary from '../src/components/Common/ErrorBoundary';
