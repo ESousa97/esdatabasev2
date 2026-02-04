@@ -1,4 +1,5 @@
 import React, { createContext, useState, useMemo, useContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { ThemeProvider as MuiThemeProvider, useMediaQuery } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme, darkTheme } from '../styles/theme';
@@ -30,4 +31,8 @@ export const CustomThemeProvider = ({ children }) => {
       </MuiThemeProvider>
     </ThemeContext.Provider>
   );
+};
+
+CustomThemeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

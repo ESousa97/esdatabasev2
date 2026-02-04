@@ -66,7 +66,33 @@ const Description = styled('p')(() => ({
   color: 'var(--color-text, #ddd)',
 }));
 
-export default function StatusErrorPage({ animationData, title, description, actionLabel, actionIcon: ActionIcon, onAction }) {
+const CodeInfo = styled('p')(() => ({
+  fontSize: '1rem',
+  color: 'var(--color-text, #bbb)',
+  marginBottom: '1rem',
+}));
+
+const ErrorMessage = styled('pre')(() => ({
+  fontSize: '0.85rem',
+  color: '#f87171',
+  backgroundColor: 'rgba(0,0,0,0.25)',
+  padding: '1rem',
+  borderRadius: '8px',
+  maxWidth: '600px',
+  overflowX: 'auto',
+  marginBottom: '1.5rem',
+}));
+
+export default function StatusErrorPage({
+  animationData,
+  title,
+  description,
+  actionLabel,
+  actionIcon: ActionIcon,
+  onAction,
+  codeInfo,
+  errorMessage,
+}) {
   const [showCard, setShowCard] = useState(false);
   const [prefersDark, setPrefersDark] = useState(false);
 
@@ -97,6 +123,9 @@ export default function StatusErrorPage({ animationData, title, description, act
               <Title>{title}</Title>
               <Description>{description}</Description>
 
+              {codeInfo && <CodeInfo>{codeInfo}</CodeInfo>}
+              {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+
               <Button variant="contained" color="primary" startIcon={ActionIcon ? <ActionIcon /> : null} onClick={onAction}>
                 {actionLabel}
               </Button>
@@ -115,4 +144,6 @@ StatusErrorPage.propTypes = {
   actionLabel: PropTypes.string.isRequired,
   actionIcon: PropTypes.elementType,
   onAction: PropTypes.func.isRequired,
+  codeInfo: PropTypes.string,
+  errorMessage: PropTypes.string,
 };
