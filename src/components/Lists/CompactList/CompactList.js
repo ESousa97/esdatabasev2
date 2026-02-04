@@ -91,3 +91,8 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
 };
 
 export default CompactList;
+
+CompactList.propTypes = {
+  sortCriteria: PropTypes.string,
+  sortDirection: PropTypes.string,
+};

@@ -1,5 +1,6 @@
 // CategoryIconMapper.js
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTheme, styled } from '@mui/material/styles';
 
 // Ícones realistas das linguagens (via react-icons)
@@ -36,3 +37,7 @@ export function CategoryIcon({ category }) {
     </IconWrapper>
   );
 }
+
+CategoryIcon.propTypes = {
+  category: PropTypes.string.isRequired,
+};

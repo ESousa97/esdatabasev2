@@ -20,8 +20,6 @@ export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     minHeight: 61.5,
-    display: 'flex',
-    alignItems: 'center',
   
     [theme.breakpoints.down('sm')]: {
       gap: theme.spacing(0.5),
