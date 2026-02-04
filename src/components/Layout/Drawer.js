@@ -1,5 +1,6 @@
 // Drawer.js
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiClient } from '../../utils/apiClient';
 import { useRouter } from 'next/router';
 import {
@@ -194,3 +195,9 @@ const Drawer = ({ open, onClose, marginTop }) => {
 };
 
 export default Drawer;
+
+Drawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  marginTop: PropTypes.string,
+};

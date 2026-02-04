@@ -148,6 +148,13 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
   );
 });
 
+CardList.displayName = 'CardList';
+
+CardList.propTypes = {
+  sortCriteria: PropTypes.string,
+  sortDirection: PropTypes.string,
+};
+
 CardList.propTypes = {
   sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
   sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,

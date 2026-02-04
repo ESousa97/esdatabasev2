@@ -1,5 +1,6 @@
 // AppBar.js
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Toolbar, IconButton, Typography, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -94,3 +95,8 @@ const AppBar = ({ onDrawerToggle, onLogout }) => {
 };
 
 export default AppBar;
+
+AppBar.propTypes = {
+  onDrawerToggle: PropTypes.func,
+  onLogout: PropTypes.func,
+};

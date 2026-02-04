@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import Cookies from "js-cookie";
 import nookies from "nookies";
 import {
@@ -15,7 +16,6 @@ import {
   Snackbar,
   Alert,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
@@ -36,7 +36,6 @@ import {
   StyledToolbar,
   StyledIconButton,
 } from "../src/components/pages/ComponentsPageStyled";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Ícones do pacote lucide-react
 import { CalendarPlus, Clock, ArrowUpAZ, ArrowDownAZ } from "lucide-react";
@@ -61,8 +60,6 @@ const ComponentsPage = ({
   // Hooks e utilitários
   const router = useRouter();
   const { toggleDarkMode } = useCustomTheme();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Define o modo de visualização inicial com base na largura da tela ou cookie
   useEffect(() => {
@@ -81,7 +78,7 @@ const ComponentsPage = ({
       setViewMode(newMode); // Define automaticamente com base na tela
       Cookies.set("viewMode", newMode, { expires: 30 });
     }
-  }, []);
+  }, [initialViewMode]);
 
   // Atualiza o modo de visualização dinamicamente se estiver no modo automático
   useEffect(() => {
@@ -356,6 +353,12 @@ const ComponentsPage = ({
 };
 
 export default ComponentsPage;
+
+ComponentsPage.propTypes = {
+  initialViewMode: PropTypes.string,
+  initialSortCriteria: PropTypes.string,
+  initialSortDirection: PropTypes.string,
+};
 
 // Busca as props iniciais a partir dos cookies
 export async function getServerSideProps(context) {

@@ -21,7 +21,7 @@ const slideIn = keyframes`
 `;
 
 // 🔥 Corrigido: posiciona o DRAWER a partir do topo do AppBar
-export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...props} />)(
+export const StyledDrawer = styled(({ marginTop: _marginTop, ...props }) => <Drawer {...props} />)(
   ({ theme, marginTop }) => {
     const topValue = marginTop || DEFAULT_MARGIN_TOP;
 

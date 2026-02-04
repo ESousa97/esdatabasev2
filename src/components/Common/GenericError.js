@@ -1,5 +1,6 @@
 // src/components/Common/GenericError.js
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { ThemeProvider, styled } from '@mui/material/styles';
 import { lightTheme, darkTheme } from '../../styles/theme';
 import { motion } from 'framer-motion';
@@ -158,3 +159,10 @@ export default function GenericError({ statusCode, error }) {
     </ThemeProvider>
   );
 }
+
+GenericError.propTypes = {
+  statusCode: PropTypes.number,
+  error: PropTypes.shape({
+    message: PropTypes.string,
+  }),
+};

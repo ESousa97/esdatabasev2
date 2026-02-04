@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { ToastContainer, toast } from 'react-toastify';
@@ -185,3 +187,17 @@ function ProcedureDetails({ procedure }) {
 }
 
 export default ProcedureDetails;
+
+ProcedureDetails.propTypes = {
+  procedure: PropTypes.shape({
+    titulo: PropTypes.string,
+    conteudo: PropTypes.string,
+  }),
+};
+
+ProcedureDetails.propTypes = {
+  procedure: PropTypes.shape({
+    titulo: PropTypes.string,
+    conteudo: PropTypes.string,
+  }),
+};

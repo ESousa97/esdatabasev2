@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
@@ -90,3 +90,8 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
 };
 
 export default DetailedList;
+
+DetailedList.propTypes = {
+  sortCriteria: PropTypes.string,
+  sortDirection: PropTypes.string,
+};
