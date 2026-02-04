@@ -5,6 +5,7 @@ import Error404 from '../../../pages/404';
 import Error500 from '../../../pages/500';
 import Error503 from '../../../pages/503';
 import GenericError from './GenericError';
+import PropTypes from 'prop-types';
 
 const errorComponents = new Map([
   [400, Error400],
@@ -24,3 +25,13 @@ export default function ErrorGateway({ statusCode, error }) {
 
   return <GenericError statusCode={statusCode} error={error} />;
 }
+
+ErrorGateway.propTypes = {
+  statusCode: PropTypes.number,
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.instanceOf(Error)]),
+};
+
+ErrorGateway.defaultProps = {
+  statusCode: 500,
+  error: null,
+};

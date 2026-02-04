@@ -9,7 +9,7 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
+export const StyledButtonBase = styled(ButtonBase)(() => ({
   display: 'block',
   textAlign: 'inherit',
   borderRadius: '10px',
@@ -22,7 +22,7 @@ export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
-export const StyledCard = styled(Card)(({ theme }) => ({
+export const StyledCard = styled(Card)(() => ({
   borderRadius: '10px',
   boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
   display: 'flex',
