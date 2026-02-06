@@ -20,11 +20,7 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "react",
-    "react-hooks",
-    "jsx-a11y"
-  ],
+  "plugins": ["react", "react-hooks", "jsx-a11y"],
   "settings": {
     "react": {
       "version": "detect"
@@ -42,19 +38,11 @@
   },
   "overrides": [
     {
-      "files": ["*.test.js", "*.test.jsx", "*.spec.js", "*.spec.jsx"],
+      "files": ["*.test.js", "*.test.jsx", "*.spec.js", "*.spec.jsx", "jest.setup.js"],
       "env": {
         "jest": true
       }
     }
   ],
-  "ignorePatterns": [
-    "node_modules/",
-    ".next/",
-    "out/",
-    "build/",
-    "dist/",
-    "coverage/",
-    "public/"
-  ]
+  "ignorePatterns": ["node_modules/", ".next/", "out/", "build/", "dist/", "coverage/", "public/"]
 }

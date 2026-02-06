@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
-import { StyledListItem, StyledPaper, StyledAvatar, StyledListItemText } from './DetailedListStyles';
+import {
+  StyledListItem,
+  StyledPaper,
+  StyledAvatar,
+  StyledListItemText,
+} from './DetailedListStyles';
 import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 
 const DetailedList = ({ sortCriteria, sortDirection }) => {
@@ -16,8 +20,9 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
 
   useEffect(() => {
     setLoading(true);
-    apiClient.get('/cards')
-      .then(response => {
+    apiClient
+      .get('/cards')
+      .then((response) => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;
           switch (sortCriteria) {
@@ -42,7 +47,7 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
         setItems(sortedData);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching card list:', error);
         setLoading(false);
       });
