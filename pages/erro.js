@@ -1,7 +1,7 @@
 // pages/erro.js
 import React from 'react';
 import { useRouter } from 'next/router';
-import { Button, Container, Typography } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import ErrorGateway from '../src/components/Common/ErrorGateway';
 
 export default function CustomErrorPage() {
