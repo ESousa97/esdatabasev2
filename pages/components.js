@@ -46,7 +46,7 @@ import { CalendarPlus, Clock, ArrowUpAZ, ArrowDownAZ } from 'lucide-react';
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
 const ComponentsPage = ({
-  initialViewMode,
+  initialViewMode = null,
   initialSortCriteria = 'date',
   initialSortDirection = 'asc',
 }) => {

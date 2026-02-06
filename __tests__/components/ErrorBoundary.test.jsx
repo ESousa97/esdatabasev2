@@ -24,9 +24,11 @@ describe('ErrorBoundary', () => {
 
   it('renders children when there is no error', () => {
     render(
-      <ErrorBoundary>
-        <div data-testid="child">Child content</div>
-      </ErrorBoundary>
+      <TestWrapper>
+        <ErrorBoundary>
+          <div data-testid="child">Child content</div>
+        </ErrorBoundary>
+      </TestWrapper>
     );
 
     expect(screen.getByTestId('child')).toBeInTheDocument();
@@ -38,9 +40,11 @@ describe('ErrorBoundary', () => {
     };
 
     render(
-      <ErrorBoundary>
-        <ThrowError />
-      </ErrorBoundary>
+      <TestWrapper>
+        <ErrorBoundary>
+          <ThrowError />
+        </ErrorBoundary>
+      </TestWrapper>
     );
 
     expect(screen.getByText('Algo deu errado 😓')).toBeInTheDocument();
