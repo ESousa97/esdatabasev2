@@ -11,13 +11,15 @@ import errorAnimation500 from '../src/animations/erro-500.json';
 
 export default function Custom500() {
   const [showCard, setShowCard] = useState(false);
-  const [prefersDark, setPrefersDark] = useState(false);
+  const [prefersDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setShowCard(true), 4000);
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setPrefersDark(mediaQuery.matches);
-
     return () => clearTimeout(timer);
   }, []);
 
@@ -27,12 +29,7 @@ export default function Custom500() {
     <ThemeProvider theme={theme}>
       <div style={styles.wrapper}>
         <div style={styles.animation}>
-          <Lottie
-            animationData={errorAnimation500}
-            loop
-            autoplay
-            style={styles.lottie}
-          />
+          <Lottie animationData={errorAnimation500} loop autoplay style={styles.lottie} />
         </div>
 
         {showCard && (
@@ -49,8 +46,10 @@ export default function Custom500() {
             >
               <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
               <p style={styles.description}>
-                Um dos nossos servidores tropeçou... ou talvez um gato tenha pisado no teclado 🐱⌨️<br />
-                Estamos investigando com carinho e logo tudo voltará ao normal.<br />
+                Um dos nossos servidores tropeçou... ou talvez um gato tenha pisado no teclado 🐱⌨️
+                <br />
+                Estamos investigando com carinho e logo tudo voltará ao normal.
+                <br />
                 Obrigado por sua paciência!
               </p>
 

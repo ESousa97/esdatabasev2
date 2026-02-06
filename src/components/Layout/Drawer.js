@@ -1,5 +1,6 @@
 // Drawer.js
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiClient } from '../../utils/apiClient';
 import { useRouter } from 'next/router';
 import {
@@ -12,16 +13,8 @@ import {
   Box,
   Divider,
 } from '@mui/material';
-import {
-  ExpandLess,
-  ExpandMore,
-  ChevronRight,
-} from '@mui/icons-material';
-import {
-  StyledDrawer,
-  StyledListItemButton,
-  CustomListItemIcon,
-} from '../Common/SideMenuStyles';
+import { ExpandLess, ExpandMore, ChevronRight } from '@mui/icons-material';
+import { StyledDrawer, StyledListItemButton, CustomListItemIcon } from '../Common/SideMenuStyles';
 import { CategoryIcon } from '../Common/CategoryIconMapper';
 import { Layers } from 'lucide-react';
 
@@ -184,7 +177,7 @@ const Drawer = ({ open, onClose, marginTop }) => {
           <Divider sx={{ mt: 'auto', mx: 2 }} />
           <Box sx={{ px: 2, py: 1 }}>
             <Typography variant="caption" color="text.secondary">
-            By José Enoque ✦ Powered by React & Next.js
+              By José Enoque ✦ Powered by React & Next.js
             </Typography>
           </Box>
         </Box>
@@ -193,4 +186,16 @@ const Drawer = ({ open, onClose, marginTop }) => {
   );
 };
 
+Drawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  marginTop: PropTypes.string,
+};
+
 export default Drawer;
+
+Drawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  marginTop: PropTypes.string,
+};

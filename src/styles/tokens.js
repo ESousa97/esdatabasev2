@@ -104,10 +104,10 @@ export const lightColors = {
     disabled: 'rgba(0, 0, 0, 0.26)',
   },
 
-  ...palette.success && { success: palette.success.main },
-  ...palette.warning && { warning: palette.warning.main },
-  ...palette.error && { error: palette.error.main },
-  ...palette.info && { info: palette.info.main },
+  ...(palette.success && { success: palette.success.main }),
+  ...(palette.warning && { warning: palette.warning.main }),
+  ...(palette.error && { error: palette.error.main }),
+  ...(palette.info && { info: palette.info.main }),
 
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.3)',

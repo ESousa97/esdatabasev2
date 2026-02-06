@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
@@ -62,8 +63,12 @@ const MainLayout = ({ children }) => {
         content="Deseja realmente sair?"
         actions={
           <>
-            <Button onClick={handleCloseLogoutModal} color="primary">Cancelar</Button>
-            <Button onClick={handleConfirmLogout} color="primary">Sair</Button>
+            <Button onClick={handleCloseLogoutModal} color="primary">
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmLogout} color="primary">
+              Sair
+            </Button>
           </>
         }
       />
@@ -71,4 +76,12 @@ const MainLayout = ({ children }) => {
   );
 };
 
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 export default MainLayout;
+
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};

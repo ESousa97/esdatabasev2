@@ -5,9 +5,9 @@
 We actively support the latest major version of this project.
 
 | Version | Supported |
-|---------|-----------|
-| 2.x     | ✅ Yes     |
-| < 2.0   | ❌ No      |
+| ------- | --------- |
+| 2.x     | ✅ Yes    |
+| < 2.0   | ❌ No     |
 
 ## Reporting a Vulnerability
 

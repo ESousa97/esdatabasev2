@@ -1,5 +1,6 @@
 // src/components/Common/Modal.js
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Dialog,
   DialogTitle,
@@ -25,6 +26,14 @@ const Modal = ({ open, onClose, title, content, actions }) => {
       {actions && <DialogActions>{actions}</DialogActions>}
     </Dialog>
   );
+};
+
+Modal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  content: PropTypes.node,
+  actions: PropTypes.node,
 };
 
 export default Modal;

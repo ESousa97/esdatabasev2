@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -15,11 +16,10 @@ import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 
 const DetailedList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
     apiClient
       .get('/cards')
       .then((response) => {
@@ -92,6 +92,11 @@ const DetailedList = ({ sortCriteria, sortDirection }) => {
       </LoadingContainer>
     </MainLayout>
   );
+};
+
+DetailedList.propTypes = {
+  sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
+  sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,
 };
 
 export default DetailedList;

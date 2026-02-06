@@ -1,8 +1,8 @@
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import {animatedLink} from '../StyleLink/StyledLink';
+import { animatedLink } from '../StyleLink/StyledLink';
 
-const commonButtonStyles = { 
+const commonButtonStyles = {
   borderRadius: '8px',
   padding: '6px 12px',
   margin: '4px',
@@ -102,9 +102,8 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
     margin: theme.spacing(2, 0),
     fontSize: '0.9rem',
     fontFamily: 'monospace',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 4px 12px rgba(0,0,0,0.25)'
-      : '0 2px 6px rgba(0,0,0,0.05)',
+    boxShadow:
+      theme.palette.mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.25)' : '0 2px 6px rgba(0,0,0,0.05)',
     maxWidth: '100%',
     height: 'auto',
     display: 'block',
@@ -241,7 +240,7 @@ export const MarkdownStyles = styled('div')(({ theme }) => ({
     '& li': {
       fontSize: '0.7rem',
     },
-  },  
+  },
 }));
 
 export const FixedFooter = styled('footer')(({ theme }) => ({
