@@ -1,5 +1,5 @@
 // src/pages/fake-login/[type].js
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
@@ -19,7 +19,10 @@ export default function GenericFakeLogin() {
   const [isPaused, setIsPaused] = useState(false);
   const [easterEggShown, setEasterEggShown] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const confettiTriggeredRef = useRef(false);
+
+  // Derive showConfetti from countdown state - confetti shows when countdown reaches 0
+  const showConfetti = countdown === 0 && !isPaused;
 
   const getMessage = (type) => {
     switch (type) {
@@ -44,10 +47,10 @@ export default function GenericFakeLogin() {
       return () => clearTimeout(timer);
     }
 
-    if (!isPaused && countdown === 0) {
+    if (!isPaused && countdown === 0 && !confettiTriggeredRef.current) {
+      confettiTriggeredRef.current = true;
       const audio = new Audio('/sounds/pop.mp3');
       audio.play();
-      setShowConfetti(true);
       setTimeout(() => router.push('/components'), 2500);
     }
   }, [countdown, isPaused, isReady, type, router]);
