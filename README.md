@@ -5,7 +5,6 @@ Interface moderna para visualização e gerenciamento de conhecimento técnico, 
 [![CI](https://github.com/ESousa97/esdatabasev2/actions/workflows/ci.yml/badge.svg)](https://github.com/ESousa97/esdatabasev2/actions/workflows/ci.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/esousa97/esdatabasev2/badge)](https://www.codefactor.io/repository/github/esousa97/esdatabasev2)
 [![License](https://img.shields.io/github/license/ESousa97/esdatabasev2)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/ESousa97/esdatabasev2)](https://github.com/ESousa97/esdatabasev2/releases)
 [![Last Commit](https://img.shields.io/github/last-commit/ESousa97/esdatabasev2)](https://github.com/ESousa97/esdatabasev2/commits/main)
 [![Issues](https://img.shields.io/github/issues/ESousa97/esdatabasev2)](https://github.com/ESousa97/esdatabasev2/issues)
 [![Stars](https://img.shields.io/github/stars/ESousa97/esdatabasev2)](https://github.com/ESousa97/esdatabasev2/stargazers)
