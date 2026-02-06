@@ -11,13 +11,15 @@ import errorAnimation500 from '../src/animations/erro-500.json';
 
 export default function Custom500() {
   const [showCard, setShowCard] = useState(false);
-  const [prefersDark, setPrefersDark] = useState(false);
+  const [prefersDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setShowCard(true), 4000);
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setPrefersDark(mediaQuery.matches);
-
     return () => clearTimeout(timer);
   }, []);
 

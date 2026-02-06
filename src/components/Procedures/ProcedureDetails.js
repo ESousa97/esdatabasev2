@@ -23,14 +23,10 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
 
 function ProcedureDetails({ procedure }) {
-  const [loading, setLoading] = useState(true);
+  const loading = !procedure;
   const [videoLoaded, setVideoLoaded] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const contentRef = useRef(null);
-
-  useEffect(() => {
-    if (procedure) setLoading(false);
-  }, [procedure]);
 
   useEffect(() => {
     if (contentRef.current) {
