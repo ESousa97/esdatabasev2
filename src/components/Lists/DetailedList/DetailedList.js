@@ -16,11 +16,10 @@ import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 
 const DetailedList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    setLoading(true);
     apiClient
       .get('/cards')
       .then((response) => {
