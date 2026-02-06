@@ -17,7 +17,7 @@ const SearchBox = () => {
   const [open, setOpen] = useState(false);
   const [fetchedOptions, setFetchedOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [lastFetchedInput, setLastFetchedInput] = useState('');
   const router = useRouter();
 
   const theme = useTheme();
@@ -32,12 +32,14 @@ const SearchBox = () => {
     return fetchedOptions;
   }, [open, inputValue, fetchedOptions]);
 
-  const loading = isLoading && open && inputValue !== '';
+  // Derive loading state - loading when inputValue differs from last fetched input
+  const loading = open && inputValue !== '' && inputValue !== lastFetchedInput;
 
   // Clear options when closing - called as event handler, not in effect
   const handleClose = useCallback(() => {
     setOpen(false);
     setFetchedOptions([]);
+    setLastFetchedInput('');
   }, []);
 
   const handleOpen = useCallback(() => {
@@ -47,10 +49,8 @@ const SearchBox = () => {
   useEffect(() => {
     let active = true;
     if (inputValue === '') {
-      // Don't call setState here - options are derived as empty when inputValue is ''
       return;
     }
-    setIsLoading(true);
     (async () => {
       try {
         const response = await apiClient.get('/search', {
@@ -59,13 +59,13 @@ const SearchBox = () => {
         const data = response.data;
         if (active) {
           setFetchedOptions(data);
-          setIsLoading(false);
+          setLastFetchedInput(inputValue);
         }
       } catch (error) {
         console.error('Erro na busca:', error);
         if (active) {
           setFetchedOptions([]);
-          setIsLoading(false);
+          setLastFetchedInput(inputValue);
         }
       }
     })();
