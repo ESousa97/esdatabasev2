@@ -63,13 +63,21 @@ const MainLayout = ({ children }) => {
         content="Deseja realmente sair?"
         actions={
           <>
-            <Button onClick={handleCloseLogoutModal} color="primary">Cancelar</Button>
-            <Button onClick={handleConfirmLogout} color="primary">Sair</Button>
+            <Button onClick={handleCloseLogoutModal} color="primary">
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmLogout} color="primary">
+              Sair
+            </Button>
           </>
         }
       />
     </Box>
   );
+};
+
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default MainLayout;

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
@@ -7,17 +8,52 @@ import { useRouter } from 'next/router';
 import MainLayout from '../../Layout/MainLayout';
 import { useTheme } from '@mui/material/styles';
 import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
-import { useCardsList } from '../../../hooks/useCardsList';
 import {
   StyledListItem,
   StyledPaper,
-  StyledListItemText // ← substituto responsivo para o título
+  StyledListItemText, // ← substituto responsivo para o título
 } from './CompactListStyles';
 
 const CompactList = ({ sortCriteria, sortDirection }) => {
-  const { items, loading } = useCardsList(sortCriteria, sortDirection);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const theme = useTheme();
+
+  useEffect(() => {
+    setLoading(true);
+    apiClient
+      .get('/cards')
+      .then((response) => {
+        const sortedData = response.data.sort((a, b) => {
+          let itemA, itemB;
+          switch (sortCriteria) {
+            case 'date':
+              itemA = new Date(a.data_criacao);
+              itemB = new Date(b.data_criacao);
+              break;
+            case 'alphabetical':
+              itemA = a.titulo?.toLowerCase() || '';
+              itemB = b.titulo?.toLowerCase() || '';
+              break;
+            case 'updateDate':
+              itemA = new Date(a.data_modificacao);
+              itemB = new Date(b.data_modificacao);
+              break;
+            default:
+              return 0;
+          }
+          const comparison = itemA < itemB ? -1 : itemA > itemB ? 1 : 0;
+          return sortDirection === 'asc' ? comparison : -comparison;
+        });
+        setItems(sortedData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching card list:', error);
+        setLoading(false);
+      });
+  }, [sortCriteria, sortDirection]);
 
   const handleListItemClick = (id) => {
     router.push(`/procedimentos/${id}`);
@@ -56,9 +92,9 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
   );
 };
 
-export default CompactList;
-
 CompactList.propTypes = {
-  sortCriteria: PropTypes.string,
-  sortDirection: PropTypes.string,
+  sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
+  sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,
 };
+
+export default CompactList;

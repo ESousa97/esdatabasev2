@@ -9,7 +9,8 @@ export default function Custom503() {
       title="Erro 503 - Serviço indisponível"
       description={
         <>
-          Parece que os servidores tiraram uma pausa pro café ☕️.<br />
+          Parece que os servidores tiraram uma pausa pro café ☕️.
+          <br />
           Estamos acordando eles com carinho e logo tudo volta ao normal!
         </>
       }

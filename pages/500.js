@@ -27,12 +27,7 @@ export default function Custom500() {
     <ThemeProvider theme={theme}>
       <div style={styles.wrapper}>
         <div style={styles.animation}>
-          <Lottie
-            animationData={errorAnimation500}
-            loop
-            autoplay
-            style={styles.lottie}
-          />
+          <Lottie animationData={errorAnimation500} loop autoplay style={styles.lottie} />
         </div>
 
         {showCard && (
@@ -49,8 +44,10 @@ export default function Custom500() {
             >
               <h1 style={styles.title}>Erro 500 - Erro interno do servidor</h1>
               <p style={styles.description}>
-                Um dos nossos servidores tropeçou... ou talvez um gato tenha pisado no teclado 🐱⌨️<br />
-                Estamos investigando com carinho e logo tudo voltará ao normal.<br />
+                Um dos nossos servidores tropeçou... ou talvez um gato tenha pisado no teclado 🐱⌨️
+                <br />
+                Estamos investigando com carinho e logo tudo voltará ao normal.
+                <br />
                 Obrigado por sua paciência!
               </p>
 

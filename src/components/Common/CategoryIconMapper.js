@@ -9,14 +9,14 @@ import { Layers } from 'lucide-react';
 
 // Mapa com categorias (normalizadas) → ícone
 const iconMap = {
-  'html': SiHtml5,
-  'css': SiCss3,
+  html: SiHtml5,
+  css: SiCss3,
   'html + css': SiHtml5,
   'html + typescript': SiHtml5,
-  'javascript': SiJavascript,
-  'python': SiPython,
-  'typescript': SiJavascript,
-  'java': SiJava,
+  javascript: SiJavascript,
+  python: SiPython,
+  typescript: SiJavascript,
+  java: SiJava,
 };
 
 const IconWrapper = styled('span')(() => ({

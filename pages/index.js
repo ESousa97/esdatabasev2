@@ -11,7 +11,9 @@ const HomePage = () => {
       <Head>
         <title>Data Base</title>
       </Head>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
         <Button variant="contained" onClick={toggleDarkMode}>
           {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         </Button>

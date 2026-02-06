@@ -13,16 +13,8 @@ import {
   Box,
   Divider,
 } from '@mui/material';
-import {
-  ExpandLess,
-  ExpandMore,
-  ChevronRight,
-} from '@mui/icons-material';
-import {
-  StyledDrawer,
-  StyledListItemButton,
-  CustomListItemIcon,
-} from '../Common/SideMenuStyles';
+import { ExpandLess, ExpandMore, ChevronRight } from '@mui/icons-material';
+import { StyledDrawer, StyledListItemButton, CustomListItemIcon } from '../Common/SideMenuStyles';
 import { CategoryIcon } from '../Common/CategoryIconMapper';
 import { Layers } from 'lucide-react';
 
@@ -185,13 +177,19 @@ const Drawer = ({ open, onClose, marginTop }) => {
           <Divider sx={{ mt: 'auto', mx: 2 }} />
           <Box sx={{ px: 2, py: 1 }}>
             <Typography variant="caption" color="text.secondary">
-            By José Enoque ✦ Powered by React & Next.js
+              By José Enoque ✦ Powered by React & Next.js
             </Typography>
           </Box>
         </Box>
       </StyledDrawer>
     </>
   );
+};
+
+Drawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  marginTop: PropTypes.string,
 };
 
 export default Drawer;

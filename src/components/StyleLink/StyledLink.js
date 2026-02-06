@@ -3,10 +3,7 @@ import { styled } from '@mui/material/styles';
 
 const getLinkStyles = (theme) => ({
   position: 'relative',
-  color:
-    theme.palette.mode === 'light'
-      ? theme.palette.primary.main
-      : theme.palette.primary.light,
+  color: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
   textDecoration: 'none',
   fontWeight: 600,
   transition: 'color 0.3s ease-in-out',
@@ -19,23 +16,17 @@ const getLinkStyles = (theme) => ({
     height: 2,
     width: 0,
     backgroundColor:
-      theme.palette.mode === 'light'
-        ? theme.palette.primary.main
-        : theme.palette.primary.light,
+      theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
     transition: 'width 0.3s ease-in-out',
   },
 
   '&:hover': {
     color:
-      theme.palette.mode === 'light'
-        ? theme.palette.primary.light
-        : theme.palette.primary.main,
+      theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.primary.main,
     '&::after': {
       width: '100%',
       backgroundColor:
-        theme.palette.mode === 'light'
-          ? theme.palette.primary.light
-          : theme.palette.primary.main,
+        theme.palette.mode === 'light' ? theme.palette.primary.light : theme.palette.primary.main,
     },
   },
 

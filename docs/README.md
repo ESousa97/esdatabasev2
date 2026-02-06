@@ -7,4 +7,3 @@ This folder contains extended documentation for ES Database V2.
 - [Architecture Overview](./architecture.md)
 - [Environment Variables](./environment.md)
 - [Development Guide](./development.md)
-

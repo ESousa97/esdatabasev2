@@ -3,15 +3,16 @@ import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 
 export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
-    zIndex: theme.zIndex.drawer + 2, // 🔥 Aqui é a mágica
-    position: 'fixed',
-    backgroundColor: theme.palette.mode === 'light'
+  zIndex: theme.zIndex.drawer + 2, // 🔥 Aqui é a mágica
+  position: 'fixed',
+  backgroundColor:
+    theme.palette.mode === 'light'
       ? theme.palette.primary.main
       : theme.palette.background.paper + 'CC',
-    boxShadow: theme.shadows[4],
-    backdropFilter: 'blur(6px)', // Permite que elementos absolutamente posicionados escapem
-  
-    '& .MuiToolbar-root': {
+  boxShadow: theme.shadows[4],
+  backdropFilter: 'blur(6px)', // Permite que elementos absolutamente posicionados escapem
+
+  '& .MuiToolbar-root': {
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
@@ -20,14 +21,14 @@ export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     minHeight: 61.5,
-  
+
     [theme.breakpoints.down('sm')]: {
       gap: theme.spacing(0.5),
       paddingLeft: theme.spacing(0.5),
       paddingRight: theme.spacing(0.5),
       minHeight: 52.5,
     },
-  
+
     // Alteramos para impactar somente o título do header
     '& .header-title': {
       fontSize: '1rem',
@@ -38,7 +39,7 @@ export const HeaderContainer = styled(MuiAppBar)(({ theme }) => ({
         // Se preferir ocultar o título em telas menores, inclua: display: 'none',
       },
     },
-  
+
     '& .MuiIconButton-root': {
       padding: 6,
       marginRight: 4,

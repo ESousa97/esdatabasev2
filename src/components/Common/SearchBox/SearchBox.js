@@ -109,11 +109,7 @@ const SearchBox = () => {
           size="small"
           InputProps={{
             ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading && <CircularProgress color="inherit" size={loaderSize} />}
-              </>
-            ),
+            endAdornment: <>{loading && <CircularProgress color="inherit" size={loaderSize} />}</>,
           }}
         />
       )}

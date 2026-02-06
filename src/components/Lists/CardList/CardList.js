@@ -66,7 +66,7 @@ const useCardList = (sortCriteria, sortDirection) => {
   return { cards, loading, error, statusCode };
 };
 
-const CardList = memo(({ sortCriteria, sortDirection }) => {
+const CardList = memo(function CardList({ sortCriteria, sortDirection }) {
   const { cards, loading, error, statusCode } = useCardList(sortCriteria, sortDirection);
   const router = useRouter();
 

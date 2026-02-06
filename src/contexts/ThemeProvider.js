@@ -19,7 +19,7 @@ export const CustomThemeProvider = ({ children }) => {
     setDarkMode(prefersDarkMode);
   }, [prefersDarkMode]);
 
-  const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   const theme = useMemo(() => (darkMode ? darkTheme : lightTheme), [darkMode]);
 

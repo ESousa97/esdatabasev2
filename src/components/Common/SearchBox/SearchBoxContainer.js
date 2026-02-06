@@ -16,7 +16,7 @@ const SearchBoxContainer = () => (
       sx={{
         width: '100%',
         maxWidth: '260px',
-        [theme => theme.breakpoints.down('sm')]: {
+        [(theme) => theme.breakpoints.down('sm')]: {
           maxWidth: '220px',
         },
       }}
