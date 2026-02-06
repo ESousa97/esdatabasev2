@@ -27,11 +27,10 @@ const sortData = (data, sortCriteria, sortDirection) =>
 
 export function useCardsList(sortCriteria, sortDirection) {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
     apiClient
       .get('/cards')
       .then((response) => {
