@@ -193,3 +193,9 @@ Drawer.propTypes = {
 };
 
 export default Drawer;
+
+Drawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  marginTop: PropTypes.string,
+};

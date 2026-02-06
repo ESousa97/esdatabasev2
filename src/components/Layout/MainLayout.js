@@ -81,3 +81,7 @@ MainLayout.propTypes = {
 };
 
 export default MainLayout;
+
+MainLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
