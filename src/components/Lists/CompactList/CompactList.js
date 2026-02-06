@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { apiClient } from '../../../utils/apiClient';
+import { useCardsList } from '../../../hooks/useCardsList';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
@@ -15,44 +15,9 @@ import {
 } from './CompactListStyles';
 
 const CompactList = ({ sortCriteria, sortDirection }) => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { items, loading } = useCardsList(sortCriteria, sortDirection);
   const router = useRouter();
   const theme = useTheme();
-
-  useEffect(() => {
-    apiClient
-      .get('/cards')
-      .then((response) => {
-        const sortedData = response.data.sort((a, b) => {
-          let itemA, itemB;
-          switch (sortCriteria) {
-            case 'date':
-              itemA = new Date(a.data_criacao);
-              itemB = new Date(b.data_criacao);
-              break;
-            case 'alphabetical':
-              itemA = a.titulo?.toLowerCase() || '';
-              itemB = b.titulo?.toLowerCase() || '';
-              break;
-            case 'updateDate':
-              itemA = new Date(a.data_modificacao);
-              itemB = new Date(b.data_modificacao);
-              break;
-            default:
-              return 0;
-          }
-          const comparison = itemA < itemB ? -1 : itemA > itemB ? 1 : 0;
-          return sortDirection === 'asc' ? comparison : -comparison;
-        });
-        setItems(sortedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching card list:', error);
-        setLoading(false);
-      });
-  }, [sortCriteria, sortDirection]);
 
   const handleListItemClick = (id) => {
     router.push(`/procedimentos/${id}`);
