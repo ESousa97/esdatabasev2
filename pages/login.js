@@ -103,7 +103,8 @@ export default function Login() {
             }}
           >
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Bem-vindo à <span style={{ color: theme.palette.primary.main }}>Projects Portfólio</span>
+              Bem-vindo à{' '}
+              <span style={{ color: theme.palette.primary.main }}>Projects Portfólio</span>
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Acesse sua conta para continuar
@@ -152,18 +153,23 @@ export default function Login() {
               </Stack>
 
               <NextLink href="/components" passHref legacyBehavior>
-              <Button
-                component="a"
-                variant="outlined"
-                fullWidth
-                sx={{ borderRadius: 8, display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <Box sx={{ width: 28, height: 28 }}>
-                  <Lottie animationData={homeAnimation} loop autoplay style={{ width: '100%', height: '100%' }} />
-                </Box>
-                Ir para Home
-              </Button>
-            </NextLink>
+                <Button
+                  component="a"
+                  variant="outlined"
+                  fullWidth
+                  sx={{ borderRadius: 8, display: 'flex', alignItems: 'center', gap: 1 }}
+                >
+                  <Box sx={{ width: 28, height: 28 }}>
+                    <Lottie
+                      animationData={homeAnimation}
+                      loop
+                      autoplay
+                      style={{ width: '100%', height: '100%' }}
+                    />
+                  </Box>
+                  Ir para Home
+                </Button>
+              </NextLink>
             </Stack>
 
             <Stack direction="row" justifyContent="center" spacing={2} mt={3}>

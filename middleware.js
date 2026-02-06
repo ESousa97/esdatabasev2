@@ -16,10 +16,7 @@ export function middleware(request) {
   }
 
   // Permitir acesso à rota de login e fake-login
-  if (
-    pathname === '/login' ||
-    pathname.startsWith('/fake-login')
-  ) {
+  if (pathname === '/login' || pathname.startsWith('/fake-login')) {
     return NextResponse.next();
   }
 

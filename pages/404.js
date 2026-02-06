@@ -11,7 +11,8 @@ export default function Custom404() {
       title="Erro 404 - Página não encontrada"
       description={
         <>
-          Você parece ter descoberto um universo alternativo 👽<br />
+          Você parece ter descoberto um universo alternativo 👽
+          <br />
           Mas não se preocupe, te levamos de volta rapidinho!
         </>
       }

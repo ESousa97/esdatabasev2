@@ -70,16 +70,19 @@ export default function GenericFakeLogin() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: theme.palette.mode === 'dark'
-          ? 'linear-gradient(135deg, #1e293b, #0f172a)'
-          : 'linear-gradient(135deg, #fdf6e3, #e1f5fe)',
+        background:
+          theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, #1e293b, #0f172a)'
+            : 'linear-gradient(135deg, #fdf6e3, #e1f5fe)',
         textAlign: 'center',
         padding: 4,
         position: 'relative',
       }}
     >
       {showConfetti && (
-        <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}>
+        <Box
+          sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}
+        >
           <Lottie animationData={confettiAnimation} loop={false} autoplay />
         </Box>
       )}
@@ -93,8 +96,10 @@ export default function GenericFakeLogin() {
       </Typography>
 
       <Typography variant="body1" mt={2}>
-        Este login foi tão inútil quanto um chinelo furado 🩴<br />
-        Redirecionando você para a verdadeira salvação em {countdown} segundo{countdown !== 1 ? 's' : ''}...
+        Este login foi tão inútil quanto um chinelo furado 🩴
+        <br />
+        Redirecionando você para a verdadeira salvação em {countdown} segundo
+        {countdown !== 1 ? 's' : ''}...
       </Typography>
 
       <Button

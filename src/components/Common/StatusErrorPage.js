@@ -114,7 +114,11 @@ export default function StatusErrorPage({
         </AnimationLayer>
 
         {showCard && (
-          <FullscreenCard initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+          <FullscreenCard
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <motion.div
               initial={{ scale: 0.5, opacity: 0, y: -20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -126,7 +130,12 @@ export default function StatusErrorPage({
               {codeInfo && <CodeInfo>{codeInfo}</CodeInfo>}
               {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
-              <Button variant="contained" color="primary" startIcon={ActionIcon ? <ActionIcon /> : null} onClick={onAction}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={ActionIcon ? <ActionIcon /> : null}
+                onClick={onAction}
+              >
                 {actionLabel}
               </Button>
             </motion.div>

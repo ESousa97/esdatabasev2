@@ -31,4 +31,3 @@ npm run start
 ## Git Hooks
 
 Husky runs lint + format on staged files before commit.
-
