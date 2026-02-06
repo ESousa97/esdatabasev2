@@ -1,5 +1,6 @@
 // src/components/Common/GenericError.js
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { ThemeProvider, styled } from '@mui/material/styles';
 import { lightTheme, darkTheme } from '../../styles/theme';
 import { motion } from 'framer-motion';
@@ -131,7 +132,11 @@ export default function GenericError({ statusCode, error }) {
         </AnimationLayer>
 
         {showCard && (
-          <FullscreenCard initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+          <FullscreenCard
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <motion.div
               initial={{ scale: 0.5, opacity: 0, y: -20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -139,7 +144,8 @@ export default function GenericError({ statusCode, error }) {
             >
               <Title>Erro inesperado</Title>
               <Description>
-                Algo fora do esperado aconteceu. Estamos cientes e já estamos investigando para resolver o mais rápido possível!
+                Algo fora do esperado aconteceu. Estamos cientes e já estamos investigando para
+                resolver o mais rápido possível!
               </Description>
               <CodeInfo>Status: {statusCode || 'desconhecido'}</CodeInfo>
 
@@ -158,3 +164,10 @@ export default function GenericError({ statusCode, error }) {
     </ThemeProvider>
   );
 }
+
+GenericError.propTypes = {
+  statusCode: PropTypes.number,
+  error: PropTypes.shape({
+    message: PropTypes.string,
+  }),
+};

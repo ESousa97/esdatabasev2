@@ -21,7 +21,7 @@ const slideIn = keyframes`
 `;
 
 // 🔥 Corrigido: posiciona o DRAWER a partir do topo do AppBar
-export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...props} />)(
+export const StyledDrawer = styled(({ marginTop: _marginTop, ...props }) => <Drawer {...props} />)(
   ({ theme, marginTop }) => {
     const topValue = marginTop || DEFAULT_MARGIN_TOP;
 
@@ -37,7 +37,7 @@ export const StyledDrawer = styled(({ marginTop, ...props }) => <Drawer {...prop
         borderRight: `1px solid ${theme.palette.divider}`,
         transition: 'transform 0.3s ease-out, opacity 0.3s ease-out',
         animation: `${slideIn} 0.3s ease-out`,
-        
+
         // Scrollbar
         '&::-webkit-scrollbar': {
           width: SCROLLBAR_WIDTH,
@@ -88,9 +88,9 @@ export const CustomListItemIcon = styled(Typography)(({ theme }) => ({
   fontSize: '0.85rem',
   marginLeft: theme.spacing(1.5),
   display: 'flex',
-  alignItems: 'center',    // ✅ centraliza verticalmente
+  alignItems: 'center', // ✅ centraliza verticalmente
   justifyContent: 'center',
-  height: '100%',          // ocupa toda a altura do container
+  height: '100%', // ocupa toda a altura do container
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.7rem',
     marginLeft: theme.spacing(1),

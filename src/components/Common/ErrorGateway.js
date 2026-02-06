@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Error400 from '../../../pages/400';
 import Error401 from '../../../pages/401';
 import Error403 from '../../../pages/403';
@@ -24,3 +25,8 @@ export default function ErrorGateway({ statusCode, error }) {
 
   return <GenericError statusCode={statusCode} error={error} />;
 }
+
+ErrorGateway.propTypes = {
+  statusCode: PropTypes.number,
+  error: PropTypes.object,
+};
