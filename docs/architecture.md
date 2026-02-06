@@ -29,4 +29,3 @@ Next.js (Pages Router)
 - Backend API configured via `NEXT_PUBLIC_API_URL`
 - Axios requests handled in utility functions
 - Error handling via `handleApiError`
-

@@ -1,14 +1,12 @@
-// src/components/Common/GenericError.js
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { ThemeProvider, styled } from '@mui/material/styles';
-import { lightTheme, darkTheme } from '../../styles/theme';
-import { motion } from 'framer-motion';
-import ReplayIcon from '@mui/icons-material/Replay';
 import dynamic from 'next/dynamic';
+import { ThemeProvider, styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
+import { motion } from 'framer-motion';
+import { lightTheme, darkTheme } from '../../styles/theme';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-import errorAnimation from '../../animations/generic-erro.json';
 
 const Wrapper = styled('div')(() => ({
   position: 'fixed',
@@ -55,7 +53,7 @@ const FullscreenCard = styled(motion.div)(() => ({
 }));
 
 const Title = styled('h1')(() => ({
-  fontSize: 'clamp(1.6rem, 4vw, 2.5rem)',
+  fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
   fontWeight: 700,
   marginBottom: '1rem',
   color: 'var(--color-text, #fff)',
@@ -63,9 +61,9 @@ const Title = styled('h1')(() => ({
 
 const Description = styled('p')(() => ({
   fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-  color: 'var(--color-text, #ddd)',
   maxWidth: '600px',
-  marginBottom: '1.5rem',
+  marginBottom: '2rem',
+  color: 'var(--color-text, #ddd)',
 }));
 
 const CodeInfo = styled('p')(() => ({
@@ -85,33 +83,16 @@ const ErrorMessage = styled('pre')(() => ({
   marginBottom: '1.5rem',
 }));
 
-const ButtonRow = styled('div')(() => ({
-  display: 'flex',
-  justifyContent: 'center',
-  gap: '1rem',
-}));
-
-const RetryButton = styled('button')(() => ({
-  border: 'none',
-  background: '#4f46e5',
-  color: '#fff',
-  fontSize: '1rem',
-  padding: '0.8rem 1.4rem',
-  borderRadius: '8px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'background 0.2s ease',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-  '&:hover': { background: '#4338ca' },
-}));
-
-const ReplayIconStyled = styled(ReplayIcon)(() => ({
-  marginRight: 8,
-}));
-
-export default function GenericError({ statusCode, error }) {
+export default function StatusErrorPage({
+  animationData,
+  title,
+  description,
+  actionLabel,
+  actionIcon: ActionIcon,
+  onAction,
+  codeInfo,
+  errorMessage,
+}) {
   const [showCard, setShowCard] = useState(false);
   const [prefersDark] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -131,7 +112,7 @@ export default function GenericError({ statusCode, error }) {
     <ThemeProvider theme={theme}>
       <Wrapper>
         <AnimationLayer>
-          <StyledLottie animationData={errorAnimation} loop autoplay />
+          <StyledLottie animationData={animationData} loop autoplay />
         </AnimationLayer>
 
         {showCard && (
@@ -145,21 +126,20 @@ export default function GenericError({ statusCode, error }) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <Title>Erro inesperado</Title>
-              <Description>
-                Algo fora do esperado aconteceu. Estamos cientes e já estamos investigando para
-                resolver o mais rápido possível!
-              </Description>
-              <CodeInfo>Status: {statusCode || 'desconhecido'}</CodeInfo>
+              <Title>{title}</Title>
+              <Description>{description}</Description>
 
-              {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
+              {codeInfo && <CodeInfo>{codeInfo}</CodeInfo>}
+              {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
-              <ButtonRow>
-                <RetryButton onClick={() => window.location.reload()}>
-                  <ReplayIconStyled />
-                  Tentar novamente
-                </RetryButton>
-              </ButtonRow>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={ActionIcon ? <ActionIcon /> : null}
+                onClick={onAction}
+              >
+                {actionLabel}
+              </Button>
             </motion.div>
           </FullscreenCard>
         )}
@@ -168,9 +148,13 @@ export default function GenericError({ statusCode, error }) {
   );
 }
 
-GenericError.propTypes = {
-  statusCode: PropTypes.number,
-  error: PropTypes.shape({
-    message: PropTypes.string,
-  }),
+StatusErrorPage.propTypes = {
+  animationData: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.node.isRequired,
+  actionLabel: PropTypes.string.isRequired,
+  actionIcon: PropTypes.elementType,
+  onAction: PropTypes.func.isRequired,
+  codeInfo: PropTypes.string,
+  errorMessage: PropTypes.string,
 };

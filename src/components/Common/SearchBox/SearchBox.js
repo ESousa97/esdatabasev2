@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
 import { useTheme, useMediaQuery } from '@mui/material';
@@ -15,9 +15,9 @@ import { apiClient } from '../../../utils/apiClient';
 
 const SearchBox = () => {
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState([]);
+  const [fetchedOptions, setFetchedOptions] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const loading = open && options.length === 0;
+  const [lastFetchedInput, setLastFetchedInput] = useState('');
   const router = useRouter();
 
   const theme = useTheme();
@@ -26,10 +26,29 @@ const SearchBox = () => {
 
   const loaderSize = isXsDown ? 12 : isSmDown ? 16 : 20;
 
+  // Derive options based on open state and inputValue
+  const options = useMemo(() => {
+    if (!open || inputValue === '') return [];
+    return fetchedOptions;
+  }, [open, inputValue, fetchedOptions]);
+
+  // Derive loading state - loading when inputValue differs from last fetched input
+  const loading = open && inputValue !== '' && inputValue !== lastFetchedInput;
+
+  // Clear options when closing - called as event handler, not in effect
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    setFetchedOptions([]);
+    setLastFetchedInput('');
+  }, []);
+
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+
   useEffect(() => {
     let active = true;
     if (inputValue === '') {
-      setOptions([]);
       return;
     }
     (async () => {
@@ -39,11 +58,15 @@ const SearchBox = () => {
         });
         const data = response.data;
         if (active) {
-          setOptions(data);
+          setFetchedOptions(data);
+          setLastFetchedInput(inputValue);
         }
       } catch (error) {
         console.error('Erro na busca:', error);
-        setOptions([]);
+        if (active) {
+          setFetchedOptions([]);
+          setLastFetchedInput(inputValue);
+        }
       }
     })();
 
@@ -51,12 +74,6 @@ const SearchBox = () => {
       active = false;
     };
   }, [inputValue]);
-
-  useEffect(() => {
-    if (!open) {
-      setOptions([]);
-    }
-  }, [open]);
 
   const handleSelect = (event, value) => {
     if (value && value.id) {
@@ -86,8 +103,8 @@ const SearchBox = () => {
       id="search-box"
       PopperComponent={CustomPopper}
       open={open}
-      onOpen={() => setOpen(true)}
-      onClose={() => setOpen(false)}
+      onOpen={handleOpen}
+      onClose={handleClose}
       onChange={handleSelect}
       getOptionLabel={(option) => option.titulo || ''}
       options={options}
@@ -109,11 +126,7 @@ const SearchBox = () => {
           size="small"
           InputProps={{
             ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading && <CircularProgress color="inherit" size={loaderSize} />}
-              </>
-            ),
+            endAdornment: <>{loading && <CircularProgress color="inherit" size={loaderSize} />}</>,
           }}
         />
       )}

@@ -1,5 +1,5 @@
 // Login.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getSession } from 'next-auth/react'; // signIn removido
 import dynamic from 'next/dynamic';
 import { ThemeProvider } from '@mui/material/styles';
@@ -24,14 +24,14 @@ const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import loginAnimation from '../src/animations/login-animation.json';
 
 export default function Login() {
-  const [prefersDark, setPrefersDark] = useState(false);
+  const [prefersDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setPrefersDark(mediaQuery.matches);
-  }, []);
 
   const theme = prefersDark ? darkTheme : lightTheme;
 
@@ -103,7 +103,8 @@ export default function Login() {
             }}
           >
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Bem-vindo à <span style={{ color: theme.palette.primary.main }}>Projects Portfólio</span>
+              Bem-vindo à{' '}
+              <span style={{ color: theme.palette.primary.main }}>Projects Portfólio</span>
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Acesse sua conta para continuar
@@ -152,18 +153,23 @@ export default function Login() {
               </Stack>
 
               <NextLink href="/components" passHref legacyBehavior>
-              <Button
-                component="a"
-                variant="outlined"
-                fullWidth
-                sx={{ borderRadius: 8, display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <Box sx={{ width: 28, height: 28 }}>
-                  <Lottie animationData={homeAnimation} loop autoplay style={{ width: '100%', height: '100%' }} />
-                </Box>
-                Ir para Home
-              </Button>
-            </NextLink>
+                <Button
+                  component="a"
+                  variant="outlined"
+                  fullWidth
+                  sx={{ borderRadius: 8, display: 'flex', alignItems: 'center', gap: 1 }}
+                >
+                  <Box sx={{ width: 28, height: 28 }}>
+                    <Lottie
+                      animationData={homeAnimation}
+                      loop
+                      autoplay
+                      style={{ width: '100%', height: '100%' }}
+                    />
+                  </Box>
+                  Ir para Home
+                </Button>
+              </NextLink>
             </Stack>
 
             <Stack direction="row" justifyContent="center" spacing={2} mt={3}>

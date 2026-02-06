@@ -20,4 +20,3 @@ NEXT_PUBLIC_API_URL=https://serverdatabase.onrender.com/api/v1
 
 - `ALLOWED_EMAILS` is optional in development
 - Do not commit `.env.local` to git
-

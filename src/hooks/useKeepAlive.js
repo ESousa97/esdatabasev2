@@ -13,8 +13,8 @@ function useKeepAlive() {
     const interval = setInterval(() => {
       // Envie uma requisição simples para manter o servidor acordado.
       fetch(`${apiBaseUrl}/ping`)
-        .then(res => res.json())
-        .catch(err => console.error('Erro no keep-alive:', err));
+        .then((res) => res.json())
+        .catch((err) => console.error('Erro no keep-alive:', err));
     }, 45000); // a cada 45 segundos
 
     return () => clearInterval(interval);

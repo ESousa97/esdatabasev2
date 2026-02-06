@@ -66,7 +66,7 @@ const useCardList = (sortCriteria, sortDirection) => {
   return { cards, loading, error, statusCode };
 };
 
-const CardList = memo(({ sortCriteria, sortDirection }) => {
+const CardList = memo(function CardList({ sortCriteria, sortDirection }) {
   const { cards, loading, error, statusCode } = useCardList(sortCriteria, sortDirection);
   const router = useRouter();
 
@@ -147,7 +147,9 @@ const CardList = memo(({ sortCriteria, sortDirection }) => {
     </MainLayout>
   );
 });
+
 CardList.displayName = 'CardList';
+
 CardList.propTypes = {
   sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
   sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,

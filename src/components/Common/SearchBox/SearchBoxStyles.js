@@ -54,9 +54,7 @@ export const LoadingMessage = styled('span')(({ theme }) => ({
   padding: theme.spacing(0.6, 1.2),
   borderRadius: theme.shape.borderRadius,
   backgroundColor:
-    theme.palette.mode === 'light'
-      ? theme.palette.grey[100]
-      : theme.palette.grey[800],
+    theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[800],
   color: theme.palette.mode === 'light' ? '#111827' : '#f9fafb',
   border: `1px solid ${theme.palette.divider}`,
   margin: theme.spacing(1),

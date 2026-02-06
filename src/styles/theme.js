@@ -1,12 +1,6 @@
 // src/styles/theme.js
 import { createTheme } from '@mui/material/styles';
-import {
-  lightColors,
-  darkColors,
-  typography,
-  borderRadius,
-  layout,
-} from './tokens';
+import { lightColors, darkColors, typography, borderRadius, layout } from './tokens';
 
 /**
  * Light Theme Configuration

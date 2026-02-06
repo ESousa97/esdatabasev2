@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 import nookies from 'nookies';
 import {
@@ -44,13 +45,22 @@ import { CalendarPlus, Clock, ArrowUpAZ, ArrowDownAZ } from 'lucide-react';
 // Timeout de sessão em 4 horas
 const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
+const getInitialViewMode = (initialViewMode) => {
+  if (initialViewMode) return initialViewMode;
+  if (typeof window === 'undefined') return 'cards';
+  const width = window.innerWidth;
+  if (width <= 400) return 'compact';
+  if (width <= 600) return 'detailed';
+  return 'cards';
+};
+
 const ComponentsPage = ({
-  initialViewMode,
+  initialViewMode = null,
   initialSortCriteria = 'date',
   initialSortDirection = 'asc',
 }) => {
   // Estados
-  const [viewMode, setViewMode] = useState('cards'); // Modo de visualização: cards, detailed ou compact
+  const [viewMode, setViewMode] = useState(() => getInitialViewMode(initialViewMode));
   const [sortCriteria, setSortCriteria] = useState(initialSortCriteria);
   const [sortDirection, setSortDirection] = useState(initialSortDirection);
   const [sessionExpired, setSessionExpired] = useState(false);
@@ -64,24 +74,12 @@ const ComponentsPage = ({
   const theme = useTheme();
   const _isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Define o modo de visualização inicial com base na largura da tela ou cookie
+  // Salva o viewMode inicial no cookie se não havia
   useEffect(() => {
-    const width = window.innerWidth;
-    let newMode = 'cards';
-
-    if (width <= 400) {
-      newMode = 'compact';
-    } else if (width <= 600) {
-      newMode = 'detailed';
+    if (!initialViewMode) {
+      Cookies.set('viewMode', viewMode, { expires: 30 });
     }
-
-    if (initialViewMode) {
-      setViewMode(initialViewMode); // Utiliza o cookie salvo
-    } else {
-      setViewMode(newMode); // Define automaticamente com base na tela
-      Cookies.set('viewMode', newMode, { expires: 30 });
-    }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Atualiza o modo de visualização dinamicamente se estiver no modo automático
   useEffect(() => {
@@ -349,6 +347,12 @@ const ComponentsPage = ({
       )}
     </PageWrapper>
   );
+};
+
+ComponentsPage.propTypes = {
+  initialViewMode: PropTypes.string,
+  initialSortCriteria: PropTypes.string,
+  initialSortDirection: PropTypes.string,
 };
 
 export default ComponentsPage;

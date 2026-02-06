@@ -1,21 +1,23 @@
 // CategoryIconMapper.js
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTheme, styled } from '@mui/material/styles';
 
 // Ícones realistas das linguagens (via react-icons)
-import { SiHtml5, SiCss3, SiJavascript, SiPython, SiJava } from 'react-icons/si';
+import { SiHtml5, SiCss3, SiJavascript, SiPython } from 'react-icons/si';
+import { FaJava } from 'react-icons/fa';
 import { Layers } from 'lucide-react';
 
 // Mapa com categorias (normalizadas) → ícone
 const iconMap = {
-  'html': SiHtml5,
-  'css': SiCss3,
+  html: SiHtml5,
+  css: SiCss3,
   'html + css': SiHtml5,
   'html + typescript': SiHtml5,
-  'javascript': SiJavascript,
-  'python': SiPython,
-  'typescript': SiJavascript,
-  'java': SiJava,
+  javascript: SiJavascript,
+  python: SiPython,
+  typescript: SiJavascript,
+  java: FaJava,
 };
 
 const IconWrapper = styled('span')(() => ({
@@ -36,3 +38,7 @@ export function CategoryIcon({ category }) {
     </IconWrapper>
   );
 }
+
+CategoryIcon.propTypes = {
+  category: PropTypes.string.isRequired,
+};

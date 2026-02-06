@@ -15,7 +15,7 @@ export const StyledListItem = styled(ListItem)(({ theme }) => ({
 
   '&:hover': {
     transform: 'translateY(-4px) scale(1.015)', // 🔥 flutua para cima
-    boxShadow: theme.shadows[6],                // sombra mais intensa
+    boxShadow: theme.shadows[6], // sombra mais intensa
     backgroundColor: theme.palette.background.paper,
   },
 }));

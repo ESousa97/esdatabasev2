@@ -1,5 +1,5 @@
 // src/pages/fake-login/[type].js
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
@@ -19,7 +19,10 @@ export default function GenericFakeLogin() {
   const [isPaused, setIsPaused] = useState(false);
   const [easterEggShown, setEasterEggShown] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const confettiTriggeredRef = useRef(false);
+
+  // Derive showConfetti from countdown state - confetti shows when countdown reaches 0
+  const showConfetti = countdown === 0 && !isPaused;
 
   const getMessage = (type) => {
     switch (type) {
@@ -44,10 +47,10 @@ export default function GenericFakeLogin() {
       return () => clearTimeout(timer);
     }
 
-    if (!isPaused && countdown === 0) {
+    if (!isPaused && countdown === 0 && !confettiTriggeredRef.current) {
+      confettiTriggeredRef.current = true;
       const audio = new Audio('/sounds/pop.mp3');
       audio.play();
-      setShowConfetti(true);
       setTimeout(() => router.push('/components'), 2500);
     }
   }, [countdown, isPaused, isReady, type, router]);
@@ -70,16 +73,19 @@ export default function GenericFakeLogin() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: theme.palette.mode === 'dark'
-          ? 'linear-gradient(135deg, #1e293b, #0f172a)'
-          : 'linear-gradient(135deg, #fdf6e3, #e1f5fe)',
+        background:
+          theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, #1e293b, #0f172a)'
+            : 'linear-gradient(135deg, #fdf6e3, #e1f5fe)',
         textAlign: 'center',
         padding: 4,
         position: 'relative',
       }}
     >
       {showConfetti && (
-        <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}>
+        <Box
+          sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10 }}
+        >
           <Lottie animationData={confettiAnimation} loop={false} autoplay />
         </Box>
       )}
@@ -93,8 +99,10 @@ export default function GenericFakeLogin() {
       </Typography>
 
       <Typography variant="body1" mt={2}>
-        Este login foi tão inútil quanto um chinelo furado 🩴<br />
-        Redirecionando você para a verdadeira salvação em {countdown} segundo{countdown !== 1 ? 's' : ''}...
+        Este login foi tão inútil quanto um chinelo furado 🩴
+        <br />
+        Redirecionando você para a verdadeira salvação em {countdown} segundo
+        {countdown !== 1 ? 's' : ''}...
       </Typography>
 
       <Button

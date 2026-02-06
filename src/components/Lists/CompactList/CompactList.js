@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { apiClient } from '../../../utils/apiClient';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -10,19 +11,19 @@ import { LoadingContainer, LoadingSpinner } from '../../Common/LoadingState';
 import {
   StyledListItem,
   StyledPaper,
-  StyledListItemText // ← substituto responsivo para o título
+  StyledListItemText, // ← substituto responsivo para o título
 } from './CompactListStyles';
 
 const CompactList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
-    setLoading(true);
-    apiClient.get('/cards')
-      .then(response => {
+    apiClient
+      .get('/cards')
+      .then((response) => {
         const sortedData = response.data.sort((a, b) => {
           let itemA, itemB;
           switch (sortCriteria) {
@@ -47,7 +48,7 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
         setItems(sortedData);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching card list:', error);
         setLoading(false);
       });
@@ -88,6 +89,11 @@ const CompactList = ({ sortCriteria, sortDirection }) => {
       </LoadingContainer>
     </MainLayout>
   );
+};
+
+CompactList.propTypes = {
+  sortCriteria: PropTypes.oneOf(['date', 'alphabetical', 'updateDate']).isRequired,
+  sortDirection: PropTypes.oneOf(['asc', 'desc']).isRequired,
 };
 
 export default CompactList;
