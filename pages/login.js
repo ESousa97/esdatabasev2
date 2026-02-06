@@ -1,5 +1,5 @@
 // Login.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getSession } from 'next-auth/react'; // signIn removido
 import dynamic from 'next/dynamic';
 import { ThemeProvider } from '@mui/material/styles';
@@ -24,14 +24,14 @@ const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import loginAnimation from '../src/animations/login-animation.json';
 
 export default function Login() {
-  const [prefersDark, setPrefersDark] = useState(false);
+  const [prefersDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setPrefersDark(mediaQuery.matches);
-  }, []);
 
   const theme = prefersDark ? darkTheme : lightTheme;
 

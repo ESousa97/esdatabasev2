@@ -7,23 +7,23 @@ import Error500 from '../../../pages/500';
 import Error503 from '../../../pages/503';
 import GenericError from './GenericError';
 
-const errorComponents = new Map([
-  [400, Error400],
-  [401, Error401],
-  [403, Error403],
-  [404, Error404],
-  [500, Error500],
-  [503, Error503],
-]);
-
 export default function ErrorGateway({ statusCode, error }) {
-  const SpecificError = errorComponents.get(statusCode);
-
-  if (SpecificError) {
-    return <SpecificError />;
+  switch (statusCode) {
+    case 400:
+      return <Error400 />;
+    case 401:
+      return <Error401 />;
+    case 403:
+      return <Error403 />;
+    case 404:
+      return <Error404 />;
+    case 500:
+      return <Error500 />;
+    case 503:
+      return <Error503 />;
+    default:
+      return <GenericError statusCode={statusCode} error={error} />;
   }
-
-  return <GenericError statusCode={statusCode} error={error} />;
 }
 
 ErrorGateway.propTypes = {

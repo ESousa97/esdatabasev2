@@ -16,12 +16,11 @@ import {
 
 const CompactList = ({ sortCriteria, sortDirection }) => {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const theme = useTheme();
 
   useEffect(() => {
-    setLoading(true);
     apiClient
       .get('/cards')
       .then((response) => {
