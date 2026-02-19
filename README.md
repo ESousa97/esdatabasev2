@@ -143,15 +143,15 @@ graph TD
 
 ### Camadas Principais
 
-| Camada              | Responsabilidade                                                                       |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| **Pages**           | Rotas Next.js (components, procedimentos/[id], login, erro, páginas de status HTTP)    |
-| **Middleware**       | Roteamento: redireciona para `/components`, permite `/login`, `/api`, `/procedimentos` |
-| **Components**      | Layout (AppBar, Drawer, MainLayout), Listas (Card, Compact, Detailed), Procedures, Auth, Error pages |
-| **Contexts**        | `CustomThemeProvider` — toggle dark/light com detecção automática de preferência        |
-| **Hooks**           | `useCardsList` (fetch + sort), `useKeepAlive` (ping backend 45s)                       |
-| **Styles**          | Tokens (paleta, tipografia, spacing, shadows, breakpoints), temas MUI, SCSS global     |
-| **Utils**           | `apiClient` (Axios), `apiErrorHandler` (redirect), `helpers` (formatDate, truncate, debounce, cn) |
+| Camada         | Responsabilidade                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| **Pages**      | Rotas Next.js (components, procedimentos/[id], login, erro, páginas de status HTTP)                  |
+| **Middleware** | Roteamento: redireciona para `/components`, permite `/login`, `/api`, `/procedimentos`               |
+| **Components** | Layout (AppBar, Drawer, MainLayout), Listas (Card, Compact, Detailed), Procedures, Auth, Error pages |
+| **Contexts**   | `CustomThemeProvider` — toggle dark/light com detecção automática de preferência                     |
+| **Hooks**      | `useCardsList` (fetch + sort), `useKeepAlive` (ping backend 45s)                                     |
+| **Styles**     | Tokens (paleta, tipografia, spacing, shadows, breakpoints), temas MUI, SCSS global                   |
+| **Utils**      | `apiClient` (Axios), `apiErrorHandler` (redirect), `helpers` (formatDate, truncate, debounce, cn)    |
 
 ---
 
@@ -387,11 +387,11 @@ O projeto adota práticas de governança para manter a qualidade do código:
 
 ## Documentação Estendida
 
-| Documento | Descrição |
-| --- | --- |
+| Documento                            | Descrição                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------- |
 | [Architecture](docs/architecture.md) | Visão arquitetural, fluxo de autenticação, design system e integração API |
-| [Environment](docs/environment.md) | Variáveis de ambiente com descrições e notas |
-| [Development](docs/development.md) | Setup local, linting, testes, build e git hooks |
+| [Environment](docs/environment.md)   | Variáveis de ambiente com descrições e notas                              |
+| [Development](docs/development.md)   | Setup local, linting, testes, build e git hooks                           |
 
 ---
 
@@ -401,24 +401,28 @@ O projeto adota práticas de governança para manter a qualidade do código:
 <summary><strong>Qual a relação entre ES Database V2 e ES Database API?</strong></summary>
 
 O ES Database V2 é o frontend (Next.js) e o [ES Database API](https://github.com/ESousa97/serverdatabase) é o backend (Express + Sequelize). O frontend consome a API via Axios (`NEXT_PUBLIC_API_URL`) para projetos, cards, categorias, busca e upload de imagens. São repositórios independentes que podem ser deployados separadamente.
+
 </details>
 
 <details>
 <summary><strong>Como funciona a autenticação?</strong></summary>
 
 NextAuth.js gerencia OAuth com Google e Azure AD. O callback `signIn` valida emails contra `ALLOWED_EMAILS` (env). Se a lista estiver vazia em dev, todos os emails são permitidos. A sessão expira por inatividade após 4 horas, exibindo um diálogo de relogin. O middleware redireciona rotas não autorizadas para `/components`.
+
 </details>
 
 <details>
 <summary><strong>Por que existem "fake login" pages?</strong></summary>
 
 As páginas em `pages/fake-login/[type].js` são easter eggs humorísticos — exibem animações Lottie e mensagens engraçadas quando o usuário tenta logar, com countdown, confetti, som e redirect automático para `/components`. Incluem também um snackbar escondido que aparece se o usuário pausar o countdown por 7 segundos.
+
 </details>
 
 <details>
 <summary><strong>Como funciona o hook useKeepAlive?</strong></summary>
 
 O `useKeepAlive` envia um `GET /api/v1/ping` ao backend a cada 45 segundos para manter servidores free-tier (como Render) ativos. Pode ser desabilitado via `NEXT_PUBLIC_KEEP_ALIVE=false`. É inicializado no `_app.js` e roda em todas as páginas.
+
 </details>
 
 ---
