@@ -1,5 +1,8 @@
 # Code of Conduct
 
+> Project status: this repository was deactivated on 2026-02-18 and is kept as historical reference.
+> Community interactions are no longer actively moderated because contributions are closed.
+
 ## Our Pledge
 
 We pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
@@ -32,7 +35,7 @@ This Code of Conduct applies within all project spaces, and it also applies when
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project owner at [security@esdatabase.dev](mailto:security@esdatabase.dev). All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
+As this project is archived, there is no active moderation workflow or response SLA for conduct reports.
 
 ---
 

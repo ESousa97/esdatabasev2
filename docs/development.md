@@ -1,5 +1,8 @@
 # Development Guide
 
+> This project is deactivated and no longer under active development.
+> The commands below are kept only for local/historical usage.
+
 ## Setup
 
 ```bash

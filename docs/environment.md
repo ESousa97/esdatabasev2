@@ -1,5 +1,8 @@
 # Environment Variables
 
+> This project is deactivated (archived) since 2026-02-18.
+> Environment variables are documented only to support historical/local reference.
+
 This project uses environment variables to configure authentication and API access.
 
 ## Required

@@ -1,5 +1,8 @@
 # Architecture Overview
 
+> This project is deactivated and archived since 2026-02-18.
+> This architecture documentation is provided for historical reference only.
+
 ## 🏗️ High-Level Architecture
 
 ```
